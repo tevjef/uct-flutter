@@ -1,41 +1,40 @@
 import 'package:flutter/material.dart';
 
+import '../home/home_router.dart';
+import '../widgets/stateful_listview.dart';
 import 'subject_adapter.dart';
 import 'subject_presenter.dart';
 
-class SubjectPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("RU-NK 2018"),
-        ),
-        body: new SubjectList());
-  }
-}
+class SubjectPage extends StatefulWidget {
+  final HomeRouter router;
 
-class SubjectList extends StatefulWidget {
-  SubjectList({Key key}) : super(key: key);
+  SubjectPage({Key key, this.router}) : super(key: key);
 
   @override
-  SubjectListState createState() => new SubjectListState();
+  SubjectListState createState() => new SubjectListState(router);
 }
 
-class SubjectListState extends State<SubjectList> implements SubjectView {
+class SubjectListState extends State<SubjectPage> implements SubjectView {
+  HomeRouter router;
   SubjectPresenter presenter;
   SubjectAdapter adapter;
   bool isLoading;
+  Widget list;
 
-  SubjectListState() {
+  SubjectListState(HomeRouter router) {
+    this.router = router;
     presenter = new SubjectPresenter(this);
-    adapter = SubjectAdapter();
+    adapter = new SubjectAdapter(router);
   }
 
   @override
   void initState() {
     super.initState();
-    isLoading = true;
-    presenter.loadSubjects("rutgers.universitynew.brunswick", "spring", "2018");
+    if (adapter.items.length == 0) {
+      isLoading = true;
+      presenter.loadSubjects(
+          "rutgers.universitynew.brunswick", "spring", "2018");
+    }
   }
 
   @override
@@ -46,12 +45,20 @@ class SubjectListState extends State<SubjectList> implements SubjectView {
       widget = new Center(
           child: new Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: new CircularProgressIndicator()));
+              child: new CircularProgressIndicator(
+                  backgroundColor: Colors.black)));
     } else {
-      widget = getListView();
+      if (list == null) {
+        list = getListView();
+      }
+      widget = list;
     }
 
-    return widget;
+    return new Scaffold(
+        appBar: new AppBar(
+          title: new Text("RU-NK 2018"),
+        ),
+        body: widget);
   }
 
   @override
@@ -69,11 +76,10 @@ class SubjectListState extends State<SubjectList> implements SubjectView {
     });
   }
 
-  ListView getListView() {
-    return new ListView.builder(
-        itemCount: adapter.items.length,
-        itemBuilder: (BuildContext context, int position) {
-          return adapter.onCreateWidget(position);
-        });
+  Widget getListView() {
+    return StatefulListView(adapter.items.length,
+        (BuildContext context, int position) {
+      return adapter.onCreateWidget(context, position);
+    });
   }
 }

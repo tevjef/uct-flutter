@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../data/proto/model.pb.dart';
+import '../../dependency_injection.dart';
+import '../home/home_router.dart';
 import '../rv.dart';
+import '../styles.dart';
 
 abstract class SubjectItem extends Item {}
 
 abstract class SubjectDelegate<I extends SubjectItem> extends Delegate<I> {}
 
 class SubjectAdapter extends Adapter<SubjectItem> {
-  SubjectAdapter() {
+  HomeRouter router;
+
+  SubjectAdapter(HomeRouter router) {
+    this.router = router;
     delegates[0] = HeaderDelegate();
-    delegates[1] = SubjectTitleDelegate();
+    delegates[1] = SubjectTitleDelegate(router);
   }
 }
 
@@ -24,30 +31,49 @@ class HeaderItem extends SubjectItem {
 
 class HeaderDelegate extends SubjectDelegate<HeaderItem> {
   @override
-  Widget create(HeaderItem item) {
+  Widget create(BuildContext context, HeaderItem item) {
     return new Padding(
-        padding: new EdgeInsets.all(10.0),
+        padding: new EdgeInsets.all(Dimens.spacingStandard),
         child: new Text(
           item.title,
-          style: new TextStyle(
-              fontFamily: "ProductSans", fontWeight: FontWeight.bold),
+          style: Styles.sectionHeader,
         ));
   }
 }
 
 class SubjectTitleItem extends SubjectItem {
-  String title;
+  Subject subject;
 
-  SubjectTitleItem(this.title);
+  SubjectTitleItem(this.subject);
 
   @override
   int itemType() => 1;
 }
 
 class SubjectTitleDelegate extends SubjectDelegate<SubjectTitleItem> {
+  HomeRouter router;
+
+  SubjectTitleDelegate(this.router);
+
   @override
-  Widget create(SubjectTitleItem item) {
-    return new Padding(
-        padding: new EdgeInsets.all(20.0), child: new Text(item.title));
+  Widget create(BuildContext context, SubjectTitleItem item) {
+    final insets = new EdgeInsets.symmetric(
+        horizontal: 32.0, vertical: Dimens.spacingStandard);
+
+    return new InkWell(
+      onTap: () {
+        // Save current search location
+        final searchContext = Injector().searchContext;
+        searchContext.subject = item.subject;
+
+        router.gotoCourses(context, item.subject.topicName);
+      },
+      child: new Container(
+          padding: insets,
+          child: new Text(
+            "${item.subject.name} (${item.subject.number})",
+            style: Styles.caption,
+          )),
+    );
   }
 }

@@ -15,10 +15,10 @@ class SubjectPresenter {
       List<SubjectItem> adapterItems = List();
 
       adapterItems.add(HeaderItem("RECENT"));
-      adapterItems.add(SubjectTitleItem(subjects[0].name));
-      adapterItems.add(HeaderItem("ALL"));
+      adapterItems.add(SubjectTitleItem(subjects[0]));
+      adapterItems.add(HeaderItem("ALL (${subjects.length})"));
       final addItems = subjects.map((subject) {
-        return SubjectTitleItem(subject.name);
+        return SubjectTitleItem(subject);
       });
 
       adapterItems.addAll(addItems);
@@ -32,5 +32,6 @@ class SubjectPresenter {
 
 abstract class SubjectView {
   void onSubjectSuccess(List<SubjectItem> adapterItems);
+
   void onSubjectError(String message);
 }
