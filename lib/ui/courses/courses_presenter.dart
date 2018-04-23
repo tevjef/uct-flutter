@@ -15,8 +15,8 @@ class CoursePresenter {
       List<CourseItem> adapterItems = List();
 
       adapterItems.add(HeaderItem("RECENT"));
-      adapterItems
-          .add(CourseTitleItem(courses[0].name, courses[0].number, 0, 0));
+      adapterItems.add(CourseTitleItem(
+          courses[0].name, courses[0].number, 0, 0, courses[0]));
       adapterItems.add(HeaderItem("ALL (${courses.length})"));
       final addItems = courses.map((course) {
         int total = course.sections.length;
@@ -26,7 +26,7 @@ class CoursePresenter {
             open++;
           }
         });
-        return CourseTitleItem(course.name, course.number, open, total);
+        return CourseTitleItem(course.name, course.number, open, total, course);
       });
 
       adapterItems.addAll(addItems);

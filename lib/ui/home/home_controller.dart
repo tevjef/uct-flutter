@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:uctflutter/data/proto/model.pb.dart';
 
+import '../course/course_view.dart';
 import '../courses/courses_view.dart';
 import '../subject/subject_view.dart';
 import 'home_router.dart';
@@ -34,6 +36,13 @@ class HomeControllerState extends State<HomeController>
   @override
   void gotoCourses(BuildContext context, String topicName) {
     Navigator.of(context).push(new MaterialPageRoute(
-        builder: (_) => CoursePage(topicName: topicName)));
+        builder: (_) => CoursesPage(router: this, topicName: topicName)));
+  }
+
+  @override
+  void gotoCourse(BuildContext context, Course course) {
+    Navigator
+        .of(context)
+        .push(new MaterialPageRoute(builder: (_) => CoursePage()));
   }
 }

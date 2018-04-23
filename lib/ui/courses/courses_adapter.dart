@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../data/proto/model.pb.dart';
+import '../../dependency_injection.dart';
+import '../home/home_router.dart';
 import '../rv.dart';
 import '../styles.dart';
 
@@ -8,9 +11,11 @@ abstract class CourseItem extends Item {}
 abstract class CourseDelegate<I extends CourseItem> extends Delegate<I> {}
 
 class CourseAdapter extends Adapter<CourseItem> {
-  CourseAdapter() {
+  HomeRouter router;
+
+  CourseAdapter(HomeRouter router) {
     delegates[0] = HeaderDelegate();
-    delegates[1] = CourseTitleDelegate();
+    delegates[1] = CourseTitleDelegate(router);
   }
 }
 
@@ -40,14 +45,19 @@ class CourseTitleItem extends CourseItem {
   String number;
   int open;
   int total;
+  Course course;
 
-  CourseTitleItem(this.title, this.number, this.open, this.total);
+  CourseTitleItem(this.title, this.number, this.open, this.total, this.course);
 
   @override
   int itemType() => 1;
 }
 
 class CourseTitleDelegate extends CourseDelegate<CourseTitleItem> {
+  HomeRouter router;
+
+  CourseTitleDelegate(this.router);
+
   @override
   Widget create(BuildContext context, CourseTitleItem item) {
     double percent = 0.0;
@@ -116,7 +126,11 @@ class CourseTitleDelegate extends CourseDelegate<CourseTitleItem> {
                         ),
                         new InkWell(
                           onTap: () {
-                            print("clicked");
+                            // Save current search location
+                            final searchContext = new Injector().searchContext;
+                            searchContext.course = item.course;
+
+                            router.gotoCourse(context, item.course);
                           },
                         )
                       ])))

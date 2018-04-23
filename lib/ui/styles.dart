@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Styles {
+  static TextStyle body1Primary = new TextStyle(
+      color: Colors.black54, fontSize: 12.0, fontFamily: "ProductSans");
+
   static TextStyle body1Secondary = new TextStyle(
       color: Colors.black54,
       fontSize: 10.0,

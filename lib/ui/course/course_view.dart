@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import '../../dependency_injection.dart';
-import '../home/home_router.dart';
 import '../search_context.dart';
-import 'courses_adapter.dart';
-import 'courses_presenter.dart';
+import 'course_adapter.dart';
+import 'course_presenter.dart';
 
-class CoursesPage extends StatelessWidget {
-  final String topicName;
-
-  final HomeRouter router;
+class CoursePage extends StatelessWidget {
   final SearchContext searchContext = Injector().searchContext;
 
-  CoursesPage({Key key, @required this.router, @required this.topicName})
-      : super(key: key);
+  CoursePage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final title =
-        "${searchContext.subject.name} (${searchContext.subject.number})";
+        "${searchContext.course.name} (${searchContext.course.number})";
     return new Scaffold(
         appBar: AppBar(
             leading: new IconButton(
@@ -31,38 +25,32 @@ class CoursesPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 }),
             title: new Text(title)),
-        body: new _CourseList(router: router, topicName: topicName));
+        body: new _CourseList());
   }
 }
 
 class _CourseList extends StatefulWidget {
-  final String topicName;
-  final HomeRouter router;
-
-  _CourseList({Key key, @required this.router, @required this.topicName})
-      : super(key: key);
+  _CourseList({Key key}) : super(key: key);
 
   @override
-  CourseListState createState() => new CourseListState(router, topicName);
+  _CourseListState createState() => new _CourseListState();
 }
 
-class CourseListState extends State<_CourseList> implements CourseView {
+class _CourseListState extends State<_CourseList> implements CourseView {
   CoursePresenter presenter;
   CourseAdapter adapter;
   bool isLoading;
-  String topicName;
 
-  CourseListState(HomeRouter router, String topicName) {
-    this.topicName = topicName;
+  _CourseListState() {
     presenter = new CoursePresenter(this);
-    adapter = CourseAdapter(router);
+    adapter = CourseAdapter();
   }
 
   @override
   void initState() {
     super.initState();
     isLoading = true;
-    presenter.loadCourses(topicName);
+    presenter.loadCourse();
   }
 
   @override
