@@ -16,6 +16,7 @@ class HomeControllerState extends State<HomeController>
     implements HomeRouter {
   @override
   void initState() {
+    MaterialPageRoute.debugEnableFadingRoutes = true;
     super.initState();
   }
 
@@ -26,6 +27,7 @@ class HomeControllerState extends State<HomeController>
       body: new Navigator(
         onGenerateRoute: (RouteSettings settings) {
           return new MaterialPageRoute(
+            settings: settings,
             builder: (_) => new SubjectPage(router: this),
           );
         },

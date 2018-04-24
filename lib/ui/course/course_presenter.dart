@@ -15,7 +15,7 @@ class CoursePresenter {
     course = searchContext.course;
   }
 
-  void loadCourse() {
+  void loadCourse(bool all) {
     List<CourseItem> adapterItems = List();
 
     List<MetadataItem> metaItems = new List();
@@ -28,7 +28,11 @@ class CoursePresenter {
     List<SectionItem> sectionItem = new List();
     if (course.sections.isNotEmpty) {
       course.sections.forEach((section) {
-        sectionItem.add(SectionItem(section));
+        if (all == false && section.status == "Closed") {
+          sectionItem.add(SectionItem(section));
+        } else if (all) {
+          sectionItem.add(SectionItem(section));
+        }
       });
     }
 

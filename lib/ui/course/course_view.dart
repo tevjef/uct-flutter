@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
+import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
 import '../search_context.dart';
+import '../styles.dart';
 import 'course_adapter.dart';
 import 'course_presenter.dart';
 
@@ -14,34 +17,78 @@ class CoursePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final title =
         "${searchContext.course.name} (${searchContext.course.number})";
-    return new Scaffold(
+
+    var allSections = 0;
+    var closedSections = 0;
+    searchContext.course.sections.forEach((Section section) {
+      if (section.status == "Closed") {
+        closedSections++;
+      }
+      allSections++;
+    });
+
+    return new DefaultTabController(
+      length: 2,
+      child: new Scaffold(
         appBar: AppBar(
-            leading: new IconButton(
+          leading: new IconButton(
+              icon: new Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+          actions: <Widget>[
+            new IconButton(
                 icon: new Icon(
-                  Icons.arrow_back,
+                  Icons.playlist_add,
                   color: Colors.black,
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 }),
-            title: new Text(title)),
-        body: new _CourseList());
+          ],
+          title: new Container(
+            child: new Text("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+          ),
+          bottom: new TabBar(
+            labelStyle: Styles.sectionHeader,
+            unselectedLabelStyle: Styles.sectionHeader,
+            tabs: [
+              new Tab(text: "ALL SECTIONS ($allSections)"),
+              new Tab(text: "CLOSED ($closedSections)"),
+            ],
+          ),
+        ),
+        body: new TabBarView(
+          children: [
+            new _CourseList(key: Key("__all__"), all: true),
+            new _CourseList(key: Key("__closed__"), all: false),
+          ],
+        ),
+      ),
+    );
   }
 }
 
 class _CourseList extends StatefulWidget {
-  _CourseList({Key key}) : super(key: key);
+  final bool all;
+
+  _CourseList({Key key, @required this.all}) : super(key: key);
 
   @override
-  _CourseListState createState() => new _CourseListState();
+  _CourseListState createState() => new _CourseListState(all);
 }
 
 class _CourseListState extends State<_CourseList> implements CourseView {
   CoursePresenter presenter;
   CourseAdapter adapter;
   bool isLoading;
+  bool _all;
 
-  _CourseListState() {
+  _CourseListState(bool all) {
+    _all = all;
     presenter = new CoursePresenter(this);
     adapter = CourseAdapter();
   }
@@ -50,7 +97,7 @@ class _CourseListState extends State<_CourseList> implements CourseView {
   void initState() {
     super.initState();
     isLoading = true;
-    presenter.loadCourse();
+    presenter.loadCourse(_all);
   }
 
   @override
@@ -60,7 +107,8 @@ class _CourseListState extends State<_CourseList> implements CourseView {
     if (isLoading) {
       widget = new Center(
           child: new Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(
+                  left: Dimens.spacingStandard, right: Dimens.spacingStandard),
               child: new CircularProgressIndicator()));
     } else {
       widget = getListView();
@@ -84,8 +132,9 @@ class _CourseListState extends State<_CourseList> implements CourseView {
     });
   }
 
-  ListView getListView() {
+  Widget getListView() {
     return new ListView.builder(
+        padding: new EdgeInsets.only(top: Dimens.spacingStandard),
         itemCount: adapter.items.length,
         itemBuilder: (BuildContext context, int position) {
           return adapter.onCreateWidget(context, position);

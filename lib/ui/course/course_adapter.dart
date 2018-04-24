@@ -30,7 +30,7 @@ class MetadataDelegate extends CourseDelegate<MetadataItem> {
   Widget create(BuildContext context, MetadataItem item) {
     return new Padding(
         padding: new EdgeInsets.only(
-            top: Dimens.spacingStandard,
+            bottom: Dimens.spacingStandard,
             left: Dimens.spacingStandard,
             right: Dimens.spacingStandard),
         child: new Column(
@@ -62,6 +62,20 @@ class SectionItem extends CourseItem {
 class SectionDelegate extends CourseDelegate<SectionItem> {
   @override
   Widget create(BuildContext context, SectionItem item) {
+    List<Widget> meetings = List();
+    for (Meeting meeting in item.section.meetings) {
+      meetings.add(new Container(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+            new Text(meeting.day, style: Styles.body1Primary),
+            new Text("${meeting.startTime} ${meeting.endTime}",
+                style: Styles.body1Primary),
+            new Text(meeting.room.isEmpty ? meeting.classType : meeting.room,
+                style: Styles.body1Primary),
+          ])));
+    }
+
     return new Container(
       margin:
           new EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
@@ -80,19 +94,36 @@ class SectionDelegate extends CourseDelegate<SectionItem> {
       child: new Stack(
         children: <Widget>[
           new Container(
+            padding: EdgeInsets.all(12.0),
+            margin: EdgeInsets.only(left: 60.0),
+            child: new Column(
+              children: meetings,
+            ),
+          ),
+          new Container(
               height: 48.0,
               width: 48.0,
               margin: EdgeInsets.all(12.0),
               alignment: Alignment.center,
               decoration: new BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.green,
+                color:
+                    item.section.status == "Open" ? Colors.green : Colors.red,
               ),
               child: new Text(
                 item.section.number,
                 textAlign: TextAlign.center,
                 style: Styles.caption.copyWith(color: Colors.white),
               )),
+          new Positioned.fill(
+              child: new Material(
+                  borderRadius: new BorderRadius.all(new Radius.circular(6.0)),
+                  color: Colors.transparent,
+                  child: new InkWell(
+                    onTap: () {
+                      // Save current search location
+                    },
+                  )))
         ],
       ),
     );
