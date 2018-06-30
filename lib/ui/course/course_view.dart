@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 
 import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
+import '../home/home_router.dart';
 import '../search_context.dart';
 import '../styles.dart';
 import 'course_adapter.dart';
@@ -10,8 +11,9 @@ import 'course_presenter.dart';
 
 class CoursePage extends StatelessWidget {
   final SearchContext searchContext = Injector().searchContext;
+  final HomeRouter router;
 
-  CoursePage({Key key}) : super(key: key);
+  CoursePage({Key key, @required this.router}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class CoursePage extends StatelessWidget {
                 }),
           ],
           title: new Container(
-            child: new Text("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+            child: new Text(title),
           ),
           bottom: new TabBar(
             labelStyle: Styles.sectionHeader,
@@ -63,8 +65,8 @@ class CoursePage extends StatelessWidget {
         ),
         body: new TabBarView(
           children: [
-            new _CourseList(key: Key("__all__"), all: true),
-            new _CourseList(key: Key("__closed__"), all: false),
+            new _CourseList(key: Key("__all__"), router: router, all: true),
+            new _CourseList(key: Key("__closed__"), router: router, all: false),
           ],
         ),
       ),
@@ -74,23 +76,26 @@ class CoursePage extends StatelessWidget {
 
 class _CourseList extends StatefulWidget {
   final bool all;
+  final HomeRouter router;
 
-  _CourseList({Key key, @required this.all}) : super(key: key);
+  _CourseList({Key key, @required this.router, @required this.all})
+      : super(key: key);
 
   @override
-  _CourseListState createState() => new _CourseListState(all);
+  _CourseListState createState() => new _CourseListState(router, all);
 }
 
 class _CourseListState extends State<_CourseList> implements CourseView {
   CoursePresenter presenter;
   CourseAdapter adapter;
+  HomeRouter router;
   bool isLoading;
   bool _all;
 
-  _CourseListState(bool all) {
+  _CourseListState(HomeRouter router, bool all) {
     _all = all;
     presenter = new CoursePresenter(this);
-    adapter = CourseAdapter();
+    adapter = CourseAdapter(router);
   }
 
   @override

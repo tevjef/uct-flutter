@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../data/proto/model.pb.dart';
+import '../../dependency_injection.dart';
+import '../home/home_router.dart';
 import '../rv.dart';
 import '../styles.dart';
 
@@ -9,9 +11,11 @@ abstract class CourseItem extends Item {}
 abstract class CourseDelegate<I extends CourseItem> extends Delegate<I> {}
 
 class CourseAdapter extends Adapter<CourseItem> {
-  CourseAdapter() {
+  HomeRouter router;
+
+  CourseAdapter(HomeRouter router) {
     delegates[0] = MetadataDelegate();
-    delegates[1] = SectionDelegate();
+    delegates[1] = SectionDelegate(router);
   }
 }
 
@@ -19,7 +23,8 @@ class MetadataItem extends CourseItem {
   String title;
   String content;
 
-  MetadataItem(this.title, this.content);
+  MetadataItem(this.title, this.content
+               );
 
   @override
   int itemType() => 0;
@@ -27,7 +32,8 @@ class MetadataItem extends CourseItem {
 
 class MetadataDelegate extends CourseDelegate<MetadataItem> {
   @override
-  Widget create(BuildContext context, MetadataItem item) {
+  Widget create(BuildContext context, MetadataItem item
+                ) {
     return new Padding(
         padding: new EdgeInsets.only(
             bottom: Dimens.spacingStandard,
@@ -53,32 +59,40 @@ class MetadataDelegate extends CourseDelegate<MetadataItem> {
 class SectionItem extends CourseItem {
   Section section;
 
-  SectionItem(this.section);
+  SectionItem(this.section
+              );
 
   @override
   int itemType() => 1;
 }
 
 class SectionDelegate extends CourseDelegate<SectionItem> {
+  HomeRouter router;
+
+  SectionDelegate(this.router
+                  );
+
   @override
-  Widget create(BuildContext context, SectionItem item) {
+  Widget create(BuildContext context, SectionItem item
+                ) {
     List<Widget> meetings = List();
     for (Meeting meeting in item.section.meetings) {
       meetings.add(new Container(
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-            new Text(meeting.day, style: Styles.body1Primary),
-            new Text("${meeting.startTime} ${meeting.endTime}",
-                style: Styles.body1Primary),
-            new Text(meeting.room.isEmpty ? meeting.classType : meeting.room,
-                style: Styles.body1Primary),
-          ])));
+                new Text(meeting.day, style: Styles.body1Primary),
+                new Text("${meeting.startTime} ${meeting.endTime}",
+                    style: Styles.body1Primary),
+                new Text(
+                    meeting.room.isEmpty ? meeting.classType : meeting.room,
+                    style: Styles.body1Primary),
+              ])));
     }
 
     return new Container(
       margin:
-          new EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
+      new EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
       decoration: new BoxDecoration(
         color: Colors.white,
         shape: BoxShape.rectangle,
@@ -108,7 +122,7 @@ class SectionDelegate extends CourseDelegate<SectionItem> {
               decoration: new BoxDecoration(
                 shape: BoxShape.circle,
                 color:
-                    item.section.status == "Open" ? Colors.green : Colors.red,
+                item.section.status == "Open" ? Colors.green : Colors.red,
               ),
               child: new Text(
                 item.section.number,
@@ -122,6 +136,10 @@ class SectionDelegate extends CourseDelegate<SectionItem> {
                   child: new InkWell(
                     onTap: () {
                       // Save current search location
+                      final searchContext = Injector().searchContext;
+                      searchContext.section = item.section;
+
+                      router.gotoSection(context, item.section);
                     },
                   )))
         ],

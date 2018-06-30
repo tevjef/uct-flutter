@@ -12,12 +12,4 @@ public class MainActivity extends FlutterActivity {
     super.onCreate(savedInstanceState);
     GeneratedPluginRegistrant.registerWith(this);
   }
-
-  public void onBackPressed() {
-    if(getFlutterView() != null) {
-      startActivity(new Intent(this, BasicActivity.class));
-    } else {
-      super.onBackPressed();
-    }
-  }
 }
