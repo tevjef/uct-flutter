@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../home/home_router.dart';
 import '../widgets/stateful_listview.dart';
 import 'subject_adapter.dart';
+import '../rv.dart';
 import 'subject_presenter.dart';
 
 class SubjectPage extends StatefulWidget {
@@ -17,14 +18,13 @@ class SubjectPage extends StatefulWidget {
 class SubjectListState extends State<SubjectPage> implements SubjectView {
   HomeRouter router;
   SubjectPresenter presenter;
-  SubjectAdapter adapter;
+  Adapter adapter = Adapter();
   bool isLoading;
   Widget list;
 
   SubjectListState(HomeRouter router) {
     this.router = router;
-    presenter = new SubjectPresenter(this);
-    adapter = new SubjectAdapter(router);
+    presenter = new SubjectPresenter(this, router);
   }
 
   @override
@@ -33,7 +33,7 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
     if (adapter.items.length == 0) {
       isLoading = true;
       presenter.loadSubjects(
-          "rutgers.universitynew.brunswick", "spring", "2018");
+          "rutgers.universitynewark", "fall", "2018");
     }
   }
 
@@ -54,11 +54,16 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
       widget = list;
     }
 
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("RU-NK 2018"),
-        ),
-        body: widget);
+    return WillPopScope(
+      onWillPop: () {
+        router.pop(context);
+      },
+      child: Scaffold(
+          appBar: new AppBar(
+            title: new Text("RU-NK 2018"),
+          ),
+          body: widget),
+    );
   }
 
   @override
@@ -69,7 +74,7 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
   }
 
   @override
-  void onSubjectSuccess(List<SubjectItem> adapterItems) {
+  void onSubjectSuccess(List<Item> adapterItems) {
     setState(() {
       this.isLoading = false;
       this.adapter.swapData(adapterItems);

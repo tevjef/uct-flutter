@@ -2,30 +2,30 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-abstract class Delegate<I extends Item> {
-  Widget create(BuildContext context, I item);
-}
-
 abstract class Item {
   int itemType();
+  Widget create(BuildContext context);
 }
 
-abstract class Adapter<I extends Item> {
-  List<I> items = new List();
-  HashMap<int, Delegate> delegates = new HashMap();
+class Adapter {
+  List<Item> items = new List();
+
+  bool notNull(Object o) => o != null;
 
   Widget onCreateWidget(BuildContext context, int position) {
-    int viewType = getItemViewType(position);
-    return delegates[viewType].create(context, items[position]);
+    Item item = items[position];
+    return item.create(context);
   }
 
   int getItemCount() => items.length;
 
   int getItemViewType(int position) => getItemAt(position).itemType();
 
-  I getItemAt(int position) => items[position];
+  Item getItemAt(int position) => items[position];
 
-  void swapData(List<I> items) {
-    this.items = items;
+  void swapData(List<Item> items) {
+    if (items != null) {
+      this.items = items.where(notNull).toList();
+    }
   }
 }

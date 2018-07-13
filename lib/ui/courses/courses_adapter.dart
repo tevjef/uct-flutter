@@ -6,63 +6,24 @@ import '../home/home_router.dart';
 import '../rv.dart';
 import '../styles.dart';
 
-abstract class CourseItem extends Item {}
-
-abstract class CourseDelegate<I extends CourseItem> extends Delegate<I> {}
-
-class CourseAdapter extends Adapter<CourseItem> {
+class CourseTitleItem extends Item {
   HomeRouter router;
-
-  CourseAdapter(HomeRouter router) {
-    delegates[0] = HeaderDelegate();
-    delegates[1] = CourseTitleDelegate(router);
-  }
-}
-
-class HeaderItem extends CourseItem {
-  String title;
-
-  HeaderItem(this.title);
-
-  @override
-  int itemType() => 0;
-}
-
-class HeaderDelegate extends CourseDelegate<HeaderItem> {
-  @override
-  Widget create(BuildContext context, HeaderItem item) {
-    return new Padding(
-        padding: new EdgeInsets.all(Dimens.spacingStandard),
-        child: new Text(
-          item.title,
-          style: Styles.sectionHeader,
-        ));
-  }
-}
-
-class CourseTitleItem extends CourseItem {
   String title;
   String number;
   int open;
   int total;
   Course course;
 
-  CourseTitleItem(this.title, this.number, this.open, this.total, this.course);
+  CourseTitleItem(this.router, this.title, this.number, this.open, this.total, this.course);
 
   @override
   int itemType() => 1;
-}
-
-class CourseTitleDelegate extends CourseDelegate<CourseTitleItem> {
-  HomeRouter router;
-
-  CourseTitleDelegate(this.router);
 
   @override
-  Widget create(BuildContext context, CourseTitleItem item) {
+  Widget create(BuildContext context) {
     double percent = 0.0;
-    if (item.total != 0) {
-      percent = item.open.toDouble() / item.total.toDouble();
+    if (total != 0) {
+      percent = open.toDouble() / total.toDouble();
     }
 
     return new Container(
@@ -88,12 +49,12 @@ class CourseTitleDelegate extends CourseDelegate<CourseTitleItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(
-                      "${item.title} (${item.number})",
+                      "${title} (${number})",
                       style: Styles.caption,
                       overflow: TextOverflow.fade,
                     ),
                     new Text(
-                      "${item.open} open sections of ${item.total}",
+                      "${open} open sections of ${total}",
                       style: Styles.body1Secondary,
                     )
                   ])),
@@ -128,9 +89,9 @@ class CourseTitleDelegate extends CourseDelegate<CourseTitleItem> {
                           onTap: () {
                             // Save current search location
                             final searchContext = new Injector().searchContext;
-                            searchContext.course = item.course;
+                            searchContext.course = course;
 
-                            router.gotoCourse(context, item.course);
+                            router.gotoCourse(context, course);
                           },
                         )
                       ])))

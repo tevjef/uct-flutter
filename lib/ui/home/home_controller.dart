@@ -53,6 +53,13 @@ class HomeControllerState extends State<HomeController>
   void gotoSection(BuildContext context, Section section) {
     Navigator
         .of(context)
-        .push(new MaterialPageRoute(builder: (_) => SectionPage()));
+        .push(new MaterialPageRoute(builder: (_) => SectionDetailsPage()));
+  }
+
+  @override
+  void pop(BuildContext context) {
+    Navigator
+        .of(context)
+        .pop();
   }
 }
