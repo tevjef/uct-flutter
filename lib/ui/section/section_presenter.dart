@@ -1,49 +1,80 @@
 import '../../data/UCTApiClient.dart';
+import '../../data/UCTRepo.dart';
+import '../../data/db/recent.dart';
+import '../../data/db/tracked.dart';
 import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
+import '../home/home_router.dart';
+import '../rv.dart';
 import '../search_context.dart';
-import 'section_adapter.dart';
+import '../widgets/adapter.dart';
+import '../tracked_status_provider.dart';
+import '../styles.dart';
 
 class SectionPresenter {
   SectionView view;
-  UCTApiClient apiClient;
-  SearchContext searchContext;
-  Course course;
+  HomeRouter router;
+  Section section;
 
-  SectionPresenter(this.view) {
-    searchContext = new Injector().searchContext;
-    course = searchContext.course;
+  SearchContext searchContext;
+  UCTApiClient apiClient;
+  UCTRepo uctRepo;
+  TrackedSectionDatabase trackedSectionDatabase;
+  RecentSelectionDatabase recentSelectionDatabase;
+
+  SectionPresenter(this.view, this.router) {
+    searchContext = Injector().searchContext;
+    trackedSectionDatabase = Injector().trackedSectionDatabase;
+    recentSelectionDatabase = Injector().recentSelectionDatabase;
+    uctRepo = Injector().uctRepo;
+    section = searchContext.section;
   }
 
-  void loadCourse(bool all) {
-    List<SectionDetailItem> adapterItems = List();
+  void loadSection() async {
+    List<Item> adapterItems = List();
+
+    adapterItems.add(SubscribeItem(view, (value) {
+      toggleSection(searchContext);
+    }));
+
+    adapterItems.add(SpaceItem(height: Dimens.spacingStandard));
 
     List<MetadataItem> metaItems = new List();
-    if (course.metadata.isNotEmpty) {
-      course.metadata.forEach((meta) {
+    if (section.metadata.isNotEmpty) {
+      section.metadata.forEach((meta) {
         metaItems.add(MetadataItem(meta.title, meta.content));
       });
     }
 
-    List<SectionItem> sectionItem = new List();
-    if (course.sections.isNotEmpty) {
-      course.sections.forEach((section) {
-        if (all == false && section.status == "Closed") {
-          sectionItem.add(SectionItem(section));
-        } else if (all) {
-          sectionItem.add(SectionItem(section));
-        }
-      });
-    }
-
     adapterItems.addAll(metaItems);
-    adapterItems.addAll(sectionItem);
+    adapterItems.add(SectionItem(section, router));
     view.onSectionSuccess(adapterItems);
+    loadStatus();
+  }
+
+  void loadStatus() {
+    trackedSectionDatabase
+        .isSectionTracked(section.topicName)
+        .then((isTracked) {
+      view.setSectionStatus(isTracked);
+    });
+  }
+
+  void toggleSection(SearchContext searchContext) {
+    uctRepo.toggleSection(searchContext).then((isTracked) {
+      print(isTracked);
+      view.setSectionStatus(isTracked);
+    });
   }
 }
 
-abstract class SectionView {
-  void onSectionSuccess(List<SectionDetailItem> adapterItems);
+abstract class SectionView implements TrackedStatusProvider {
+  void onSectionSuccess(List<Item> adapterItems);
 
   void onSectionError(String message);
+
+  void setSectionStatus(bool isTracked);
 }
+
+
+

@@ -3,8 +3,8 @@ import 'package:meta/meta.dart';
 
 import '../../dependency_injection.dart';
 import '../home/home_router.dart';
+import '../rv.dart';
 import '../search_context.dart';
-import 'courses_adapter.dart';
 import 'courses_presenter.dart';
 
 class CoursesPage extends StatelessWidget {
@@ -20,7 +20,11 @@ class CoursesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final title =
         "${searchContext.subject.name} (${searchContext.subject.number})";
-    return new Scaffold(
+    return WillPopScope(
+      onWillPop: () {
+        router.pop(context);
+      },
+      child: new Scaffold(
         appBar: AppBar(
             leading: new IconButton(
                 icon: new Icon(
@@ -31,7 +35,9 @@ class CoursesPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 }),
             title: new Text(title)),
-        body: new _CourseList(router: router, topicName: topicName));
+        body: new _CourseList(router: router, topicName: topicName),
+      ),
+    );
   }
 }
 
@@ -48,14 +54,13 @@ class _CourseList extends StatefulWidget {
 
 class CourseListState extends State<_CourseList> implements CourseView {
   CoursePresenter presenter;
-  CourseAdapter adapter;
+  Adapter adapter = Adapter();
   bool isLoading;
   String topicName;
 
   CourseListState(HomeRouter router, String topicName) {
     this.topicName = topicName;
-    presenter = new CoursePresenter(this);
-    adapter = CourseAdapter(router);
+    presenter = new CoursePresenter(this, router);
   }
 
   @override
@@ -89,7 +94,7 @@ class CourseListState extends State<_CourseList> implements CourseView {
   }
 
   @override
-  void onCourseSuccess(List<CourseItem> adapterItems) {
+  void onCourseSuccess(List<Item> adapterItems) {
     setState(() {
       this.isLoading = false;
       this.adapter.swapData(adapterItems);

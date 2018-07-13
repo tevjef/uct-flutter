@@ -5,8 +5,8 @@ import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
 import '../home/home_router.dart';
 import '../search_context.dart';
+import '../rv.dart';
 import '../styles.dart';
-import 'course_adapter.dart';
 import 'course_presenter.dart';
 
 class CoursePage extends StatelessWidget {
@@ -66,7 +66,7 @@ class CoursePage extends StatelessWidget {
         body: new TabBarView(
           children: [
             new _CourseList(key: Key("__all__"), router: router, all: true),
-            new _CourseList(key: Key("__closed__"), router: router, all: false),
+            new _CourseList(key: Key("__all__"), router: router, all: false),
           ],
         ),
       ),
@@ -87,15 +87,14 @@ class _CourseList extends StatefulWidget {
 
 class _CourseListState extends State<_CourseList> implements CourseView {
   CoursePresenter presenter;
-  CourseAdapter adapter;
+  Adapter adapter = Adapter();
   HomeRouter router;
   bool isLoading;
   bool _all;
 
   _CourseListState(HomeRouter router, bool all) {
     _all = all;
-    presenter = new CoursePresenter(this);
-    adapter = CourseAdapter(router);
+    presenter = new CoursePresenter(this, router);
   }
 
   @override
@@ -130,7 +129,7 @@ class _CourseListState extends State<_CourseList> implements CourseView {
   }
 
   @override
-  void onCourseSuccess(List<CourseItem> adapterItems) {
+  void onCourseSuccess(List<Item> adapterItems) {
     setState(() {
       this.isLoading = false;
       this.adapter.swapData(adapterItems);

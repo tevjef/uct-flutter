@@ -57,7 +57,8 @@ class UCTApiClient implements UCTApi {
   }
 
   Future<Response> getResponse(String url) {
-    return http.get("$baseUrl" + "$url").then((http.Response response) {
+    return http.get("$baseUrl" + "$url")
+        .then((http.Response response) {
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
         throw new Exception(

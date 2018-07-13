@@ -28,7 +28,6 @@ message Subject {
     optional string topic_id = 8;
     repeated Course courses = 9;
     repeated Metadata metadata = 10;
-
 }
 
 message Course {

@@ -19,6 +19,20 @@ class Styles {
       fontSize: 12.toDouble(),
       fontFamily: "ProductSans",
       fontWeight: FontWeight.bold);
+
+  static TextStyle sectionHeaderLight = new TextStyle(
+      color: Colors.black,
+      letterSpacing: 0.6,
+      fontSize: 12.toDouble(),
+      fontFamily: "ProductSans",
+      fontWeight: FontWeight.normal);
+
+  static TextStyle sectionLargeHeader = new TextStyle(
+      color: Colors.black,
+      letterSpacing: 0.6,
+      fontSize: 26.toDouble(),
+      fontFamily: "ProductSans",
+      fontWeight: FontWeight.bold);
 }
 
 class AppColors {
