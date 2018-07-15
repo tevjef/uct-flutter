@@ -8,8 +8,12 @@ class DoubleHolder {
 class StatefulListView extends StatefulWidget {
   final DoubleHolder offset = new DoubleHolder();
 
-  StatefulListView(this._itemCount, this._indexedWidgetBuilder, {Key key})
-      : super(key: key);
+  StatefulListView(this._itemCount, this._indexedWidgetBuilder, {
+    Key key,
+    EdgeInsetsGeometry padding})
+      : super(key: key) {
+    this._padding = padding;
+  }
 
   double getOffsetMethod() {
     return offset.value;
@@ -19,21 +23,26 @@ class StatefulListView extends StatefulWidget {
     offset.value = val;
   }
 
+
+  /// The amount of space by which to inset the children.
+  EdgeInsetsGeometry _padding;
+
   final int _itemCount;
   final IndexedWidgetBuilder _indexedWidgetBuilder;
 
   @override
   _StatefulListViewState createState() =>
-      new _StatefulListViewState(_itemCount, _indexedWidgetBuilder);
+      new _StatefulListViewState(_itemCount, _padding, _indexedWidgetBuilder);
 }
 
 class _StatefulListViewState extends State<StatefulListView>
     with SingleTickerProviderStateMixin {
   ScrollController scrollController;
+  final EdgeInsetsGeometry _padding;
   final int _itemCount;
   final IndexedWidgetBuilder _itemBuilder;
 
-  _StatefulListViewState(this._itemCount, this._itemBuilder);
+  _StatefulListViewState(this._itemCount, this._padding, this._itemBuilder);
 
   @override
   void initState() {
@@ -47,6 +56,7 @@ class _StatefulListViewState extends State<StatefulListView>
     return new NotificationListener(
       child: new ListView.builder(
           controller: scrollController,
+          padding: _padding,
           itemCount: _itemCount,
           itemBuilder: _itemBuilder),
       onNotification: (notification) {

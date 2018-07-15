@@ -4,9 +4,10 @@ import 'package:meta/meta.dart';
 import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
 import '../home/home_router.dart';
-import '../search_context.dart';
 import '../rv.dart';
+import '../search_context.dart';
 import '../styles.dart';
+import '../widgets/stateful_listview.dart';
 import 'course_presenter.dart';
 
 class CoursePage extends StatelessWidget {
@@ -136,12 +137,9 @@ class _CourseListState extends State<_CourseList> implements CourseView {
     });
   }
 
-  Widget getListView() {
-    return new ListView.builder(
+  Widget getListView() => StatefulListView(
+        adapter.items.length,
+        adapter.onCreateWidget,
         padding: new EdgeInsets.only(top: Dimens.spacingStandard),
-        itemCount: adapter.items.length,
-        itemBuilder: (BuildContext context, int position) {
-          return adapter.onCreateWidget(context, position);
-        });
-  }
+      );
 }

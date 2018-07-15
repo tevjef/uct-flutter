@@ -10,13 +10,13 @@ import '../tracked_status_provider.dart';
 class HeaderItem extends Item {
   String title;
 
-  HeaderItem(this.title);
+  HeaderItem(this.title) : super(title.hashCode);
 
   @override
   int itemType() => 0;
 
   @override
-  Widget create(BuildContext context) {
+  Widget create(BuildContext context, int position) {
     return Padding(
         padding: EdgeInsets.all(Dimens.spacingStandard),
         child: Text(
@@ -30,13 +30,13 @@ class MetadataItem extends Item {
   String title;
   String content;
 
-  MetadataItem(this.title, this.content);
+  MetadataItem(this.title, this.content) : super(content.hashCode);
 
   @override
   int itemType() => 0;
 
   @override
-  Widget create(BuildContext context) {
+  Widget create(BuildContext context, int position) {
     return Padding(
         padding: EdgeInsets.only(
             bottom: Dimens.spacingStandard,
@@ -63,13 +63,13 @@ class SectionItem extends Item {
   HomeRouter router;
   Section section;
 
-  SectionItem(this.section, this.router);
+  SectionItem(this.section, this.router) : super(section.callNumber.hashCode);
 
   @override
   int itemType() => 1;
 
   @override
-  Widget create(BuildContext context) {
+  Widget create(BuildContext context, int position) {
     var table = Table(
       columnWidths: {
         0: FlexColumnWidth(0.30),
@@ -94,7 +94,7 @@ class SectionItem extends Item {
       }).toList(),
     );
 
-    var instructors = section.instructors.map((instructor) {
+    String instructors = section.instructors.map((instructor) {
       return instructor.name;
     }).fold("", (acc, s) {
       if (acc == "") {
@@ -103,6 +103,15 @@ class SectionItem extends Item {
 
       return acc + " | " + s;
     });
+
+    Widget instructorsWidget = Container();
+
+    if (instructors.isNotEmpty) {
+      instructorsWidget = Text(instructors,
+          textAlign: TextAlign.end,
+          style: Styles.body1Primary
+              .copyWith(fontWeight: FontWeight.bold));
+    }
 
 
     return Container(
@@ -133,10 +142,7 @@ class SectionItem extends Item {
               children: <Widget>[
                 table,
                 SizedBox(height: Dimens.spacingXsmall),
-                Text(instructors,
-                    textAlign: TextAlign.end,
-                    style: Styles.body1Primary
-                        .copyWith(fontWeight: FontWeight.bold)),
+                instructorsWidget,
               ],
             ),
           ),
@@ -177,13 +183,13 @@ class SubscribeItem extends Item {
   final TrackedStatusProvider statusProvider;
   final Function callback;
 
-  SubscribeItem(this.statusProvider, this.callback);
+  SubscribeItem(this.statusProvider, this.callback) : super(0);
 
   @override
   int itemType() => 3;
 
   @override
-  Widget create(BuildContext context) {
+  Widget create(BuildContext context, int position) {
     return Material(
         type: MaterialType.transparency,
         color: Colors.transparent,
@@ -220,11 +226,14 @@ class SubscribeItem extends Item {
 }
 
 class DividerItem extends Item {
+
+  const DividerItem() : super(1);
+
   @override
   int itemType() => 3;
 
   @override
-  Widget create(BuildContext context) {
+  Widget create(BuildContext context, int position) {
     return Divider(
       indent: Dimens.spacingStandard,
     );
@@ -239,13 +248,13 @@ class SpaceItem extends Item {
     this.height: Dimens.spacingStandard,
     this.width: Dimens.spacingStandard,
   })  : assert(height >= 0.0),
-        assert(width >= 0.0);
+        assert(width >= 0.0), super(1);
 
   @override
   int itemType() => 3;
 
   @override
-  Widget create(BuildContext context) {
+  Widget create(BuildContext context, int position) {
     return SizedBox(height: height, width: width);
   }
 }

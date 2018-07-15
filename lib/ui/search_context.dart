@@ -8,5 +8,11 @@ class SearchContext {
   Course course;
   Section section;
 
-  String get topicName => section.topicName;
+  String get sectionTopicName => section.topicName;
+
+  String get searchTopicName => "aaaaaaaaa";
+
+//  String get searchTopicName => university.topicName +
+//      semester.season +
+//      semester.year.toString();
 }

@@ -7,20 +7,26 @@ import '../rv.dart';
 import '../styles.dart';
 
 class CourseTitleItem extends Item {
-  HomeRouter router;
-  String title;
-  String number;
-  int open;
-  int total;
   Course course;
+  Function callback;
 
-  CourseTitleItem(this.router, this.title, this.number, this.open, this.total, this.course);
+  CourseTitleItem(
+      this.course,
+      this.callback) : super(course.hashCode);
 
   @override
   int itemType() => 1;
 
   @override
-  Widget create(BuildContext context) {
+  Widget create(BuildContext context, int position) {
+    int total = course.sections.length;
+    int open = 0;
+    course.sections.forEach((section) {
+      if (section.status == "Open") {
+        open++;
+      }
+    });
+
     double percent = 0.0;
     if (total != 0) {
       percent = open.toDouble() / total.toDouble();
@@ -49,7 +55,7 @@ class CourseTitleItem extends Item {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(
-                      "${title} (${number})",
+                      "${course.name} (${course.number})",
                       style: Styles.caption,
                       overflow: TextOverflow.fade,
                     ),
@@ -87,11 +93,7 @@ class CourseTitleItem extends Item {
                         ),
                         new InkWell(
                           onTap: () {
-                            // Save current search location
-                            final searchContext = new Injector().searchContext;
-                            searchContext.course = course;
-
-                            router.gotoCourse(context, course);
+                           callback(context, course);
                           },
                         )
                       ])))

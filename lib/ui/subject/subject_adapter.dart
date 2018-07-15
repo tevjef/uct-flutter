@@ -1,32 +1,26 @@
 import 'package:flutter/material.dart';
 
 import '../../data/proto/model.pb.dart';
-import '../../dependency_injection.dart';
-import '../home/home_router.dart';
 import '../rv.dart';
 import '../styles.dart';
 
 class SubjectTitleItem extends Item {
-  HomeRouter router;
+  Function callback;
   Subject subject;
 
-  SubjectTitleItem(this.router, this.subject);
+  SubjectTitleItem(this.subject, this.callback) : super(subject.hashCode);
 
   @override
   int itemType() => 1;
 
-   @override
-  Widget create(BuildContext context) {
+  @override
+  Widget create(BuildContext context, int position) {
     final insets = new EdgeInsets.symmetric(
         horizontal: 32.0, vertical: Dimens.spacingStandard);
 
     return new InkWell(
       onTap: () {
-        // Save current search location
-        final searchContext = Injector().searchContext;
-        searchContext.subject = subject;
-
-        router.gotoCourses(context, subject.topicName);
+        callback(context, subject);
       },
       child: new Container(
           padding: insets,

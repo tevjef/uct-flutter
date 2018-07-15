@@ -6,6 +6,7 @@ import '../home/home_router.dart';
 import '../rv.dart';
 import '../search_context.dart';
 import 'courses_presenter.dart';
+import '../widgets/stateful_listview.dart';
 
 class CoursesPage extends StatelessWidget {
   final String topicName;
@@ -101,11 +102,5 @@ class CourseListState extends State<_CourseList> implements CourseView {
     });
   }
 
-  ListView getListView() {
-    return new ListView.builder(
-        itemCount: adapter.items.length,
-        itemBuilder: (BuildContext context, int position) {
-          return adapter.onCreateWidget(context, position);
-        });
-  }
+  Widget getListView() => StatefulListView(adapter.items.length, adapter.onCreateWidget);
 }

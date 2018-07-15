@@ -3,8 +3,13 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 abstract class Item {
+
+  final int _hashCode;
+
+  const Item(this._hashCode);
+
   int itemType();
-  Widget create(BuildContext context);
+  Widget create(BuildContext context, int position);
 }
 
 class Adapter {
@@ -14,7 +19,7 @@ class Adapter {
 
   Widget onCreateWidget(BuildContext context, int position) {
     Item item = items[position];
-    return item.create(context);
+    return item.create(context, position);
   }
 
   int getItemCount() => items.length;

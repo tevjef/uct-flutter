@@ -62,7 +62,7 @@ class UCTApiClient implements UCTApi {
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
         throw new Exception(
-            "Error while getting contacts [StatusCode:$statusCode, Error:${response
+            "Error while getting response [StatusCode:$statusCode, Error:${response
                 .reasonPhrase}]");
       }
       return Response.fromBuffer(response.bodyBytes);

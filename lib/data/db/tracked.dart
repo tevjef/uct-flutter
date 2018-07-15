@@ -74,6 +74,10 @@ class TrackedSectionDatabase {
 
   Database db;
 
+  TrackedSectionDatabase() {
+    open();
+  }
+
   Future<Database> open() async {
     if (db != null) {
       return db;
@@ -85,10 +89,6 @@ class TrackedSectionDatabase {
     db = await openDatabase(dbPath, version: 1, onCreate: this._create);
 
     return db;
-  }
-
-  TrackedSectionDatabase() {
-    open();
   }
 
   Future _create(Database db, int version) async {
@@ -121,7 +121,7 @@ CREATE TABLE $tableTrackedSections (
     trackedSection.subject = searchContext.subject;
     trackedSection.course = searchContext.course;
     trackedSection.section = searchContext.section;
-    trackedSection.topicName = searchContext.topicName;
+    trackedSection.topicName = searchContext.sectionTopicName;
 
     return insertTrackedSection(trackedSection);
   }
