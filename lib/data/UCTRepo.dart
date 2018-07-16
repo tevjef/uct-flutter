@@ -15,11 +15,11 @@ class UCTRepo {
       this.recentSelectionDatabase);
 
   Future<bool> toggleSection(SearchContext searchContext) async {
-    var isTracked = await trackedSectionDatabase.isSectionTracked(searchContext.topicName);
+    var isTracked = await trackedSectionDatabase.isSectionTracked(searchContext.sectionTopicName);
 
     if (isTracked) {
       return  trackedSectionDatabase
-          .deleteTrackedSection(searchContext.topicName)
+          .deleteTrackedSection(searchContext.sectionTopicName)
           .then((trackedSection) {
         return !isTracked;
       });

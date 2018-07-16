@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../home/home_router.dart';
-import '../widgets/stateful_listview.dart';
-import 'subject_adapter.dart';
 import '../rv.dart';
+import '../widgets/stateful_listview.dart';
 import 'subject_presenter.dart';
 
 class SubjectPage extends StatefulWidget {
@@ -32,8 +31,7 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
     super.initState();
     if (adapter.items.length == 0) {
       isLoading = true;
-      presenter.loadSubjects(
-          "rutgers.universitynewark", "fall", "2018");
+      presenter.loadSubjects("rutgers.universitynewark", "fall", "2018");
     }
   }
 
@@ -81,10 +79,6 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
     });
   }
 
-  Widget getListView() {
-    return StatefulListView(adapter.items.length,
-        (BuildContext context, int position) {
-      return adapter.onCreateWidget(context, position);
-    });
-  }
+  Widget getListView() =>
+      StatefulListView(adapter.items.length, adapter.onCreateWidget);
 }
