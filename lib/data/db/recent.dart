@@ -41,10 +41,10 @@ class RecentSelection {
   }
 }
 
-class RecentSelectionDatabase {
+class RecentSelectionDao {
   Database db;
 
-  RecentSelectionDatabase() {
+  RecentSelectionDao() {
     open();
   }
 

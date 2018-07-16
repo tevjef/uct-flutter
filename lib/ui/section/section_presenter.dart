@@ -19,8 +19,8 @@ class SectionPresenter {
   SearchContext searchContext;
   UCTApiClient apiClient;
   UCTRepo uctRepo;
-  TrackedSectionDatabase trackedSectionDatabase;
-  RecentSelectionDatabase recentSelectionDatabase;
+  TrackedSectionDao trackedSectionDatabase;
+  RecentSelectionDao recentSelectionDatabase;
 
   SectionPresenter(this.view, this.router) {
     searchContext = Injector().searchContext;

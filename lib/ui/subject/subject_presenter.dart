@@ -12,7 +12,7 @@ class SubjectPresenter {
   SubjectView view;
   UCTApiClient apiClient;
   HomeRouter router;
-  RecentSelectionDatabase recentSelectionDatabase;
+  RecentSelectionDao recentSelectionDatabase;
   SearchContext searchContext;
 
   List<Subject> subjects;

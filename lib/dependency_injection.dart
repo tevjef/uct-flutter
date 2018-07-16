@@ -1,8 +1,9 @@
 import 'data/UCTApiClient.dart';
 import 'data/UCTRepo.dart';
-import 'ui/search_context.dart';
 import 'data/db/recent.dart';
 import 'data/db/tracked.dart';
+import 'data/db/preference.dart';
+import 'ui/search_context.dart';
 
 class Injector {
   static final Injector _singleton = new Injector._internal();
@@ -18,8 +19,11 @@ class Injector {
   }
 
   SearchContext _searchContextSingleton;
-  RecentSelectionDatabase _recentSelectionDatabase;
-  TrackedSectionDatabase _trackedSectionDatabase;
+
+  RecentSelectionDao _recentSelectionDao;
+  TrackedSectionDao _trackedSectionDao;
+  PreferenceDao _preferenceDao;
+
   UCTRepo _uctRepo;
 
   SearchContext get searchContext {
@@ -29,23 +33,32 @@ class Injector {
     return _searchContextSingleton;
   }
 
-  RecentSelectionDatabase get recentSelectionDatabase {
-    if (_recentSelectionDatabase == null) {
-      _recentSelectionDatabase = new RecentSelectionDatabase();
+  RecentSelectionDao get recentSelectionDatabase {
+    if (_recentSelectionDao == null) {
+      _recentSelectionDao = new RecentSelectionDao();
     }
-    return _recentSelectionDatabase;
+    return _recentSelectionDao;
   }
 
-  TrackedSectionDatabase get trackedSectionDatabase {
-    if (_trackedSectionDatabase == null) {
-      _trackedSectionDatabase = new TrackedSectionDatabase();
+  TrackedSectionDao get trackedSectionDatabase {
+    if (_trackedSectionDao == null) {
+      _trackedSectionDao = new TrackedSectionDao();
     }
-    return _trackedSectionDatabase;
+    return _trackedSectionDao;
   }
 
-    UCTRepo get uctRepo {
+  PreferenceDao get preferenceDao {
+    if (_preferenceDao == null) {
+      _preferenceDao = new PreferenceDao();
+    }
+    return _preferenceDao;
+  }
+
+
+  UCTRepo get uctRepo {
     if (_uctRepo == null) {
-      _uctRepo = new UCTRepo(searchContext, apiClient, trackedSectionDatabase, recentSelectionDatabase);
+      _uctRepo = new UCTRepo(searchContext, apiClient, trackedSectionDatabase,
+          recentSelectionDatabase);
     }
     return _uctRepo;
   }

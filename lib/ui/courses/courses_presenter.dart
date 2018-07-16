@@ -13,7 +13,7 @@ class CoursePresenter {
   UCTApiClient apiClient;
   HomeRouter router;
   SearchContext searchContext;
-  RecentSelectionDatabase recentSelectionDatabase;
+  RecentSelectionDao recentSelectionDatabase;
   Function courseClickCallback;
   List<Course> courses;
 

@@ -59,6 +59,16 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
       child: Scaffold(
           appBar: new AppBar(
             title: new Text("RU-NK 2018"),
+            actions: <Widget>[
+              IconButton(
+                  icon: new Icon(
+                    Icons.settings,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+            ],
           ),
           body: widget),
     );

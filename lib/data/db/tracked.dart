@@ -70,11 +70,11 @@ class TrackedSection {
   }
 }
 
-class TrackedSectionDatabase {
+class TrackedSectionDao {
 
   Database db;
 
-  TrackedSectionDatabase() {
+  TrackedSectionDao() {
     open();
   }
 

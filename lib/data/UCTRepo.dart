@@ -8,8 +8,8 @@ import '../ui/search_context.dart';
 class UCTRepo {
   SearchContext searchContext;
   UCTApiClient apiClient;
-  TrackedSectionDatabase trackedSectionDatabase;
-  RecentSelectionDatabase recentSelectionDatabase;
+  TrackedSectionDao trackedSectionDatabase;
+  RecentSelectionDao recentSelectionDatabase;
 
   UCTRepo(this.searchContext, this.apiClient, this.trackedSectionDatabase,
       this.recentSelectionDatabase);
