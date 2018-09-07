@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:uctflutter/ui/root_view.dart';
+import 'package:logging/logging.dart';
 
 import 'ui/styles.dart';
 
 void main() {
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((LogRecord rec) {
+    print('${rec.level.name}: ${rec.time}: ${rec.message}');
+  });
+
   runApp(new SampleApp());
 }
 

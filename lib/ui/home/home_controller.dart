@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:uctflutter/data/proto/model.pb.dart';
 
 import '../course/course_view.dart';
 import '../courses/courses_view.dart';
+import '../options/option_view.dart';
 import '../section/section_view.dart';
 import '../subject/subject_view.dart';
 import 'home_router.dart';
@@ -57,9 +60,14 @@ class HomeControllerState extends State<HomeController>
   }
 
   @override
-  void pop(BuildContext context) {
-    Navigator
+  bool pop(BuildContext context) {
+    return Navigator.of(context).pop(true);
+  }
+
+  @override
+  Future<bool> gotoOptions(BuildContext context) {
+    return Navigator
         .of(context)
-        .pop();
+        .push(new MaterialPageRoute(builder: (_) => OptionPage(router: this)));
   }
 }

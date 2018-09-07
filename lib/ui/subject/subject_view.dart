@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../home/home_router.dart';
 import '../rv.dart';
-import '../widgets/stateful_listview.dart';
+import '../styles.dart';
 import 'subject_presenter.dart';
 
 class SubjectPage extends StatefulWidget {
@@ -20,6 +20,7 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
   Adapter adapter = Adapter();
   bool isLoading;
   Widget list;
+  String title = "";
 
   SubjectListState(HomeRouter router) {
     this.router = router;
@@ -29,10 +30,8 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
   @override
   void initState() {
     super.initState();
-    if (adapter.items.length == 0) {
-      isLoading = true;
-      presenter.loadSubjects("rutgers.universitynewark", "fall", "2018");
-    }
+    isLoading = true;
+    presenter.loadSubjects();
   }
 
   @override
@@ -42,14 +41,12 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
     if (isLoading) {
       widget = new Center(
           child: new Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(
+                  left: Dimens.spacingStandard, right: Dimens.spacingStandard),
               child: new CircularProgressIndicator(
                   backgroundColor: Colors.black)));
     } else {
-      if (list == null) {
-        list = getListView();
-      }
-      widget = list;
+      widget = getListView();
     }
 
     return WillPopScope(
@@ -58,7 +55,7 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
       },
       child: Scaffold(
           appBar: new AppBar(
-            title: new Text("RU-NK 2018"),
+            title: new Text(title),
             actions: <Widget>[
               IconButton(
                   icon: new Icon(
@@ -66,7 +63,9 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
                     color: Colors.black,
                   ),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    router.gotoOptions(context).then((bool) {
+                      presenter.loadSubjects();
+                    });
                   }),
             ],
           ),
@@ -89,6 +88,18 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
     });
   }
 
-  Widget getListView() =>
-      StatefulListView(adapter.items.length, adapter.onCreateWidget);
+  Widget getListView() => ListView.builder(
+      itemCount: adapter.items.length, itemBuilder: adapter.onCreateWidget);
+
+  @override
+  void onDefaultError() {
+    router.gotoOptions(context);
+  }
+
+  @override
+  void setTitle(String title) {
+    setState(() {
+      this.title = title;
+    });
+  }
 }

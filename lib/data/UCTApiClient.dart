@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 import 'proto/model.pb.dart';
 
@@ -25,6 +26,8 @@ class UCTApiClient implements UCTApi {
   String baseUrl;
 
   UCTApiClient(this.baseUrl);
+
+  final Logger log = new Logger('UCTApiClient');
 
   @override
   Future<List<University>> universities() {
@@ -59,6 +62,7 @@ class UCTApiClient implements UCTApi {
   Future<Response> getResponse(String url) {
     return http.get("$baseUrl" + "$url")
         .then((http.Response response) {
+      logHttp(response);
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
         throw new Exception(
@@ -67,6 +71,11 @@ class UCTApiClient implements UCTApi {
       }
       return Response.fromBuffer(response.bodyBytes);
     });
+  }
+
+  void logHttp(http.Response response) {
+    log.info(response.request.toString());
+    log.info(response.headers.toString());
   }
 
   @override
