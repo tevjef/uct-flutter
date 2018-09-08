@@ -1,12 +1,5 @@
-import 'dart:async';
-
-import '../../data/UCTApiClient.dart';
-import '../../data/db/preference.dart';
-import '../../data/db/recent.dart';
-import '../../data/proto/model.pb.dart';
-import '../../dependency_injection.dart';
-import '../routing/home_router.dart';
-import '../search_context.dart';
+import '../../core/lib.dart';
+import '../../data/lib.dart';
 
 class OptionPresenter {
   OptionView view;

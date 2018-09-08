@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../data/proto/model.pb.dart';
-import '../search_context.dart';
+import '../../data/lib.dart';
 
 abstract class HomeRouter {
   Future<bool> pop(BuildContext context);

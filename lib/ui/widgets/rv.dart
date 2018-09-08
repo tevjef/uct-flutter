@@ -1,9 +1,6 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 
 abstract class Item {
-
   final int _hashCode;
 
   const Item(this._hashCode);

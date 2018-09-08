@@ -1,11 +1,6 @@
-import '../../data/UCTApiClient.dart';
-import '../../data/db/recent.dart';
-import '../../data/proto/model.pb.dart';
-import '../../dependency_injection.dart';
-import '../routing/home_router.dart';
-import '../rv.dart';
-import '../search_context.dart';
-import '../widgets/adapter.dart';
+import '../../core/lib.dart';
+import '../../data/lib.dart';
+import '../widgets/lib.dart';
 import 'courses_adapter.dart';
 
 class CoursePresenter {

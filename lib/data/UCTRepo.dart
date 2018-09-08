@@ -3,7 +3,7 @@ import 'dart:async';
 import '../data/UCTApiClient.dart';
 import '../data/db/recent.dart';
 import '../data/db/tracked.dart';
-import '../ui/search_context.dart';
+import '../data/search_context.dart';
 
 class UCTRepo {
   SearchContext searchContext;
@@ -15,10 +15,11 @@ class UCTRepo {
       this.recentSelectionDatabase);
 
   Future<bool> toggleSection(SearchContext searchContext) async {
-    var isTracked = await trackedSectionDatabase.isSectionTracked(searchContext.sectionTopicName);
+    var isTracked = await trackedSectionDatabase
+        .isSectionTracked(searchContext.sectionTopicName);
 
     if (isTracked) {
-      return  trackedSectionDatabase
+      return trackedSectionDatabase
           .deleteTrackedSection(searchContext.sectionTopicName)
           .then((trackedSection) {
         return !isTracked;

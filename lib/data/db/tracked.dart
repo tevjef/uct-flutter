@@ -6,17 +6,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../data/proto/model.pb.dart';
-import '../../ui/search_context.dart';
+import '../search_context.dart';
 
-final String tableTrackedSections = "tracked_sections";
+final String _tableTrackedSections = "tracked_sections";
 
-final String columnId = "_id";
-final String columnUniversityJson = "university_json";
-final String columnSemesterJson = "semester_json";
-final String columnSubjectJson = "subject_json";
-final String columnCourseJson = "course_json";
-final String columnSectionJson = "section_json";
-final String columnTopicName = "topic_name";
+final String _columnId = "_id";
+final String _columnUniversityJson = "university_json";
+final String _columnSemesterJson = "semester_json";
+final String _columnSubjectJson = "subject_json";
+final String _columnCourseJson = "course_json";
+final String _columnSectionJson = "section_json";
+final String _columnTopicName = "topic_name";
 
 class TrackedSection {
   int id;
@@ -29,30 +29,30 @@ class TrackedSection {
   String topicName;
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {columnTopicName: topicName};
+    Map<String, dynamic> map = {_columnTopicName: topicName};
 
     if (university != null) {
-      map[columnUniversityJson] = university.writeToJson();
+      map[_columnUniversityJson] = university.writeToJson();
     }
 
     if (semester != null) {
-      map[columnSemesterJson] = semester.writeToJson();
+      map[_columnSemesterJson] = semester.writeToJson();
     }
 
     if (subject != null) {
-      map[columnSubjectJson] = subject.writeToJson();
+      map[_columnSubjectJson] = subject.writeToJson();
     }
 
     if (course != null) {
-      map[columnCourseJson] = course.writeToJson();
+      map[_columnCourseJson] = course.writeToJson();
     }
 
     if (section != null) {
-      map[columnSectionJson] = section.writeToJson();
+      map[_columnSectionJson] = section.writeToJson();
     }
 
     if (id != null) {
-      map[columnId] = id;
+      map[_columnId] = id;
     }
     return map;
   }
@@ -72,13 +72,13 @@ class TrackedSection {
   TrackedSection();
 
   TrackedSection.fromMap(Map<String, dynamic> map) {
-    id = map[columnId];
-    university = University.fromJson(map[columnUniversityJson]);
-    semester = Semester.fromJson(map[columnSemesterJson]);
-    subject = Subject.fromJson(map[columnSubjectJson]);
-    course = Course.fromJson(map[columnCourseJson]);
-    section = Section.fromJson(map[columnSectionJson]);
-    topicName = map[columnTopicName];
+    id = map[_columnId];
+    university = University.fromJson(map[_columnUniversityJson]);
+    semester = Semester.fromJson(map[_columnSemesterJson]);
+    subject = Subject.fromJson(map[_columnSubjectJson]);
+    course = Course.fromJson(map[_columnCourseJson]);
+    section = Section.fromJson(map[_columnSectionJson]);
+    topicName = map[_columnTopicName];
   }
 }
 
@@ -105,14 +105,14 @@ class TrackedSectionDao {
   Future _create(Database db, int version) async {
     // TODO set unique constraint on the the topic name.
     await db.execute('''
-CREATE TABLE $tableTrackedSections ( 
-  $columnId INTEGER PRIMARY KEY AUTOINCREMENT, 
-  $columnUniversityJson TEXT NOT NULL,
-  $columnSemesterJson TEXT NOT NULL,
-  $columnSubjectJson TEXT NOT NULL,
-  $columnCourseJson TEXT NOT NULL,
-  $columnSectionJson TEXT NOT NULL,
-  $columnTopicName TEXT NOT NULL
+CREATE TABLE $_tableTrackedSections ( 
+  $_columnId INTEGER PRIMARY KEY AUTOINCREMENT, 
+  $_columnUniversityJson TEXT NOT NULL,
+  $_columnSemesterJson TEXT NOT NULL,
+  $_columnSubjectJson TEXT NOT NULL,
+  $_columnCourseJson TEXT NOT NULL,
+  $_columnSectionJson TEXT NOT NULL,
+  $_columnTopicName TEXT NOT NULL
   )
 ''');
   }
@@ -141,23 +141,23 @@ CREATE TABLE $tableTrackedSections (
       TrackedSection trackedSection) async {
     var db = await open();
     trackedSection.id = await db.insert(
-        tableTrackedSections, trackedSection.toMap(),
+        _tableTrackedSections, trackedSection.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return trackedSection;
   }
 
   Future<int> deleteTrackedSection(String topicName) async {
     var db = await open();
-    var rowsDeleted = await db.delete(tableTrackedSections,
-        where: "$columnTopicName = ?", whereArgs: [topicName]);
+    var rowsDeleted = await db.delete(_tableTrackedSections,
+        where: "$_columnTopicName = ?", whereArgs: [topicName]);
     return rowsDeleted;
   }
 
   Future<bool> isSectionTracked(String topicName) async {
     var db = await open();
-    List<Map> maps = await db.query(tableTrackedSections,
-        columns: [columnId, columnTopicName],
-        where: "$columnTopicName = ?",
+    List<Map> maps = await db.query(_tableTrackedSections,
+        columns: [_columnId, _columnTopicName],
+        where: "$_columnTopicName = ?",
         whereArgs: [topicName],
         limit: 1,
         orderBy: "rowid");
@@ -167,15 +167,15 @@ CREATE TABLE $tableTrackedSections (
   Future<List<TrackedSection>> getAllTrackedSections() async {
     var db = await open();
 
-    List<Map<String, dynamic>> maps = await db.query(tableTrackedSections,
+    List<Map<String, dynamic>> maps = await db.query(_tableTrackedSections,
         columns: [
-          columnId,
-          columnTopicName,
-          columnUniversityJson,
-          columnSemesterJson,
-          columnSubjectJson,
-          columnCourseJson,
-          columnSectionJson
+          _columnId,
+          _columnTopicName,
+          _columnUniversityJson,
+          _columnSemesterJson,
+          _columnSubjectJson,
+          _columnCourseJson,
+          _columnSectionJson
         ],
         orderBy: "rowid");
 

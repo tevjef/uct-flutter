@@ -7,12 +7,12 @@ import 'package:sqflite/sqflite.dart';
 
 import '../proto/model.pb.dart';
 
-final String tableDefaultUniversity = "default_university";
-final String tableDefaultSemester = "default_semester";
+final String _tableDefaultUniversity = "default_university";
+final String _tableDefaultSemester = "default_semester";
 
-final String columnId = "_id";
-final String columnUniversity = "default_university";
-final String columnSemester = "default_semester";
+final String _columnId = "_id";
+final String _columnUniversity = "default_university";
+final String _columnSemester = "default_semester";
 
 class DefaultUniversity {
   String id = "default_university_key";
@@ -20,11 +20,11 @@ class DefaultUniversity {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      columnUniversity: university.writeToJson(),
+      _columnUniversity: university.writeToJson(),
     };
 
     if (id != null) {
-      map[columnId] = id;
+      map[_columnId] = id;
     }
     return map;
   }
@@ -32,8 +32,8 @@ class DefaultUniversity {
   DefaultUniversity();
 
   DefaultUniversity.fromMap(Map<String, dynamic> map) {
-    id = map[columnId];
-    university = University.fromJson(map[columnUniversity]);
+    id = map[_columnId];
+    university = University.fromJson(map[_columnUniversity]);
   }
 }
 
@@ -43,11 +43,11 @@ class DefaultSemester {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      columnSemester: semester.writeToJson(),
+      _columnSemester: semester.writeToJson(),
     };
 
     if (id != null) {
-      map[columnId] = id;
+      map[_columnId] = id;
     }
     return map;
   }
@@ -55,8 +55,8 @@ class DefaultSemester {
   DefaultSemester();
 
   DefaultSemester.fromMap(Map<String, dynamic> map) {
-    id = map[columnId];
-    semester = Semester.fromJson(map[columnSemester]);
+    id = map[_columnId];
+    semester = Semester.fromJson(map[_columnSemester]);
   }
 }
 
@@ -82,15 +82,15 @@ class PreferenceDao {
 
   Future _create(Database db, int version) async {
     await db.execute('''
-CREATE TABLE $tableDefaultUniversity ( 
-  $columnId STRING PRIMARY KEY, 
-  $columnUniversity TEXT NOT NULL)
+CREATE TABLE $_tableDefaultUniversity ( 
+  $_columnId STRING PRIMARY KEY, 
+  $_columnUniversity TEXT NOT NULL)
 ''');
 
     await db.execute('''
-CREATE TABLE $tableDefaultSemester ( 
-  $columnId STRING PRIMARY KEY, 
-  $columnSemester TEXT NOT NULL)
+CREATE TABLE $_tableDefaultSemester ( 
+  $_columnId STRING PRIMARY KEY, 
+  $_columnSemester TEXT NOT NULL)
 ''');
   }
 
@@ -99,7 +99,7 @@ CREATE TABLE $tableDefaultSemester (
 
     DefaultUniversity defaultUniversity = DefaultUniversity();
     defaultUniversity.university = university;
-    await db.insert(tableDefaultUniversity, defaultUniversity.toMap(),
+    await db.insert(_tableDefaultUniversity, defaultUniversity.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return defaultUniversity;
   }
@@ -109,7 +109,7 @@ CREATE TABLE $tableDefaultSemester (
 
     DefaultSemester defaultSemester = DefaultSemester();
     defaultSemester.semester = semester;
-    await db.insert(tableDefaultSemester, defaultSemester.toMap(),
+    await db.insert(_tableDefaultSemester, defaultSemester.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return defaultSemester;
   }
@@ -119,10 +119,10 @@ CREATE TABLE $tableDefaultSemester (
 
     List<DefaultUniversity> universities = new List();
 
-    List<Map<String, dynamic>> maps = await db.query(tableDefaultUniversity,
+    List<Map<String, dynamic>> maps = await db.query(_tableDefaultUniversity,
         columns: [
-          columnId,
-          columnUniversity,
+          _columnId,
+          _columnUniversity,
         ],
         limit: 1);
     if (maps.length > 0) {
@@ -142,10 +142,10 @@ CREATE TABLE $tableDefaultSemester (
 
     List<DefaultSemester> semesters = new List();
 
-    List<Map<String, dynamic>> maps = await db.query(tableDefaultSemester,
+    List<Map<String, dynamic>> maps = await db.query(_tableDefaultSemester,
         columns: [
-          columnId,
-          columnSemester,
+          _columnId,
+          _columnSemester,
         ],
         limit: 1);
     if (maps.length > 0) {

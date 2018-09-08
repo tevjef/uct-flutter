@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../data/proto/model.pb.dart';
-import '../rv.dart';
-import '../styles.dart';
+import '../../data/lib.dart';
+import '../widgets/lib.dart';
 
 class CourseTitleItem extends Item {
   Course course;
@@ -28,15 +27,12 @@ class CourseTitleItem extends Item {
       percent = open.toDouble() / total.toDouble();
     }
 
-    var rightBorderRadius;
-    var leftBorderRadius;
+    double rightBorderRadius = 6.0;
+    double leftBorderRadius = 6.0;
 
-    if (percent < 100 || percent > 0) {
+    if (percent < 1 && percent > 0.0) {
       rightBorderRadius = 0.0;
       leftBorderRadius = 0.0;
-    } else {
-      rightBorderRadius = 6.0;
-      leftBorderRadius = 6.0;
     }
 
     return new Container(
@@ -83,6 +79,7 @@ class CourseTitleItem extends Item {
                           height: 4.0,
                           alignment: Alignment.bottomRight,
                           child: new FractionallySizedBox(
+                            alignment: Alignment.bottomRight,
                             widthFactor: 1 - percent,
                             child: new Container(
                               decoration: BoxDecoration(
@@ -100,6 +97,7 @@ class CourseTitleItem extends Item {
                           height: 4.0,
                           alignment: Alignment.bottomLeft,
                           child: new FractionallySizedBox(
+                            alignment: Alignment.bottomLeft,
                             widthFactor: percent,
                             child: new Container(
                               padding: new EdgeInsets.all(4.0),

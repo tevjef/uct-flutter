@@ -1,14 +1,6 @@
-import '../../data/UCTApiClient.dart';
-import '../../data/UCTRepo.dart';
-import '../../data/db/tracked.dart';
-import '../../data/proto/model.pb.dart';
-import '../../dependency_injection.dart';
-import '../routing/home_router.dart';
-import '../rv.dart';
-import '../search_context.dart';
-import '../styles.dart';
-import '../tracked_status_provider.dart';
-import '../widgets/adapter.dart';
+import '../../core/lib.dart';
+import '../../data/lib.dart';
+import '../widgets/lib.dart';
 
 class SectionPresenter {
   SectionView view;

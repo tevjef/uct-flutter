@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-import '../routing/home_router.dart';
-import '../rv.dart';
-import '../styles.dart';
+import '../../core/lib.dart';
+import '../widgets/lib.dart';
 import 'home_presenter.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,10 +14,16 @@ class HomePage extends StatefulWidget {
 }
 
 class HomeListState extends State<HomePage> implements HomeView {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+
+  bool isLoading;
+  Completer<Null> completer;
+  Adapter adapter = Adapter();
+
   HomeRouter router;
   HomePresenter presenter;
-  Adapter adapter = Adapter();
-  bool isLoading;
   Widget list;
 
   HomeListState(HomeRouter router) {
@@ -29,7 +34,7 @@ class HomeListState extends State<HomePage> implements HomeView {
   @override
   void initState() {
     super.initState();
-    isLoading = true;
+    showLoading(true);
     presenter.loadTrackedSections();
   }
 
@@ -53,38 +58,36 @@ class HomeListState extends State<HomePage> implements HomeView {
         return router.pop(context);
       },
       child: Scaffold(
-          appBar: new AppBar(
-            title: new Text("Tracked Sections"),
-            actions: <Widget>[
-              IconButton(
-                  icon: new Icon(
-                    Icons.add,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    router.gotoSubjects(context).then((changed) {
-                      presenter.loadTrackedSections();
-                    });
-                  }),
-            ],
-          ),
-          body: widget),
+        key: _scaffoldKey,
+        appBar: new AppBar(
+          title: new Text("Tracked Sections"),
+          actions: <Widget>[
+            IconButton(
+                icon: new Icon(
+                  Icons.add,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  router.gotoSubjects(context).then((changed) {
+                    presenter.loadTrackedSections();
+                  });
+                }),
+          ],
+        ),
+        body: RefreshIndicator(
+            key: _refreshIndicatorKey,
+            onRefresh: _handleRefresh,
+            child: widget),
+      ),
     );
   }
 
-  @override
-  void onHomeError(String message) {
-    setState(() {
-      this.isLoading = false;
-    });
-  }
+  Future<Null> _handleRefresh() {
+    showLoading(true);
 
-  @override
-  void onHomeSuccess(List<Item> adapterItems) {
-    setState(() {
-      this.isLoading = false;
-      this.adapter.swapData(adapterItems);
-    });
+    presenter.loadTrackedSections();
+
+    return completer.future;
   }
 
   Widget getListView() => ListView.builder(
@@ -93,7 +96,31 @@ class HomeListState extends State<HomePage> implements HomeView {
       itemBuilder: adapter.onCreateWidget);
 
   @override
-  void onDefaultError() {
-    router.gotoOptions(context);
+  void showLoading(bool isLoading) {
+    this.isLoading = isLoading;
+    if (!isLoading && completer != null) {
+      completer.complete(null);
+    }
+
+    completer = new Completer();
+  }
+
+  @override
+  void setListData(List<Item> adapterItems) {
+    setState(() {
+      showLoading(false);
+      this.adapter.swapData(adapterItems);
+    });
+  }
+
+  @override
+  void showMessage(String message) {
+    _scaffoldKey.currentState?.showSnackBar(Widgets.makeSnackBar(message));
+  }
+
+  @override
+  void showErrorMessage(String message) {
+    _scaffoldKey.currentState
+        ?.showSnackBar(Widgets.makeSnackBar(message, SnackBarType.error));
   }
 }

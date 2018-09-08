@@ -10,6 +10,12 @@ class Styles {
       fontStyle: FontStyle.italic,
       fontFamily: "ProductSans");
 
+  static TextStyle body1SecondaryInverse = new TextStyle(
+      color: Colors.white,
+      fontSize: 10.0,
+      fontStyle: FontStyle.italic,
+      fontFamily: "ProductSans");
+
   static TextStyle caption =
       new TextStyle(fontFamily: "ProductSans", fontWeight: FontWeight.bold);
 
@@ -36,6 +42,9 @@ class Styles {
 }
 
 class AppColors {
+  static Color uctGreen = const Color(0x4CAF50);
+  static Color uctRed = const Color(0xF44336);
+
   static MaterialColor white = MaterialColor(0xFFFFFFFF, <int, Color>{
     50: const Color(0xFFFAFAFA),
     100: const Color(0xFFF5F5F5),

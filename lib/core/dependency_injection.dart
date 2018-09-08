@@ -1,9 +1,4 @@
-import 'data/UCTApiClient.dart';
-import 'data/UCTRepo.dart';
-import 'data/db/recent.dart';
-import 'data/db/tracked.dart';
-import 'data/db/preference.dart';
-import 'ui/search_context.dart';
+import '../data/lib.dart';
 
 class Injector {
   static final Injector _singleton = new Injector._internal();
@@ -53,7 +48,6 @@ class Injector {
     }
     return _preferenceDao;
   }
-
 
   UCTRepo get uctRepo {
     if (_uctRepo == null) {

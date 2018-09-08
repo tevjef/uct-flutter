@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../data/proto/model.pb.dart';
-import '../routing/home_router.dart';
-import '../rv.dart';
-import '../search_context.dart';
-import '../styles.dart';
-import '../tracked_status_provider.dart';
+import '../../core/lib.dart';
+import '../../data/lib.dart';
+import 'rv.dart';
+import 'styles.dart';
+import 'tracked_status_provider.dart';
 
 class HeaderItem extends Item {
   String title;

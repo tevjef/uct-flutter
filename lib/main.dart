@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:uctflutter/ui/root_view.dart';
 import 'package:logging/logging.dart';
 
-import 'ui/styles.dart';
+import 'ui/screens.dart';
+import 'ui/widgets/lib.dart';
 
 void main() {
   Logger.root.level = Level.ALL;
@@ -17,7 +17,7 @@ class SampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Sample App',
+      title: 'Course Tracker',
       theme: new ThemeData(
         accentColor: Colors.black,
         indicatorColor: Colors.black,

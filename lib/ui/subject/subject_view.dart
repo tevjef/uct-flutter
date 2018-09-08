@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-
-import '../routing/home_router.dart';
-import '../rv.dart';
-import '../styles.dart';
+import '../../core/lib.dart';
+import '../widgets/lib.dart';
 import 'subject_presenter.dart';
 
 class SubjectPage extends StatefulWidget {

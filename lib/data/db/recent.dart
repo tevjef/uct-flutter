@@ -5,13 +5,13 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-final String tableRecentSubject = "recent_subject";
-final String tableRecentCourse = "recent_course";
+final String _tableRecentSubject = "recent_subject";
+final String _tableRecentCourse = "recent_course";
 
-final String columnId = "_id";
-final String columnParentTopicName = "parent_topic_name";
-final String columnTopicName = "topic_name";
-final String columnUpdatedAt = "updated_at";
+final String _columnId = "_id";
+final String _columnParentTopicName = "parent_topic_name";
+final String _columnTopicName = "topic_name";
+final String _columnUpdatedAt = "updated_at";
 
 class RecentSelection {
   int id;
@@ -21,12 +21,12 @@ class RecentSelection {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      columnParentTopicName: parentTopicName,
-      columnTopicName: topicName,
-      columnUpdatedAt: updatedAt
+      _columnParentTopicName: parentTopicName,
+      _columnTopicName: topicName,
+      _columnUpdatedAt: updatedAt
     };
     if (id != null) {
-      map[columnId] = id;
+      map[_columnId] = id;
     }
     return map;
   }
@@ -34,10 +34,10 @@ class RecentSelection {
   RecentSelection();
 
   RecentSelection.fromMap(Map<String, dynamic> map) {
-    id = map[columnId];
-    parentTopicName = map[columnParentTopicName];
-    topicName = map[columnTopicName];
-    updatedAt = map[columnUpdatedAt];
+    id = map[_columnId];
+    parentTopicName = map[_columnParentTopicName];
+    topicName = map[_columnTopicName];
+    updatedAt = map[_columnUpdatedAt];
   }
 }
 
@@ -63,22 +63,22 @@ class RecentSelectionDao {
 
   Future _create(Database db, int version) async {
     await db.execute('''
-CREATE TABLE $tableRecentSubject ( 
-  $columnId INTEGER PRIMARY KEY AUTOINCREMENT, 
-  $columnParentTopicName TEXT NOT NULL,
-  $columnTopicName TEXT NOT NULL,
+CREATE TABLE $_tableRecentSubject ( 
+  $_columnId INTEGER PRIMARY KEY AUTOINCREMENT, 
+  $_columnParentTopicName TEXT NOT NULL,
+  $_columnTopicName TEXT NOT NULL,
   updated_at TEXT NOT NULL,
-  UNIQUE($columnParentTopicName, $columnTopicName) ON CONFLICT REPLACE)
+  UNIQUE($_columnParentTopicName, $_columnTopicName) ON CONFLICT REPLACE)
 
 ''');
 
     await db.execute('''
-CREATE TABLE $tableRecentCourse ( 
-  $columnId INTEGER PRIMARY KEY AUTOINCREMENT, 
-  $columnParentTopicName TEXT NOT NULL,
-  $columnTopicName TEXT NOT NULL,
+CREATE TABLE $_tableRecentCourse ( 
+  $_columnId INTEGER PRIMARY KEY AUTOINCREMENT, 
+  $_columnParentTopicName TEXT NOT NULL,
+  $_columnTopicName TEXT NOT NULL,
   updated_at TEXT NOT NULL,
-  UNIQUE($columnParentTopicName, $columnTopicName) ON CONFLICT REPLACE)
+  UNIQUE($_columnParentTopicName, $_columnTopicName) ON CONFLICT REPLACE)
 ''');
   }
 
@@ -86,9 +86,9 @@ CREATE TABLE $tableRecentCourse (
       RecentSelection recentSelection) async {
     var db = await open();
 
-    recentSelection.id =
-        await db.insert(tableRecentSubject, recentSelection.toMap(),
-            conflictAlgorithm: ConflictAlgorithm.replace);
+    recentSelection.id = await db.insert(
+        _tableRecentSubject, recentSelection.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     return recentSelection;
   }
 
@@ -96,20 +96,20 @@ CREATE TABLE $tableRecentCourse (
       RecentSelection recentSelection) async {
     var db = await open();
 
-    recentSelection.id =
-        await db.insert(tableRecentCourse, recentSelection.toMap(),
-            conflictAlgorithm: ConflictAlgorithm.replace);
+    recentSelection.id = await db.insert(
+        _tableRecentCourse, recentSelection.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     return recentSelection;
   }
 
   Future<List<RecentSelection>> getRecentSubjectSelection(
       String topicName) async {
-    return _getRecentSelection(tableRecentSubject, topicName);
+    return _getRecentSelection(_tableRecentSubject, topicName);
   }
 
   Future<List<RecentSelection>> getRecentCourseSelection(
       String topicName) async {
-    return _getRecentSelection(tableRecentCourse, topicName);
+    return _getRecentSelection(_tableRecentCourse, topicName);
   }
 
   Future<List<RecentSelection>> _getRecentSelection(
@@ -119,11 +119,16 @@ CREATE TABLE $tableRecentCourse (
     List<RecentSelection> recentSelections = List();
 
     List<Map<String, dynamic>> maps = await db.query(table,
-        columns: [columnId, columnParentTopicName, columnTopicName, columnUpdatedAt],
-        where: "$columnParentTopicName = ?",
+        columns: [
+          _columnId,
+          _columnParentTopicName,
+          _columnTopicName,
+          _columnUpdatedAt
+        ],
+        where: "$_columnParentTopicName = ?",
         whereArgs: [topicName],
         limit: 3,
-        orderBy: "$columnUpdatedAt DESC");
+        orderBy: "$_columnUpdatedAt DESC");
     if (maps.length > 0) {
       maps.forEach((Map<String, dynamic> m) =>
           recentSelections.add(RecentSelection.fromMap(m)));
@@ -133,17 +138,17 @@ CREATE TABLE $tableRecentCourse (
   }
 
   Future<int> clearRecentSubject() async {
-    return _clearRecents(tableRecentSubject);
+    return _clearRecents(_tableRecentSubject);
   }
 
   Future<int> clearRecentCourse() async {
-    return _clearRecents(tableRecentCourse);
+    return _clearRecents(_tableRecentCourse);
   }
 
   Future<int> _clearRecents(String table) async {
     var db = await open();
 
-    return await db.delete(table, where: "$columnParentTopicName IS NOT NULL");
+    return await db.delete(table, where: "$_columnParentTopicName IS NOT NULL");
   }
 
   Future close() async => db.close();

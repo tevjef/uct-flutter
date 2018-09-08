@@ -1,12 +1,10 @@
 import 'package:collection/collection.dart';
 
-import '../../data/UCTApiClient.dart';
-import '../../data/db/tracked.dart';
-import '../../dependency_injection.dart';
-import '../routing/home_router.dart';
-import '../rv.dart';
-import '../search_context.dart';
-import '../widgets/adapter.dart';
+import '../../core/lib.dart';
+import '../../data/lib.dart';
+import '../widgets/lib.dart';
+
+abstract class HomeView implements BaseView {}
 
 class HomePresenter {
   HomeView view;
@@ -35,11 +33,15 @@ class HomePresenter {
 
     var searchContexts = trackedSections.map((trackedSections) {
       return trackedSections.toSearchContext();
+    }).toList();
+
+    mergeSort(searchContexts, compare: (SearchContext a, SearchContext b) {
+      return a.subject.name.compareTo(b.subject.name);
     });
 
     Map<String, List<SearchContext>> subjectGroups =
         groupBy(searchContexts, (SearchContext context) {
-      return context.subject.number;
+      return context.subject.name;
     });
 
     subjectGroups.forEach((number, subjectGroup) {
@@ -54,14 +56,6 @@ class HomePresenter {
       });
     });
 
-    view.onHomeSuccess(adapterItems);
+    view.setListData(adapterItems);
   }
-}
-
-abstract class HomeView {
-  void onDefaultError();
-
-  void onHomeSuccess(List<Item> adapterItems);
-
-  void onHomeError(String message);
 }

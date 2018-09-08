@@ -1,13 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
-
-import '../../data/proto/model.pb.dart';
-import '../../dependency_injection.dart';
-import '../routing/home_router.dart';
-import '../rv.dart';
-import '../search_context.dart';
-import '../styles.dart';
-import '../widgets/stateful_listview.dart';
+import '../../core/lib.dart';
+import '../../data/lib.dart';
+import '../widgets/lib.dart';
 import 'course_presenter.dart';
 
 class CoursePage extends StatelessWidget {

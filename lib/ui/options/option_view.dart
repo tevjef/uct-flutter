@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-
-import '../../data/proto/model.pb.dart';
-import '../routing/home_router.dart';
+import '../../core/lib.dart';
+import '../../data/lib.dart';
+import '../widgets/lib.dart';
 import 'option_presenter.dart';
 
 class OptionPage extends StatefulWidget {
