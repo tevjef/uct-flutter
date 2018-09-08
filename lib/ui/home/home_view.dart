@@ -3,35 +3,34 @@ import 'package:flutter/material.dart';
 import '../routing/home_router.dart';
 import '../rv.dart';
 import '../styles.dart';
-import 'subject_presenter.dart';
+import 'home_presenter.dart';
 
-class SubjectPage extends StatefulWidget {
+class HomePage extends StatefulWidget {
   final HomeRouter router;
 
-  SubjectPage({Key key, this.router}) : super(key: key);
+  HomePage({Key key, this.router}) : super(key: key);
 
   @override
-  SubjectListState createState() => new SubjectListState(router);
+  HomeListState createState() => new HomeListState(router);
 }
 
-class SubjectListState extends State<SubjectPage> implements SubjectView {
+class HomeListState extends State<HomePage> implements HomeView {
   HomeRouter router;
-  SubjectPresenter presenter;
+  HomePresenter presenter;
   Adapter adapter = Adapter();
   bool isLoading;
   Widget list;
-  String title = "";
 
-  SubjectListState(HomeRouter router) {
+  HomeListState(HomeRouter router) {
     this.router = router;
-    presenter = new SubjectPresenter(this, router);
+    presenter = new HomePresenter(this, router);
   }
 
   @override
   void initState() {
     super.initState();
     isLoading = true;
-    presenter.loadSubjects();
+    presenter.loadTrackedSections();
   }
 
   @override
@@ -51,20 +50,20 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
 
     return WillPopScope(
       onWillPop: () {
-        router.pop(context);
+        return router.pop(context);
       },
       child: Scaffold(
           appBar: new AppBar(
-            title: new Text(title),
+            title: new Text("Tracked Sections"),
             actions: <Widget>[
               IconButton(
                   icon: new Icon(
-                    Icons.settings,
+                    Icons.add,
                     color: Colors.black,
                   ),
                   onPressed: () {
-                    router.gotoOptions(context).then((bool) {
-                      presenter.loadSubjects();
+                    router.gotoSubjects(context).then((changed) {
+                      presenter.loadTrackedSections();
                     });
                   }),
             ],
@@ -74,14 +73,14 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
   }
 
   @override
-  void onSubjectError(String message) {
+  void onHomeError(String message) {
     setState(() {
       this.isLoading = false;
     });
   }
 
   @override
-  void onSubjectSuccess(List<Item> adapterItems) {
+  void onHomeSuccess(List<Item> adapterItems) {
     setState(() {
       this.isLoading = false;
       this.adapter.swapData(adapterItems);
@@ -96,12 +95,5 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
   @override
   void onDefaultError() {
     router.gotoOptions(context);
-  }
-
-  @override
-  void setTitle(String title) {
-    setState(() {
-      this.title = title;
-    });
   }
 }

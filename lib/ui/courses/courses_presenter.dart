@@ -1,8 +1,8 @@
 import '../../data/UCTApiClient.dart';
-import '../../data/proto/model.pb.dart';
 import '../../data/db/recent.dart';
+import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
-import '../home/home_router.dart';
+import '../routing/home_router.dart';
 import '../rv.dart';
 import '../search_context.dart';
 import '../widgets/adapter.dart';

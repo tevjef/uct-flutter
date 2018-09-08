@@ -1,10 +1,10 @@
 import 'dart:async';
-
 import 'dart:io';
 
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
+
 import '../../data/proto/model.pb.dart';
 import '../../ui/search_context.dart';
 
@@ -57,9 +57,21 @@ class TrackedSection {
     return map;
   }
 
+  SearchContext toSearchContext() {
+    var searchContext = SearchContext();
+
+    searchContext.university = this.university;
+    searchContext.semester = this.semester;
+    searchContext.subject = this.subject;
+    searchContext.course = this.course;
+    searchContext.section = this.section;
+
+    return searchContext;
+  }
+
   TrackedSection();
 
-  TrackedSection.fromMap(Map map) {
+  TrackedSection.fromMap(Map<String, dynamic> map) {
     id = map[columnId];
     university = University.fromJson(map[columnUniversityJson]);
     semester = Semester.fromJson(map[columnSemesterJson]);
@@ -71,7 +83,6 @@ class TrackedSection {
 }
 
 class TrackedSectionDao {
-
   Database db;
 
   TrackedSectionDao() {
@@ -155,7 +166,8 @@ CREATE TABLE $tableTrackedSections (
 
   Future<List<TrackedSection>> getAllTrackedSections() async {
     var db = await open();
-    List<Map> maps = await db.query(tableTrackedSections,
+
+    List<Map<String, dynamic>> maps = await db.query(tableTrackedSections,
         columns: [
           columnId,
           columnTopicName,
@@ -168,7 +180,9 @@ CREATE TABLE $tableTrackedSections (
         orderBy: "rowid");
 
     if (maps.length > 0) {
-      return maps.map((Map m) => TrackedSection.fromMap(m));
+      return maps
+          .map((Map<String, dynamic> m) => TrackedSection.fromMap(m))
+          .toList();
     }
 
     return List();

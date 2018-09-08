@@ -1,11 +1,12 @@
+import 'dart:async';
+
 import '../../data/UCTApiClient.dart';
 import '../../data/db/preference.dart';
 import '../../data/db/recent.dart';
 import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
-import '../home/home_router.dart';
+import '../routing/home_router.dart';
 import '../search_context.dart';
-import 'dart:async';
 
 class OptionPresenter {
   OptionView view;
@@ -38,7 +39,8 @@ class OptionPresenter {
     view.showLoading(false);
   }
 
-  Future<DefaultSemester> getDefaultSemester(DefaultUniversity defaultUniversity) async {
+  Future<DefaultSemester> getDefaultSemester(
+      DefaultUniversity defaultUniversity) async {
     var defaultSemester = await preferenceDao.getDefaultSemester();
     if (defaultSemester == null) {
       DefaultSemester ds = DefaultSemester();
@@ -48,7 +50,8 @@ class OptionPresenter {
     return defaultSemester;
   }
 
-  Future<DefaultUniversity> getDefaultUniversity(List<University> universities) async {
+  Future<DefaultUniversity> getDefaultUniversity(
+      List<University> universities) async {
     var defaultUniversity = await preferenceDao.getDefaultUniversity();
 
     if (defaultUniversity == null) {

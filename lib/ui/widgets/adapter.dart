@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 
 import '../../data/proto/model.pb.dart';
-import '../../dependency_injection.dart';
-import '../home/home_router.dart';
+import '../routing/home_router.dart';
 import '../rv.dart';
+import '../search_context.dart';
 import '../styles.dart';
 import '../tracked_status_provider.dart';
 
 class HeaderItem extends Item {
   String title;
+  EdgeInsets insets;
 
-  HeaderItem(this.title) : super(title.hashCode);
+  HeaderItem(this.title,
+      {this.insets = const EdgeInsets.only(
+          left: Dimens.spacingStandard,
+          top: Dimens.spacingMedium,
+          bottom: Dimens.spacingMedium,
+          right: Dimens.spacingStandard)})
+      : super(title.hashCode);
 
   @override
   int itemType() => 0;
@@ -18,7 +25,7 @@ class HeaderItem extends Item {
   @override
   Widget create(BuildContext context, int position) {
     return Padding(
-        padding: EdgeInsets.all(Dimens.spacingStandard),
+        padding: insets,
         child: Text(
           title,
           style: Styles.sectionHeader,
@@ -61,9 +68,16 @@ class MetadataItem extends Item {
 
 class SectionItem extends Item {
   HomeRouter router;
+  SearchContext searchContext;
   Section section;
 
-  SectionItem(this.section, this.router) : super(section.callNumber.hashCode);
+  bool hasTitle;
+
+  Function onNavigated;
+
+  SectionItem(this.searchContext, this.section, this.router,
+      {this.hasTitle = false, this.onNavigated})
+      : super(section.callNumber.hashCode);
 
   @override
   int itemType() => 1;
@@ -84,11 +98,13 @@ class SectionItem extends Item {
         return TableRow(
           children: <Widget>[
             Text(meeting.day, style: Styles.body1Primary),
-            Text(time,
-                style: Styles.body1Primary, textAlign: TextAlign.center,),
+            Text(
+              time,
+              style: Styles.body1Primary,
+              textAlign: TextAlign.center,
+            ),
             Text(meeting.room.isEmpty ? meeting.classType : meeting.room,
-                textAlign: TextAlign.end,
-                style: Styles.body1Primary),
+                textAlign: TextAlign.end, style: Styles.body1Primary),
           ],
         );
       }).toList(),
@@ -109,10 +125,25 @@ class SectionItem extends Item {
     if (instructors.isNotEmpty) {
       instructorsWidget = Text(instructors,
           textAlign: TextAlign.end,
-          style: Styles.body1Primary
-              .copyWith(fontWeight: FontWeight.bold));
+          style: Styles.body1Primary.copyWith(fontWeight: FontWeight.bold));
     }
 
+    Widget courseNameWidget = Container();
+
+    if (hasTitle) {
+      courseNameWidget = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text("${searchContext.course.name} (${searchContext.course.number})",
+              maxLines: 1,
+              textAlign: TextAlign.start,
+              overflow: TextOverflow.ellipsis,
+              style: Styles.body1Primary
+                  .copyWith(fontWeight: FontWeight.bold, fontSize: 14.0)),
+          SizedBox(height: Dimens.spacingXsmall),
+        ],
+      );
+    }
 
     return Container(
       margin: EdgeInsets.only(
@@ -138,8 +169,10 @@ class SectionItem extends Item {
             padding: EdgeInsets.all(Dimens.spacingMedium),
             margin: EdgeInsets.only(left: 60.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                courseNameWidget,
                 table,
                 SizedBox(height: Dimens.spacingXsmall),
                 instructorsWidget,
@@ -166,11 +199,14 @@ class SectionItem extends Item {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      // Save current search location
-                      final searchContext = Injector().searchContext;
                       searchContext.section = section;
-
-                      router.gotoSection(context, section);
+                      router
+                          .gotoSection(context, searchContext)
+                          .then((changed) {
+                        if (onNavigated != null) {
+                          onNavigated(changed);
+                        }
+                      });
                     },
                   )))
         ],
@@ -226,7 +262,6 @@ class SubscribeItem extends Item {
 }
 
 class DividerItem extends Item {
-
   const DividerItem() : super(1);
 
   @override
@@ -248,7 +283,8 @@ class SpaceItem extends Item {
     this.height: Dimens.spacingStandard,
     this.width: Dimens.spacingStandard,
   })  : assert(height >= 0.0),
-        assert(width >= 0.0), super(1);
+        assert(width >= 0.0),
+        super(1);
 
   @override
   int itemType() => 3;

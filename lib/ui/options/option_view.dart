@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/proto/model.pb.dart';
-import '../home/home_router.dart';
+import '../routing/home_router.dart';
 import 'option_presenter.dart';
 
 class OptionPage extends StatefulWidget {
@@ -108,8 +108,7 @@ class OptionListState extends State<OptionPage> implements OptionView {
                       return new DropdownMenuItem<Semester>(
                         value: value,
                         child: new Text(
-                          "${_upperCaseFirstLetter(value.season)} ${value
-                              .year}",
+                          "${_upperCaseFirstLetter(value.season)} ${value.year}",
                           softWrap: true,
                         ),
                       );
@@ -137,8 +136,7 @@ class OptionListState extends State<OptionPage> implements OptionView {
   }
 
   String _upperCaseFirstLetter(String word) {
-    return '${word.substring(0, 1).toUpperCase()}${word.substring(1)
-        .toLowerCase()}';
+    return '${word.substring(0, 1).toUpperCase()}${word.substring(1).toLowerCase()}';
   }
 
   @override

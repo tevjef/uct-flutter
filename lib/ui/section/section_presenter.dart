@@ -1,15 +1,14 @@
 import '../../data/UCTApiClient.dart';
 import '../../data/UCTRepo.dart';
-import '../../data/db/recent.dart';
 import '../../data/db/tracked.dart';
 import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
-import '../home/home_router.dart';
+import '../routing/home_router.dart';
 import '../rv.dart';
 import '../search_context.dart';
-import '../widgets/adapter.dart';
-import '../tracked_status_provider.dart';
 import '../styles.dart';
+import '../tracked_status_provider.dart';
+import '../widgets/adapter.dart';
 
 class SectionPresenter {
   SectionView view;
@@ -20,12 +19,9 @@ class SectionPresenter {
   UCTApiClient apiClient;
   UCTRepo uctRepo;
   TrackedSectionDao trackedSectionDatabase;
-  RecentSelectionDao recentSelectionDatabase;
 
-  SectionPresenter(this.view, this.router) {
-    searchContext = Injector().searchContext;
+  SectionPresenter(this.view, this.router, this.searchContext) {
     trackedSectionDatabase = Injector().trackedSectionDatabase;
-    recentSelectionDatabase = Injector().recentSelectionDatabase;
     uctRepo = Injector().uctRepo;
     section = searchContext.section;
   }
@@ -40,14 +36,14 @@ class SectionPresenter {
     adapterItems.add(SpaceItem(height: Dimens.spacingStandard));
 
     List<MetadataItem> metaItems = new List();
-    if (section.metadata.isNotEmpty) {
+    if (section?.metadata?.isNotEmpty ?? false) {
       section.metadata.forEach((meta) {
         metaItems.add(MetadataItem(meta.title, meta.content));
       });
     }
 
     adapterItems.addAll(metaItems);
-    adapterItems.add(SectionItem(section, router));
+    adapterItems.add(SectionItem(searchContext, section, router));
     view.onSectionSuccess(adapterItems);
     loadStatus();
   }
@@ -62,7 +58,6 @@ class SectionPresenter {
 
   void toggleSection(SearchContext searchContext) {
     uctRepo.toggleSection(searchContext).then((isTracked) {
-      print(isTracked);
       view.setSectionStatus(isTracked);
     });
   }
@@ -75,6 +70,3 @@ abstract class SectionView implements TrackedStatusProvider {
 
   void setSectionStatus(bool isTracked);
 }
-
-
-

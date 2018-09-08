@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'home/home_controller.dart';
+import '../ui/routing/home_controller.dart';
 
 class RootPage extends StatefulWidget {
   static const String routeName = '/';

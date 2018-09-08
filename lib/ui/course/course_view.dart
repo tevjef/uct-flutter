@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
-import '../home/home_router.dart';
+import '../routing/home_router.dart';
 import '../rv.dart';
 import '../search_context.dart';
 import '../styles.dart';

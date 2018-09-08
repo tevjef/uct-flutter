@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import '../../dependency_injection.dart';
-import '../home/home_router.dart';
+import '../routing/home_router.dart';
 import '../rv.dart';
 import '../search_context.dart';
-import 'courses_presenter.dart';
 import '../widgets/stateful_listview.dart';
+import 'courses_presenter.dart';
 
 class CoursesPage extends StatelessWidget {
   final String topicName;
@@ -102,5 +102,6 @@ class CourseListState extends State<_CourseList> implements CourseView {
     });
   }
 
-  Widget getListView() => StatefulListView(adapter.items.length, adapter.onCreateWidget);
+  Widget getListView() =>
+      StatefulListView(adapter.items.length, adapter.onCreateWidget);
 }

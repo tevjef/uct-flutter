@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../data/proto/model.pb.dart';
-import '../../dependency_injection.dart';
-import '../home/home_router.dart';
 import '../rv.dart';
 import '../styles.dart';
 
@@ -10,9 +8,7 @@ class CourseTitleItem extends Item {
   Course course;
   Function callback;
 
-  CourseTitleItem(
-      this.course,
-      this.callback) : super(course.hashCode);
+  CourseTitleItem(this.course, this.callback) : super(course.hashCode);
 
   @override
   int itemType() => 1;
@@ -30,6 +26,17 @@ class CourseTitleItem extends Item {
     double percent = 0.0;
     if (total != 0) {
       percent = open.toDouble() / total.toDouble();
+    }
+
+    var rightBorderRadius;
+    var leftBorderRadius;
+
+    if (percent < 100 || percent > 0) {
+      rightBorderRadius = 0.0;
+      leftBorderRadius = 0.0;
+    } else {
+      rightBorderRadius = 6.0;
+      leftBorderRadius = 6.0;
     }
 
     return new Container(
@@ -78,22 +85,37 @@ class CourseTitleItem extends Item {
                           child: new FractionallySizedBox(
                             widthFactor: 1 - percent,
                             child: new Container(
-                                padding: new EdgeInsets.all(4.0),
-                                color: Colors.red),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft:
+                                        Radius.circular(leftBorderRadius),
+                                    bottomRight: Radius.circular(6.0)),
+                              ),
+                              padding: new EdgeInsets.all(4.0),
+                            ),
                           ),
                         ),
                         new Container(
                           height: 4.0,
+                          alignment: Alignment.bottomLeft,
                           child: new FractionallySizedBox(
                             widthFactor: percent,
                             child: new Container(
-                                padding: new EdgeInsets.all(4.0),
-                                color: Colors.green),
+                              padding: new EdgeInsets.all(4.0),
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(6.0),
+                                    bottomRight:
+                                        Radius.circular(rightBorderRadius)),
+                              ),
+                            ),
                           ),
                         ),
                         new InkWell(
                           onTap: () {
-                           callback(context, course);
+                            callback(context, course);
                           },
                         )
                       ])))

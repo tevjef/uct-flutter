@@ -3,7 +3,7 @@ import '../../data/db/preference.dart';
 import '../../data/db/recent.dart';
 import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
-import '../home/home_router.dart';
+import '../routing/home_router.dart';
 import '../rv.dart';
 import '../search_context.dart';
 import '../widgets/adapter.dart';
@@ -24,6 +24,8 @@ class SubjectPresenter {
   SubjectPresenter(this.view, this.router) {
     apiClient = new Injector().apiClient;
     searchContext = new Injector().searchContext;
+    searchContext.reset();
+
     recentSelectionDatabase = new Injector().recentSelectionDatabase;
     preferenceDao = new Injector().preferenceDao;
 
@@ -39,6 +41,9 @@ class SubjectPresenter {
     var defaultUniversity = await preferenceDao.getDefaultUniversity();
     var defaultSemester = await preferenceDao.getDefaultSemester();
 
+    searchContext.university = defaultUniversity.university;
+    searchContext.semester = defaultSemester.semester;
+
     if (defaultUniversity == null || defaultSemester == null) {
       view.onDefaultError();
       return;
@@ -51,6 +56,7 @@ class SubjectPresenter {
             defaultSemester.semester.year.toString())
         .then((subjects) {
       this.subjects = subjects;
+
       updateSubjectList();
       view.setTitle(defaultUniversity.university.abbr +
           " " +
@@ -59,6 +65,7 @@ class SubjectPresenter {
           defaultSemester.semester.year.toString());
     }).catchError((onError) {
       print(onError);
+
       view.onSubjectError(onError.toString());
     });
   }
@@ -103,8 +110,7 @@ class SubjectPresenter {
   }
 
   String _upperCaseFirstLetter(String word) {
-    return '${word.substring(0, 1).toUpperCase()}${word.substring(1)
-        .toLowerCase()}';
+    return '${word.substring(0, 1).toUpperCase()}${word.substring(1).toLowerCase()}';
   }
 }
 

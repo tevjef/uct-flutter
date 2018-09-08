@@ -1,10 +1,10 @@
 import '../../data/UCTApiClient.dart';
 import '../../data/proto/model.pb.dart';
 import '../../dependency_injection.dart';
-import '../search_context.dart';
+import '../routing/home_router.dart';
 import '../rv.dart';
+import '../search_context.dart';
 import '../widgets/adapter.dart';
-import '../home/home_router.dart';
 
 class CoursePresenter {
   CourseView view;
@@ -32,9 +32,9 @@ class CoursePresenter {
     if (course.sections.isNotEmpty) {
       course.sections.forEach((section) {
         if (all == false && section.status == "Closed") {
-          sectionItem.add(SectionItem(section, router));
+          sectionItem.add(SectionItem(searchContext, section, router));
         } else if (all) {
-          sectionItem.add(SectionItem(section, router));
+          sectionItem.add(SectionItem(searchContext, section, router));
         }
       });
     }

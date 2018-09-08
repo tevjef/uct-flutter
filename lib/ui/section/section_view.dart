@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/proto/model.pb.dart';
-import '../../dependency_injection.dart';
-import '../home/home_router.dart';
+import '../routing/home_router.dart';
 import '../rv.dart';
 import '../search_context.dart';
 import '../styles.dart';
@@ -10,9 +9,10 @@ import 'section_presenter.dart';
 
 class SectionDetailsPage extends StatefulWidget {
   final HomeRouter router;
-  final SearchContext searchContext = Injector().searchContext;
+  final SearchContext searchContext;
 
-  SectionDetailsPage({Key key, this.router}) : super(key: key);
+  SectionDetailsPage({Key key, this.router, this.searchContext})
+      : super(key: key);
 
   @override
   SectionDetailState createState() => SectionDetailState(router, searchContext);
@@ -24,6 +24,8 @@ class SectionDetailState extends State<SectionDetailsPage>
   final HomeRouter router;
   final Adapter adapter = Adapter();
 
+  bool initialTrackedStatus;
+
   SectionPresenter presenter;
   Section section;
   bool isLoading = true;
@@ -31,7 +33,7 @@ class SectionDetailState extends State<SectionDetailsPage>
   Widget list;
 
   SectionDetailState(this.router, this.searchContext) {
-    presenter = SectionPresenter(this, router);
+    presenter = SectionPresenter(this, router, searchContext);
     section = searchContext.section;
   }
 
@@ -60,7 +62,8 @@ class SectionDetailState extends State<SectionDetailsPage>
                         color: Colors.black,
                       ),
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context)
+                            .pop(initialTrackedStatus != isTracked);
                       }),
                   title: Container(
                     child: Text(title),
@@ -149,7 +152,13 @@ class SectionDetailState extends State<SectionDetailsPage>
 
   @override
   void setSectionStatus(bool isTracked) {
-    setState(() => this.isTracked = isTracked);
+    setState(() {
+      if (initialTrackedStatus != null) {
+        initialTrackedStatus = isTracked;
+      }
+
+      this.isTracked = isTracked;
+    });
   }
 
   Widget getListView() {
