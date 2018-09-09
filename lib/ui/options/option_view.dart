@@ -4,16 +4,13 @@ import '../widgets/lib.dart';
 import 'option_presenter.dart';
 
 class OptionPage extends StatefulWidget {
-  final HomeRouter router;
-
-  OptionPage({Key key, this.router}) : super(key: key);
+  OptionPage({Key key}) : super(key: key);
 
   @override
-  OptionListState createState() => new OptionListState(router);
+  OptionListState createState() => new OptionListState();
 }
 
 class OptionListState extends State<OptionPage> implements OptionView {
-  HomeRouter router;
   OptionPresenter presenter;
 
   bool isLoading = true;
@@ -24,9 +21,8 @@ class OptionListState extends State<OptionPage> implements OptionView {
   University selectedUniversity;
   Semester selectedSemester;
 
-  OptionListState(HomeRouter router) {
-    this.router = router;
-    presenter = new OptionPresenter(this, router);
+  OptionListState() {
+    presenter = new OptionPresenter(this);
   }
 
   @override
@@ -37,89 +33,90 @@ class OptionListState extends State<OptionPage> implements OptionView {
 
   @override
   Widget build(BuildContext context) {
+    Widget widget;
+
     if (isLoading) {
-      return new Center(
-          child: new Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: new CircularProgressIndicator(
-                  backgroundColor: Colors.black)));
+      widget = Widgets.makeLoading();
     } else {
-      return WillPopScope(
-        onWillPop: () {
-          router.pop(context);
-        },
-        child: Scaffold(
-          appBar: new AppBar(
-            title: new Text("Options"),
-            actions: <Widget>[
-              IconButton(
-                  icon: new Icon(
-                    Icons.check,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    router.pop(context);
-                  }),
-            ],
-          ),
-          body: DropdownButtonHideUnderline(
-            child: ListView(
-              padding: const EdgeInsets.all(16.0),
-              children: <Widget>[
-                new InputDecorator(
-                  decoration: const InputDecoration(
-                    labelText: 'University',
-                    hintText: 'Choose an university',
-                  ),
-                  isEmpty: selectedUniversity == null,
-                  child: new DropdownButton<University>(
-                    value: selectedUniversity,
-                    isDense: true,
-                    onChanged: (University newValue) {
-                      presenter.updateDefaultUniversity(newValue);
-                    },
-                    items: universities.map((University value) {
-                      return new DropdownMenuItem<University>(
-                          value: value,
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * .80,
-                              child: new Text(
-                                value.name,
-                                overflow: TextOverflow.ellipsis,
-                              )));
-                    }).toList(),
-                  ),
-                ),
-                new InputDecorator(
-                  decoration: const InputDecoration(
-                    labelText: 'Semester',
-                    hintText: 'Choose an semester',
-                  ),
-                  isEmpty: selectedSemester == null ||
-                      !semesters.contains(selectedSemester),
-                  child: new DropdownButton<Semester>(
-                    value: selectedSemester,
-                    isDense: true,
-                    onChanged: (Semester newValue) {
-                      presenter.updateDefaultSemester(newValue);
-                    },
-                    items: semesters.map((Semester value) {
-                      return new DropdownMenuItem<Semester>(
-                        value: value,
-                        child: new Text(
-                          "${_upperCaseFirstLetter(value.season)} ${value.year}",
-                          softWrap: true,
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                )
-              ],
+      widget = DropdownButtonHideUnderline(
+        child: ListView(
+          padding: const EdgeInsets.all(Dimens.spacingStandard),
+          children: <Widget>[
+            new InputDecorator(
+              decoration: const InputDecoration(
+                labelText: 'University',
+                hintText: 'Choose an university',
+              ),
+              isEmpty: selectedUniversity == null,
+              child: new DropdownButton<University>(
+                value: selectedUniversity,
+                isDense: true,
+                onChanged: (University newValue) {
+                  presenter.updateDefaultUniversity(newValue);
+                },
+                items: universities.map((University value) {
+                  return new DropdownMenuItem<University>(
+                      value: value,
+                      child: Container(
+                          width: MediaQuery.of(context).size.width * .80,
+                          child: new Text(
+                            value.name,
+                            overflow: TextOverflow.ellipsis,
+                          )));
+                }).toList(),
+              ),
             ),
-          ),
+            new InputDecorator(
+              decoration: const InputDecoration(
+                labelText: 'Semester',
+                hintText: 'Choose an semester',
+              ),
+              isEmpty: selectedSemester == null ||
+                  !semesters.contains(selectedSemester),
+              child: new DropdownButton<Semester>(
+                value: selectedSemester,
+                isDense: true,
+                onChanged: (Semester newValue) {
+                  presenter.updateDefaultSemester(newValue);
+                },
+                items: semesters.map((Semester value) {
+                  return new DropdownMenuItem<Semester>(
+                    value: value,
+                    child: new Text(
+                      "${_upperCaseFirstLetter(value.season)} ${value.year}",
+                      softWrap: true,
+                    ),
+                  );
+                }).toList(),
+              ),
+            )
+          ],
         ),
       );
     }
+
+    return WillPopScope(
+      onWillPop: () {
+        return Future<bool>.value(
+            selectedUniversity != null && selectedSemester != null);
+      },
+      child: Scaffold(
+        appBar: new AppBar(
+          title: new Text("Options"),
+          actions: <Widget>[
+            IconButton(
+                icon: new Icon(
+                  Icons.check,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                }),
+          ],
+        ),
+        body: widget,
+      ),
+    );
   }
 
   @override

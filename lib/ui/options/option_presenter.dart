@@ -4,14 +4,13 @@ import '../../data/lib.dart';
 class OptionPresenter {
   OptionView view;
   UCTApiClient apiClient;
-  HomeRouter router;
   RecentSelectionDao recentSelectionDatabase;
   PreferenceDao preferenceDao;
   SearchContext searchContext;
 
   Function optionClickCallback;
 
-  OptionPresenter(this.view, this.router) {
+  OptionPresenter(this.view) {
     apiClient = new Injector().apiClient;
     searchContext = new Injector().searchContext;
     recentSelectionDatabase = new Injector().recentSelectionDatabase;
@@ -39,6 +38,7 @@ class OptionPresenter {
       DefaultSemester ds = DefaultSemester();
       ds.semester = defaultUniversity.university.availableSemesters[0];
       defaultSemester = ds;
+      await preferenceDao.insertSemester(ds.semester);
     }
     return defaultSemester;
   }

@@ -1,10 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
-import '../../data/lib.dart';
 import '../../ui/screens.dart';
-import 'home_router.dart';
 
 class HomeController extends StatefulWidget {
   @override
@@ -12,8 +8,7 @@ class HomeController extends StatefulWidget {
 }
 
 class HomeControllerState extends State<HomeController>
-    with TickerProviderStateMixin
-    implements HomeRouter {
+    with TickerProviderStateMixin {
   @override
   void initState() {
     MaterialPageRoute.debugEnableFadingRoutes = true;
@@ -28,46 +23,10 @@ class HomeControllerState extends State<HomeController>
         onGenerateRoute: (RouteSettings settings) {
           return new MaterialPageRoute(
             settings: settings,
-            builder: (_) => new HomePage(router: this),
+            builder: (_) => new HomePage(),
           );
         },
       ),
     );
-  }
-
-  @override
-  void gotoCourses(BuildContext context, String topicName) {
-    Navigator.of(context).push(new MaterialPageRoute(
-        builder: (_) => CoursesPage(router: this, topicName: topicName)));
-  }
-
-  @override
-  void gotoCourse(BuildContext context, Course course) {
-    Navigator.of(context)
-        .push(new MaterialPageRoute(builder: (_) => CoursePage(router: this)));
-  }
-
-  @override
-  Future<bool> gotoSection(BuildContext context, SearchContext searchContext) {
-    return Navigator.of(context).push(new MaterialPageRoute(
-        builder: (_) =>
-            SectionDetailsPage(router: this, searchContext: searchContext)));
-  }
-
-  @override
-  Future<bool> gotoSubjects(BuildContext context) {
-    return Navigator.of(context)
-        .push(new MaterialPageRoute(builder: (_) => SubjectPage(router: this)));
-  }
-
-  @override
-  Future<bool> pop(BuildContext context) async {
-    return Navigator.of(context).pop(true);
-  }
-
-  @override
-  Future<bool> gotoOptions(BuildContext context) {
-    return Navigator.of(context)
-        .push(new MaterialPageRoute(builder: (_) => OptionPage(router: this)));
   }
 }

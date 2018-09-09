@@ -6,7 +6,6 @@ import 'subject_adapter.dart';
 class SubjectPresenter {
   SubjectView view;
   UCTApiClient apiClient;
-  HomeRouter router;
   RecentSelectionDao recentSelectionDatabase;
   SearchContext searchContext;
 
@@ -15,7 +14,7 @@ class SubjectPresenter {
 
   Function subjectClickCallback;
 
-  SubjectPresenter(this.view, this.router) {
+  SubjectPresenter(this.view) {
     apiClient = new Injector().apiClient;
     searchContext = new Injector().searchContext;
     searchContext.reset();
@@ -24,10 +23,13 @@ class SubjectPresenter {
     preferenceDao = new Injector().preferenceDao;
 
     subjectClickCallback = (context, Subject subject) {
-      searchContext.subject = subject;
+      searchContext.updateWith(subject: subject);
+
       addToRecent(subject.topicName);
-      router.gotoCourses(context, subject.topicName);
-      updateSubjectList();
+
+      Navigator.of(context).pushNamed(UCTRoutes.courses).then((result) {
+        updateSubjectList();
+      });
     };
   }
 
@@ -35,13 +37,13 @@ class SubjectPresenter {
     var defaultUniversity = await preferenceDao.getDefaultUniversity();
     var defaultSemester = await preferenceDao.getDefaultSemester();
 
-    searchContext.university = defaultUniversity.university;
-    searchContext.semester = defaultSemester.semester;
-
     if (defaultUniversity == null || defaultSemester == null) {
       view.onDefaultError();
       return;
     }
+
+    searchContext.university = defaultUniversity.university;
+    searchContext.semester = defaultSemester.semester;
 
     apiClient
         .subjects(

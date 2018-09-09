@@ -4,20 +4,15 @@ import '../widgets/lib.dart';
 import 'section_presenter.dart';
 
 class SectionDetailsPage extends StatefulWidget {
-  final HomeRouter router;
-  final SearchContext searchContext;
-
-  SectionDetailsPage({Key key, this.router, this.searchContext})
-      : super(key: key);
+  SectionDetailsPage({Key key}) : super(key: key);
 
   @override
-  SectionDetailState createState() => SectionDetailState(router, searchContext);
+  SectionDetailState createState() => SectionDetailState();
 }
 
 class SectionDetailState extends State<SectionDetailsPage>
     implements SectionView {
-  final SearchContext searchContext;
-  final HomeRouter router;
+  SearchContext searchContext;
   final Adapter adapter = Adapter();
 
   bool initialTrackedStatus;
@@ -28,8 +23,10 @@ class SectionDetailState extends State<SectionDetailsPage>
   bool isTracked = false;
   Widget list;
 
-  SectionDetailState(this.router, this.searchContext) {
-    presenter = SectionPresenter(this, router, searchContext);
+  SectionDetailState() {
+    searchContext = Injector().searchContext;
+    presenter = SectionPresenter(this, searchContext);
+
     section = searchContext.section;
   }
 

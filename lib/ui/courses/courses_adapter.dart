@@ -36,8 +36,11 @@ class CourseTitleItem extends Item {
     }
 
     return new Container(
-      margin:
-          new EdgeInsets.only(left: 16.0, right: 16.0, top: 6.0, bottom: 6.0),
+      margin: new EdgeInsets.only(
+          left: Dimens.spacingStandard,
+          right: Dimens.spacingStandard,
+          top: 6.0,
+          bottom: 6.0),
       decoration: new BoxDecoration(
         color: Colors.white,
         shape: BoxShape.rectangle,

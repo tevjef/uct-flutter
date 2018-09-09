@@ -3,25 +3,23 @@ import '../widgets/lib.dart';
 import 'subject_presenter.dart';
 
 class SubjectPage extends StatefulWidget {
-  final HomeRouter router;
-
-  SubjectPage({Key key, this.router}) : super(key: key);
+  SubjectPage({Key key}) : super(key: key);
 
   @override
-  SubjectListState createState() => new SubjectListState(router);
+  SubjectListState createState() => new SubjectListState();
 }
 
 class SubjectListState extends State<SubjectPage> implements SubjectView {
-  HomeRouter router;
   SubjectPresenter presenter;
   Adapter adapter = Adapter();
   bool isLoading;
   Widget list;
   String title = "";
 
-  SubjectListState(HomeRouter router) {
-    this.router = router;
-    presenter = new SubjectPresenter(this, router);
+  bool initialied = true;
+
+  SubjectListState() {
+    presenter = new SubjectPresenter(this);
   }
 
   @override
@@ -35,20 +33,28 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
   Widget build(BuildContext context) {
     Widget widget;
 
-    if (isLoading) {
-      widget = new Center(
-          child: new Padding(
-              padding: const EdgeInsets.only(
-                  left: Dimens.spacingStandard, right: Dimens.spacingStandard),
-              child: new CircularProgressIndicator(
-                  backgroundColor: Colors.black)));
+    if (!initialied) {
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.of(context).pushNamed(UCTRoutes.options).then((onValue) {
+          presenter.loadSubjects();
+        });
+        setState(() {
+          initialied = true;
+        });
+      });
+
+      widget = Widgets.makeLoading();
     } else {
-      widget = getListView();
+      if (isLoading) {
+        widget = Widgets.makeLoading();
+      } else {
+        widget = getListView();
+      }
     }
 
     return WillPopScope(
       onWillPop: () {
-        router.pop(context);
+        return Future<bool>.value(true);
       },
       child: Scaffold(
           appBar: new AppBar(
@@ -60,7 +66,9 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
                     color: Colors.black,
                   ),
                   onPressed: () {
-                    router.gotoOptions(context).then((bool) {
+                    Navigator.of(context)
+                        .pushNamed(UCTRoutes.options)
+                        .then((bool) {
                       presenter.loadSubjects();
                     });
                   }),
@@ -81,6 +89,7 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
   void onSubjectSuccess(List<Item> adapterItems) {
     setState(() {
       this.isLoading = false;
+      initialied = true;
       this.adapter.swapData(adapterItems);
     });
   }
@@ -92,7 +101,9 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
 
   @override
   void onDefaultError() {
-    router.gotoOptions(context);
+    setState(() {
+      initialied = false;
+    });
   }
 
   @override

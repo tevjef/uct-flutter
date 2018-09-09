@@ -1,41 +1,29 @@
-import 'dart:async';
-
 import '../../core/lib.dart';
 import '../widgets/lib.dart';
 import 'home_presenter.dart';
 
 class HomePage extends StatefulWidget {
-  final HomeRouter router;
-
-  HomePage({Key key, this.router}) : super(key: key);
+  HomePage({Key key}) : super(key: key);
 
   @override
-  HomeListState createState() => new HomeListState(router);
+  HomeListState createState() => new HomeListState();
 }
 
-class HomeListState extends State<HomePage> implements HomeView {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      new GlobalKey<RefreshIndicatorState>();
-
-  bool isLoading;
-  Completer<Null> completer;
-  Adapter adapter = Adapter();
-
-  HomeRouter router;
+class HomeListState extends State<HomePage>
+    with LDEViewMixin
+    implements HomeView {
   HomePresenter presenter;
   Widget list;
 
-  HomeListState(HomeRouter router) {
-    this.router = router;
-    presenter = new HomePresenter(this, router);
+  HomeListState() {
+    presenter = new HomePresenter(this);
   }
 
   @override
   void initState() {
     super.initState();
     showLoading(true);
-    presenter.loadTrackedSections();
+    refreshData();
   }
 
   @override
@@ -43,22 +31,17 @@ class HomeListState extends State<HomePage> implements HomeView {
     Widget widget;
 
     if (isLoading) {
-      widget = new Center(
-          child: new Padding(
-              padding: const EdgeInsets.only(
-                  left: Dimens.spacingStandard, right: Dimens.spacingStandard),
-              child: new CircularProgressIndicator(
-                  backgroundColor: Colors.black)));
+      widget = Widgets.makeLoading();
     } else {
       widget = getListView();
     }
 
     return WillPopScope(
       onWillPop: () {
-        return router.pop(context);
+        return Future<bool>.value(true);
       },
       child: Scaffold(
-        key: _scaffoldKey,
+        key: scaffoldKey,
         appBar: new AppBar(
           title: new Text("Tracked Sections"),
           actions: <Widget>[
@@ -68,59 +51,22 @@ class HomeListState extends State<HomePage> implements HomeView {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  router.gotoSubjects(context).then((changed) {
+                  Navigator.of(context)
+                      .pushNamed(UCTRoutes.subjects)
+                      .then((changed) {
                     presenter.loadTrackedSections();
                   });
                 }),
           ],
         ),
         body: RefreshIndicator(
-            key: _refreshIndicatorKey,
-            onRefresh: _handleRefresh,
-            child: widget),
+            key: refreshIndicatorKey, onRefresh: handleRefresh, child: widget),
       ),
     );
   }
 
-  Future<Null> _handleRefresh() {
-    showLoading(true);
-
+  @override
+  void refreshData() {
     presenter.loadTrackedSections();
-
-    return completer.future;
-  }
-
-  Widget getListView() => ListView.builder(
-      padding: EdgeInsets.only(top: Dimens.spacingMedium),
-      itemCount: adapter.items.length,
-      itemBuilder: adapter.onCreateWidget);
-
-  @override
-  void showLoading(bool isLoading) {
-    this.isLoading = isLoading;
-    if (!isLoading && completer != null) {
-      completer.complete(null);
-    }
-
-    completer = new Completer();
-  }
-
-  @override
-  void setListData(List<Item> adapterItems) {
-    setState(() {
-      showLoading(false);
-      this.adapter.swapData(adapterItems);
-    });
-  }
-
-  @override
-  void showMessage(String message) {
-    _scaffoldKey.currentState?.showSnackBar(Widgets.makeSnackBar(message));
-  }
-
-  @override
-  void showErrorMessage(String message) {
-    _scaffoldKey.currentState
-        ?.showSnackBar(Widgets.makeSnackBar(message, SnackBarType.error));
   }
 }

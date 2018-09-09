@@ -9,7 +9,6 @@ abstract class HomeView implements BaseView {}
 class HomePresenter {
   HomeView view;
   UCTApiClient apiClient;
-  HomeRouter router;
 
   TrackedSectionDao trackedSectionDatabase;
 
@@ -17,7 +16,7 @@ class HomePresenter {
 
   Function sectionClickCallback;
 
-  HomePresenter(this.view, this.router) {
+  HomePresenter(this.view) {
     apiClient = new Injector().apiClient;
     trackedSectionDatabase = Injector().trackedSectionDatabase;
   }
@@ -50,8 +49,7 @@ class HomePresenter {
         "${subject.name} (${subject.number})".toUpperCase(),
       ));
       subjectGroup.forEach((searchContext) {
-        adapterItems.add(SectionItem(
-            searchContext, searchContext.section, router,
+        adapterItems.add(SectionItem(searchContext,
             onNavigated: onNavigated, hasTitle: true));
       });
     });

@@ -6,10 +6,9 @@ class CoursePresenter {
   CourseView view;
   UCTApiClient apiClient;
   SearchContext searchContext;
-  HomeRouter router;
   Course course;
 
-  CoursePresenter(this.view, this.router) {
+  CoursePresenter(this.view) {
     searchContext = new Injector().searchContext;
     course = searchContext.course;
   }
@@ -28,9 +27,11 @@ class CoursePresenter {
     if (course.sections.isNotEmpty) {
       course.sections.forEach((section) {
         if (all == false && section.status == "Closed") {
-          sectionItem.add(SectionItem(searchContext, section, router));
+          sectionItem
+              .add(SectionItem(searchContext.copyWith(section: section)));
         } else if (all) {
-          sectionItem.add(SectionItem(searchContext, section, router));
+          sectionItem
+              .add(SectionItem(searchContext.copyWith(section: section)));
         }
       });
     }

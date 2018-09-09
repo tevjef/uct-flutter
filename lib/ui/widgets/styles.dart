@@ -4,6 +4,15 @@ class Styles {
   static TextStyle body1Primary = new TextStyle(
       color: Colors.black, fontSize: 12.0, fontFamily: "ProductSans");
 
+  static TextStyle body1PrimaryInverse = new TextStyle(
+      color: Colors.white, fontSize: 12.0, fontFamily: "ProductSans");
+
+  static TextStyle body2Primary = new TextStyle(
+      color: Colors.black, fontSize: 14.0, fontFamily: "ProductSans");
+
+  static TextStyle body2PrimaryInverse = new TextStyle(
+      color: Colors.white, fontSize: 14.0, fontFamily: "ProductSans");
+
   static TextStyle body1Secondary = new TextStyle(
       color: Colors.black54,
       fontSize: 10.0,

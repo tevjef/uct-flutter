@@ -4,7 +4,6 @@ import '../widgets/lib.dart';
 
 class SectionPresenter {
   SectionView view;
-  HomeRouter router;
   Section section;
 
   SearchContext searchContext;
@@ -12,7 +11,7 @@ class SectionPresenter {
   UCTRepo uctRepo;
   TrackedSectionDao trackedSectionDatabase;
 
-  SectionPresenter(this.view, this.router, this.searchContext) {
+  SectionPresenter(this.view, this.searchContext) {
     trackedSectionDatabase = Injector().trackedSectionDatabase;
     uctRepo = Injector().uctRepo;
     section = searchContext.section;
@@ -35,7 +34,7 @@ class SectionPresenter {
     }
 
     adapterItems.addAll(metaItems);
-    adapterItems.add(SectionItem(searchContext, section, router));
+    adapterItems.add(SectionItem(searchContext));
     view.onSectionSuccess(adapterItems);
     loadStatus();
   }

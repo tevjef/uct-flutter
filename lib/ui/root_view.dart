@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/lib.dart';
+import '../ui/screens.dart';
 
 class RootPage extends StatefulWidget {
   static const String routeName = '/';
@@ -12,18 +13,11 @@ class RootPage extends StatefulWidget {
 class RootPageState extends State<RootPage> {
   int currentIndex = 0;
 
-  List<Widget> pages;
-
-  @override
-  void initState() {
-    super.initState();
-
-    pages = <Widget>[
-      new HomeController(),
-      new HomeController(),
-      new HomeController()
-    ];
-  }
+  List<Widget> pages = <Widget>[
+    new HomePage(),
+    new HomeController(),
+    new HomeController()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +32,15 @@ class RootPageState extends State<RootPage> {
         ],
         fixedColor: Colors.black,
         currentIndex: currentIndex,
-        onTap: (int index) {
-          setState(() {
-            currentIndex = index;
-          });
-        });
+        onTap: onTabTapped);
 
     return new Scaffold(
         bottomNavigationBar: bottomNavigationBar, body: pages[currentIndex]);
+  }
+
+  void onTabTapped(int index) {
+    setState(() {
+      currentIndex = index;
+    });
   }
 }

@@ -5,9 +5,8 @@ import 'course_presenter.dart';
 
 class CoursePage extends StatelessWidget {
   final SearchContext searchContext = Injector().searchContext;
-  final HomeRouter router;
 
-  CoursePage({Key key, @required this.router}) : super(key: key);
+  CoursePage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +58,8 @@ class CoursePage extends StatelessWidget {
         ),
         body: new TabBarView(
           children: [
-            new _CourseList(key: Key("__all__"), router: router, all: true),
-            new _CourseList(key: Key("__all__"), router: router, all: false),
+            new _CourseList(all: true),
+            new _CourseList(all: false),
           ],
         ),
       ),
@@ -70,25 +69,22 @@ class CoursePage extends StatelessWidget {
 
 class _CourseList extends StatefulWidget {
   final bool all;
-  final HomeRouter router;
 
-  _CourseList({Key key, @required this.router, @required this.all})
-      : super(key: key);
+  _CourseList({Key key, @required this.all}) : super(key: key);
 
   @override
-  _CourseListState createState() => new _CourseListState(router, all);
+  _CourseListState createState() => new _CourseListState(all);
 }
 
 class _CourseListState extends State<_CourseList> implements CourseView {
   CoursePresenter presenter;
   Adapter adapter = Adapter();
-  HomeRouter router;
   bool isLoading;
   bool _all;
 
-  _CourseListState(HomeRouter router, bool all) {
+  _CourseListState(bool all) {
     _all = all;
-    presenter = new CoursePresenter(this, router);
+    presenter = new CoursePresenter(this);
   }
 
   @override

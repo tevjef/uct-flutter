@@ -1,19 +1,8 @@
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-
-import '../../data/lib.dart';
-
-abstract class HomeRouter {
-  Future<bool> pop(BuildContext context);
-
-  void gotoCourses(BuildContext context, String topicName);
-
-  Future<bool> gotoOptions(BuildContext context);
-
-  Future<bool> gotoSubjects(BuildContext context);
-
-  void gotoCourse(BuildContext context, Course course);
-
-  Future<bool> gotoSection(BuildContext context, SearchContext searchContext);
+class UCTRoutes {
+  static final home = "/home";
+  static final subjects = "/home/subjects";
+  static final options = "/home/options";
+  static final courses = "/home/subjects/courses";
+  static final course = "/home/subjects/courses/course";
+  static final section = "/home/subjects/courses/course/secton";
 }

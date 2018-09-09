@@ -6,27 +6,30 @@ import 'courses_adapter.dart';
 class CoursePresenter {
   CourseView view;
   UCTApiClient apiClient;
-  HomeRouter router;
   SearchContext searchContext;
   RecentSelectionDao recentSelectionDatabase;
   Function courseClickCallback;
   List<Course> courses;
 
-  CoursePresenter(this.view, this.router) {
+  String topicName;
+
+  CoursePresenter(this.view, this.topicName) {
     apiClient = new Injector().apiClient;
     searchContext = new Injector().searchContext;
     recentSelectionDatabase = new Injector().recentSelectionDatabase;
 
     courseClickCallback = (context, Course course) {
-      searchContext.course = course;
+      searchContext.updateWith(course: course);
       addToRecent(course.topicName);
-      router.gotoCourse(context, course);
-      updateCourseList();
+
+      Navigator.of(context).pushNamed(UCTRoutes.course).then((changed) {
+        updateCourseList();
+      });
     };
   }
 
-  void loadCourses(String courseTopicName) {
-    apiClient.courses(courseTopicName).then((courses) {
+  void loadCourses() {
+    apiClient.courses(topicName).then((courses) {
       this.courses = courses;
       updateCourseList();
     }).catchError((onError) {

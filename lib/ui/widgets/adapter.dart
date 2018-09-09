@@ -66,7 +66,6 @@ class MetadataItem extends Item {
 }
 
 class SectionItem extends Item {
-  HomeRouter router;
   SearchContext searchContext;
   Section section;
 
@@ -74,9 +73,10 @@ class SectionItem extends Item {
 
   Function onNavigated;
 
-  SectionItem(this.searchContext, this.section, this.router,
-      {this.hasTitle = false, this.onNavigated})
-      : super(section.callNumber.hashCode);
+  SectionItem(this.searchContext, {this.hasTitle = false, this.onNavigated})
+      : super(searchContext.section.callNumber.hashCode) {
+    section = searchContext.section;
+  }
 
   @override
   int itemType() => 1;
@@ -198,9 +198,11 @@ class SectionItem extends Item {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      searchContext.section = section;
-                      router
-                          .gotoSection(context, searchContext)
+                      var searchContext = new Injector().searchContext;
+                      searchContext.updateWithAnother(this.searchContext);
+
+                      Navigator.of(context)
+                          .pushNamed(UCTRoutes.section)
                           .then((changed) {
                         if (onNavigated != null) {
                           onNavigated(changed);
