@@ -16,9 +16,11 @@ abstract class BaseView {
 }
 
 abstract class ListOps {
-  void insert(int index, Item item);
+  void updateItem(Item item);
 
-  Item removeAt(int index);
+  Item removeItem(Item item);
+
+  void swapItems(List<Item> items);
 }
 
 abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
@@ -43,11 +45,9 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
   }
 
   @override
-  void setListData(List<Item> adapterItems) {
-    setState(() {
-      showLoading(false);
-      this.adapter.swapData(adapterItems);
-    });
+  void setListData(List<Item> items) {
+    showLoading(false);
+    swapItems(items);
   }
 
   @override
@@ -72,6 +72,27 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
     return completer.future;
   }
 
+  void updateItem(Item item) {
+    setState(() {
+      adapter.updateItem(item);
+    });
+  }
+
+  @override
+  void swapItems(List<Item> items) {
+    setState(() {
+      adapter.swapData(items);
+    });
+  }
+
+  Item removeItem(Item item) {
+    Item oldItem = adapter.removeItem(item);
+
+    setState(() {});
+
+    return oldItem;
+  }
+
   ListView getListView() => ListView.builder(
       padding: EdgeInsets.only(top: Dimens.spacingMedium),
       itemCount: adapter.getItemCount(),
@@ -84,7 +105,9 @@ enum SnackBarType { error, neutral, success }
 
 class Widgets {
   static SnackBar makeSnackBar(String message,
-      [SnackBarType type = SnackBarType.neutral, SnackBarAction action]) {
+      [SnackBarType type = SnackBarType.neutral,
+      SnackBarAction action,
+      Duration duration = const Duration(seconds: 4)]) {
     TextStyle style;
     Color color;
 
@@ -92,6 +115,7 @@ class Widgets {
       case SnackBarType.error:
         style = Styles.body2PrimaryInverse;
         color = Colors.red;
+        duration = Duration(seconds: 30);
         break;
       case SnackBarType.neutral:
         style = Styles.body2PrimaryInverse;
@@ -103,9 +127,11 @@ class Widgets {
         break;
     }
     return SnackBar(
-        action: action,
-        content: Text(message, style: style),
-        backgroundColor: color);
+      action: action,
+      content: Text(message, style: style),
+      backgroundColor: color,
+      duration: duration,
+    );
   }
 
   static Widget makeLoading() {

@@ -11,7 +11,7 @@ class SubjectTitleItem extends Item {
   int itemType() => 1;
 
   @override
-  Widget create(BuildContext context, int position) {
+  Widget create(BuildContext context, int position, int adapterPosition) {
     final insets = new EdgeInsets.symmetric(
         horizontal: 32.0, vertical: Dimens.spacingStandard);
 

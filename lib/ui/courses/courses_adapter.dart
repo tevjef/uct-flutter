@@ -10,10 +10,7 @@ class CourseTitleItem extends Item {
   CourseTitleItem(this.course, this.callback) : super(course.hashCode);
 
   @override
-  int itemType() => 1;
-
-  @override
-  Widget create(BuildContext context, int position) {
+  Widget create(BuildContext context, int position, int adapterPosition) {
     int total = course.sections.length;
     int open = 0;
     course.sections.forEach((section) {

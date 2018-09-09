@@ -21,10 +21,7 @@ class HeaderItem extends Item {
       : super(title.hashCode);
 
   @override
-  int itemType() => 0;
-
-  @override
-  Widget create(BuildContext context, int position) {
+  Widget create(BuildContext context, int position, int adapterPosition) {
     return Padding(
         padding: insets,
         child: Text(
@@ -41,10 +38,7 @@ class MetadataItem extends Item {
   MetadataItem(this.title, this.content) : super(content.hashCode);
 
   @override
-  int itemType() => 0;
-
-  @override
-  Widget create(BuildContext context, int position) {
+  Widget create(BuildContext context, int position, int adapterPosition) {
     return Padding(
         padding: EdgeInsets.only(
             bottom: Dimens.spacingStandard,
@@ -89,10 +83,7 @@ class SectionItem extends Item {
   }
 
   @override
-  int itemType() => 1;
-
-  @override
-  Widget create(BuildContext context, int position) {
+  Widget create(BuildContext context, int position, int adapterPosition) {
     var table = Table(
       columnWidths: {
         0: FlexColumnWidth(0.30),
@@ -256,7 +247,7 @@ class SectionItem extends Item {
       widget = Dismissible(
           onDismissed: (direction) {
             if (onDismissed != null) {
-              onDismissed(searchContext, position);
+              onDismissed(searchContext, this, position, adapterPosition);
             }
           },
           key: Key(section.topicName),
@@ -274,10 +265,7 @@ class SubscribeItem extends Item {
   SubscribeItem(this.statusProvider, this.callback) : super(0);
 
   @override
-  int itemType() => 3;
-
-  @override
-  Widget create(BuildContext context, int position) {
+  Widget create(BuildContext context, int position, int adapterPosition) {
     return Material(
         type: MaterialType.transparency,
         color: Colors.transparent,
@@ -317,10 +305,7 @@ class DividerItem extends Item {
   const DividerItem() : super(1);
 
   @override
-  int itemType() => 3;
-
-  @override
-  Widget create(BuildContext context, int position) {
+  Widget create(BuildContext context, int position, int adapterPosition) {
     return Divider(
       indent: Dimens.spacingStandard,
     );
@@ -339,10 +324,7 @@ class SpaceItem extends Item {
         super(1);
 
   @override
-  int itemType() => 3;
-
-  @override
-  Widget create(BuildContext context, int position) {
+  Widget create(BuildContext context, int position, int adapterPosition) {
     return SizedBox(height: height, width: width);
   }
 }
