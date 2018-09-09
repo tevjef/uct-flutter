@@ -10,13 +10,19 @@ abstract class BaseView {
 
   void setListData(List<Item> adapterItems);
 
-  void showMessage(String message);
+  void showMessage(String message, [SnackBarAction action]);
 
-  void showErrorMessage(String message);
+  void showErrorMessage(String message, [SnackBarAction action]);
+}
+
+abstract class ListOps {
+  void insert(int index, Item item);
+
+  Item removeAt(int index);
 }
 
 abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
-    implements BaseView {
+    implements BaseView, ListOps {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
@@ -45,14 +51,17 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
   }
 
   @override
-  void showMessage(String message) {
-    scaffoldKey.currentState?.showSnackBar(Widgets.makeSnackBar(message));
+  void showMessage(String message, [SnackBarAction action]) {
+    scaffoldKey.currentState?.hideCurrentSnackBar();
+
+    scaffoldKey.currentState?.showSnackBar(
+        Widgets.makeSnackBar(message, SnackBarType.neutral, action));
   }
 
   @override
-  void showErrorMessage(String message) {
-    scaffoldKey.currentState
-        ?.showSnackBar(Widgets.makeSnackBar(message, SnackBarType.error));
+  void showErrorMessage(String message, [SnackBarAction action]) {
+    scaffoldKey.currentState?.showSnackBar(
+        Widgets.makeSnackBar(message, SnackBarType.error, action));
   }
 
   Future<Null> handleRefresh() {
@@ -65,7 +74,7 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
 
   ListView getListView() => ListView.builder(
       padding: EdgeInsets.only(top: Dimens.spacingMedium),
-      itemCount: adapter.items.length,
+      itemCount: adapter.getItemCount(),
       itemBuilder: adapter.onCreateWidget);
 
   void refreshData();
@@ -75,7 +84,7 @@ enum SnackBarType { error, neutral, success }
 
 class Widgets {
   static SnackBar makeSnackBar(String message,
-      [SnackBarType type = SnackBarType.neutral]) {
+      [SnackBarType type = SnackBarType.neutral, SnackBarAction action]) {
     TextStyle style;
     Color color;
 
@@ -94,7 +103,9 @@ class Widgets {
         break;
     }
     return SnackBar(
-        content: Text(message, style: style), backgroundColor: color);
+        action: action,
+        content: Text(message, style: style),
+        backgroundColor: color);
   }
 
   static Widget makeLoading() {
@@ -103,5 +114,50 @@ class Widgets {
             padding: const EdgeInsets.only(
                 left: Dimens.spacingStandard, right: Dimens.spacingStandard),
             child: CircularProgressIndicator(backgroundColor: Colors.black)));
+  }
+
+  static Widget makeIconWithBadge(String badgeText, GestureTapCallback onTap) {
+    return Container(
+      padding: EdgeInsets.only(right: 16.0),
+      child: Center(
+        child: new Stack(
+          overflow: Overflow.visible,
+          children: <Widget>[
+            const Icon(Icons.inbox),
+            new Positioned(
+              top: -6.0,
+              right: -6.0,
+              child: Container(
+                padding: EdgeInsets.all(2.0),
+                decoration: new BoxDecoration(
+                  borderRadius: new BorderRadius.circular(99.0),
+                  color: Colors.white,
+                ),
+                child: new Container(
+                  padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
+                  decoration: new BoxDecoration(
+                      borderRadius: new BorderRadius.circular(99.0),
+                      color: Colors.red),
+                  child: Center(
+                    child: new Text(
+                      badgeText,
+                      textAlign: TextAlign.center,
+                      style: Styles.body1PrimaryInverse,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned.fill(
+              child: Material(
+                borderRadius: BorderRadius.all(Radius.circular(99.0)),
+                color: Colors.transparent,
+                child: InkWell(onTap: onTap),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

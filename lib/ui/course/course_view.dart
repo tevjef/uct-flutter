@@ -127,7 +127,7 @@ class _CourseListState extends State<_CourseList> implements CourseView {
   }
 
   Widget getListView() => StatefulListView(
-        adapter.items.length,
+        adapter.getItemCount(),
         adapter.onCreateWidget,
         padding: new EdgeInsets.only(top: Dimens.spacingStandard),
       );

@@ -45,7 +45,7 @@ class UCTApiClient implements UCTApi {
 
   @override
   Future<Section> section(String sectionTopicName) {
-    return getResponse("/courses/$sectionTopicName").then((Response response) {
+    return getResponse("/section/$sectionTopicName").then((Response response) {
       return response.data.section;
     });
   }
@@ -60,14 +60,12 @@ class UCTApiClient implements UCTApi {
   }
 
   Future<Response> getResponse(String url) {
-    return http.get("$baseUrl" + "$url")
-        .then((http.Response response) {
+    return http.get("$baseUrl" + "$url").then((http.Response response) {
       logHttp(response);
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
         throw new Exception(
-            "Error while getting response [StatusCode:$statusCode, Error:${response
-                .reasonPhrase}]");
+            "Error while getting response [StatusCode:$statusCode, Error:${response.reasonPhrase}]");
       }
       return Response.fromBuffer(response.bodyBytes);
     });
@@ -93,8 +91,7 @@ class UCTApiClient implements UCTApi {
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
         throw new Exception(
-            "Error while getting contacts [StatusCode:$statusCode, Error:${response
-                .reasonPhrase}]");
+            "Error while getting contacts [StatusCode:$statusCode, Error:${response.reasonPhrase}]");
       }
 
       return true;
@@ -115,8 +112,7 @@ class UCTApiClient implements UCTApi {
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
         throw new Exception(
-            "Error while getting contacts [StatusCode:$statusCode, Error:${response
-                .reasonPhrase}]");
+            "Error while getting contacts [StatusCode:$statusCode, Error:${response.reasonPhrase}]");
       }
 
       return true;

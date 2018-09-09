@@ -27,11 +27,11 @@ class CoursePresenter {
     if (course.sections.isNotEmpty) {
       course.sections.forEach((section) {
         if (all == false && section.status == "Closed") {
-          sectionItem
-              .add(SectionItem(searchContext.copyWith(section: section)));
+          sectionItem.add(SectionItem(searchContext.copyWith(section: section),
+              slidable: true));
         } else if (all) {
-          sectionItem
-              .add(SectionItem(searchContext.copyWith(section: section)));
+          sectionItem.add(SectionItem(searchContext.copyWith(section: section),
+              slidable: true));
         }
       });
     }

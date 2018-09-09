@@ -45,22 +45,24 @@ class HomeListState extends State<HomePage>
         appBar: new AppBar(
           title: new Text("Tracked Sections"),
           actions: <Widget>[
-            IconButton(
-                icon: new Icon(
-                  Icons.add,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(UCTRoutes.subjects)
-                      .then((changed) {
-                    presenter.loadTrackedSections();
-                  });
-                }),
+            Widgets.makeIconWithBadge("5", () {}),
           ],
         ),
         body: RefreshIndicator(
             key: refreshIndicatorKey, onRefresh: handleRefresh, child: widget),
+        floatingActionButton: FloatingActionButton(
+            child: new Icon(
+              Icons.add,
+              color: Colors.black,
+            ),
+            backgroundColor: AppColors.white,
+            onPressed: () {
+              Navigator.of(context)
+                  .pushNamed(UCTRoutes.subjects)
+                  .then((changed) {
+                presenter.loadTrackedSections();
+              });
+            }),
       ),
     );
   }

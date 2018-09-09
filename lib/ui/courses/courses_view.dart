@@ -91,5 +91,5 @@ class CourseListState extends State<_CourseList> implements CourseView {
   }
 
   Widget getListView() =>
-      StatefulListView(adapter.items.length, adapter.onCreateWidget);
+      StatefulListView(adapter.getItemCount(), adapter.onCreateWidget);
 }

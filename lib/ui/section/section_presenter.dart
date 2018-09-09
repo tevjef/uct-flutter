@@ -34,7 +34,7 @@ class SectionPresenter {
     }
 
     adapterItems.addAll(metaItems);
-    adapterItems.add(SectionItem(searchContext));
+    adapterItems.add(SectionItem(searchContext, navigates: false));
     view.onSectionSuccess(adapterItems);
     loadStatus();
   }

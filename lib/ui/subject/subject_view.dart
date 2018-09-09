@@ -96,7 +96,7 @@ class SubjectListState extends State<SubjectPage> implements SubjectView {
 
   Widget getListView() => ListView.builder(
       padding: EdgeInsets.only(top: Dimens.spacingMedium),
-      itemCount: adapter.items.length,
+      itemCount: adapter.getItemCount(),
       itemBuilder: adapter.onCreateWidget);
 
   @override

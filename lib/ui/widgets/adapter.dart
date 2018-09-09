@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../core/lib.dart';
 import '../../data/lib.dart';
 import 'rv.dart';
+import 'shared.dart';
 import 'styles.dart';
 import 'tracked_status_provider.dart';
 
@@ -70,10 +72,18 @@ class SectionItem extends Item {
   Section section;
 
   bool hasTitle;
+  bool navigates;
+  bool slidable;
 
   Function onNavigated;
+  Function onDismissed;
 
-  SectionItem(this.searchContext, {this.hasTitle = false, this.onNavigated})
+  SectionItem(this.searchContext,
+      {this.hasTitle = false,
+      this.navigates = true,
+      this.slidable = false,
+      this.onNavigated,
+      this.onDismissed})
       : super(searchContext.section.callNumber.hashCode) {
     section = searchContext.section;
   }
@@ -144,7 +154,32 @@ class SectionItem extends Item {
       );
     }
 
-    return Container(
+    Widget navigationWidget = Container();
+
+    if (navigates) {
+      navigationWidget = Positioned.fill(
+        child: Material(
+          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              var searchContext = new Injector().searchContext;
+              searchContext.updateWithAnother(this.searchContext);
+
+              Navigator.of(context)
+                  .pushNamed(UCTRoutes.section)
+                  .then((changed) {
+                if (onNavigated != null) {
+                  onNavigated(changed);
+                }
+              });
+            },
+          ),
+        ),
+      );
+    }
+
+    Widget widget = Container(
       margin: EdgeInsets.only(
           left: Dimens.spacingStandard,
           right: Dimens.spacingStandard,
@@ -192,27 +227,43 @@ class SectionItem extends Item {
                 textAlign: TextAlign.center,
                 style: Styles.caption.copyWith(color: Colors.white),
               )),
-          Positioned.fill(
-              child: Material(
-                  borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      var searchContext = new Injector().searchContext;
-                      searchContext.updateWithAnother(this.searchContext);
-
-                      Navigator.of(context)
-                          .pushNamed(UCTRoutes.section)
-                          .then((changed) {
-                        if (onNavigated != null) {
-                          onNavigated(changed);
-                        }
-                      });
-                    },
-                  )))
+          navigationWidget
         ],
       ),
     );
+
+    if (slidable) {
+      var actions = <Widget>[
+        new IconSlideAction(
+          caption: 'Add',
+          color: Colors.transparent,
+          foregroundColor: Colors.black,
+          icon: Icons.add,
+          onTap: () =>
+              Scaffold.of(context).showSnackBar(Widgets.makeSnackBar("onTap")),
+        ),
+      ];
+
+      widget = Slidable(
+        delegate: new SlidableDrawerDelegate(),
+        actionExtentRatio: 0.25,
+        child: widget,
+        secondaryActions: actions,
+      );
+    }
+
+    if (onDismissed != null) {
+      widget = Dismissible(
+          onDismissed: (direction) {
+            if (onDismissed != null) {
+              onDismissed(searchContext, position);
+            }
+          },
+          key: Key(section.topicName),
+          child: widget);
+    }
+
+    return widget;
   }
 }
 

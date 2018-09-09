@@ -156,7 +156,7 @@ class SectionDetailState extends State<SectionDetailsPage>
 
   Widget getListView() {
     return ListView.builder(
-        itemCount: adapter.items.length,
+        itemCount: adapter.getItemCount(),
         itemBuilder: (BuildContext context, int position) {
           return adapter.onCreateWidget(context, position);
         });

@@ -119,15 +119,9 @@ CREATE TABLE $_tableTrackedSections (
 
   Future<TrackedSection> insertSearchContext(SearchContext searchContext) {
     TrackedSection trackedSection = TrackedSection();
-    University _uni = University.create();
-    _uni.name = "Some Name";
 
-    Semester _sem = Semester.create();
-    _sem.season = "Spring";
-    _sem.year = 2016;
-
-    trackedSection.university = _uni;
-    trackedSection.semester = _sem;
+    trackedSection.university = searchContext.university;
+    trackedSection.semester = searchContext.semester;
 
     trackedSection.subject = searchContext.subject;
     trackedSection.course = searchContext.course;

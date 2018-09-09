@@ -4,11 +4,11 @@ import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
 
-abstract class HomeView implements BaseView {}
+abstract class HomeView implements BaseView, ListOps {}
 
 class HomePresenter {
   HomeView view;
-  UCTApiClient apiClient;
+  UCTRepo uctRepo;
 
   TrackedSectionDao trackedSectionDatabase;
 
@@ -17,17 +17,29 @@ class HomePresenter {
   Function sectionClickCallback;
 
   HomePresenter(this.view) {
-    apiClient = new Injector().apiClient;
+    uctRepo = new Injector().uctRepo;
     trackedSectionDatabase = Injector().trackedSectionDatabase;
   }
 
   void loadTrackedSections() async {
     List<Item> adapterItems = List();
 
-    var trackedSections = await trackedSectionDatabase.getAllTrackedSections();
+    var trackedSections = await uctRepo.refreshTrackedSections();
 
     var onNavigated = (bool changed) {
       loadTrackedSections();
+    };
+
+    var onDismissed = (SearchContext searchContext, int position) {
+      var removedItem = view.removeAt(position);
+      var action = SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            view.insert(position, removedItem);
+          });
+      view.showMessage(
+          "Unsubscried from ${searchContext.section.number} of ${searchContext.course.name}.",
+          action);
     };
 
     var searchContexts = trackedSections.map((trackedSections) {
@@ -46,11 +58,17 @@ class HomePresenter {
     subjectGroups.forEach((number, subjectGroup) {
       var subject = subjectGroup[0].subject;
       adapterItems.add(HeaderItem(
-        "${subject.name} (${subject.number})".toUpperCase(),
-      ));
+          "${subject.name} (${subject.number})".toUpperCase(),
+          insets: const EdgeInsets.only(
+              left: Dimens.spacingStandard,
+              top: Dimens.spacingMedium,
+              bottom: Dimens.spacingXsmall,
+              right: Dimens.spacingStandard)));
       subjectGroup.forEach((searchContext) {
         adapterItems.add(SectionItem(searchContext,
-            onNavigated: onNavigated, hasTitle: true));
+            onNavigated: onNavigated,
+            hasTitle: true,
+            onDismissed: onDismissed));
       });
     });
 
