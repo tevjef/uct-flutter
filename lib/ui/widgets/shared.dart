@@ -29,6 +29,7 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
 
   bool isLoading;
   Completer<Null> completer;
@@ -94,6 +95,14 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
     setState(() {});
 
     return oldItem;
+  }
+
+  AnimatedList getAnimatedList() {
+    adapter.setListKey(listKey);
+    return AnimatedList(
+        key: listKey,
+        initialItemCount: adapter.getItemCount(),
+        itemBuilder: adapter.onCreateWidgetWithAnimation);
   }
 
   ListView getListView() => ListView.builder(

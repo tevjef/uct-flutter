@@ -8,13 +8,9 @@ abstract class HomeView implements BaseView, ListOps {}
 
 class HomePresenter {
   HomeView view;
+
   UCTRepo uctRepo;
-
   TrackedSectionDao trackedSectionDatabase;
-
-  List<TrackedSection> trackedSections;
-
-  Function sectionClickCallback;
 
   HomePresenter(this.view) {
     uctRepo = new Injector().uctRepo;
@@ -24,52 +20,39 @@ class HomePresenter {
   void loadTrackedSections() async {
     List<Item> adapterItems = List();
 
+    // Try refreshing all tracked sections.
     List<TrackedSection> trackedSections;
-
     try {
       trackedSections = await uctRepo.refreshTrackedSections();
     } catch (e) {
-      print(e);
-      view.showErrorMessage("Could not refresh list.");
+      view.showErrorMessage(e, loadTrackedSections);
       return;
     }
 
-    var onNavigated = (bool changed) {
-      loadTrackedSections();
-    };
-
+    // Convert data model to "display" model
     var searchContexts = trackedSections.map((trackedSections) {
       return trackedSections.toSearchContext();
     }).toList();
 
+    // Sort the data
     mergeSort(searchContexts, compare: (SearchContext a, SearchContext b) {
       return a.subject.name.compareTo(b.subject.name);
     });
 
+    // Create groups of data
     Map<String, List<SearchContext>> subjectGroups =
         groupBy(searchContexts, (SearchContext context) {
       return context.subject.name;
     });
 
+    // For each one of the groups
     subjectGroups.forEach((number, subjectGroup) {
       var subject = subjectGroup[0].subject;
 
-      var group = GroupItem(subject.hashCode);
+      // Create the group
+      var group = GroupItem(subject.topicName);
 
-      var onDismissed = (SearchContext searchContext, SectionItem item,
-          int position, int adapterPosition) {
-        var removedItem = view.removeItem(item);
-        var action = SnackBarAction(
-            label: "Undo",
-            onPressed: () {
-              group.insert(position, removedItem);
-              view.updateItem(group);
-            });
-        view.showMessage(
-            "Unsubscried from ${searchContext.section.number} of ${searchContext.course.name}.",
-            action);
-      };
-
+      // Add a header to the group.
       group.addHeader(HeaderItem(
           "${subject.name} (${subject.number})".toUpperCase(),
           insets: const EdgeInsets.only(
@@ -78,16 +61,45 @@ class HomePresenter {
               bottom: Dimens.spacingXsmall,
               right: Dimens.spacingStandard)));
 
+      // For each item in the group
       subjectGroup.forEach((searchContext) {
+        // Add the display cell of the data
         group.addItem(SectionItem(searchContext,
-            onNavigated: onNavigated,
             hasTitle: true,
-            onDismissed: onDismissed));
+            onReturnFromNavigation: onReturn,
+            onItemDismissed: onSectionItemDismissed(group)));
       });
 
+      // Add the group to the running list of cells.
       adapterItems.add(group);
     });
 
+    // Update the UI with the
     view.setListData(adapterItems);
+  }
+
+  Function onSectionItemDismissed(GroupItem group) {
+    return (SearchContext searchContext, SectionItem item, int position,
+        int adapterPosition) {
+      // Remove the item from the list.
+      var removedItem = view.removeItem(item);
+
+      // Create an undo action.
+      var action = SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            group.insert(position, removedItem);
+            view.updateItem(group);
+          });
+
+      // Show a message when an item is removed.
+      view.showMessage(
+          "Unsubscried from ${searchContext.section.number} of ${searchContext.course.name}.",
+          action);
+    };
+  }
+
+  void onReturn(bool changed) {
+    loadTrackedSections();
   }
 }

@@ -18,27 +18,44 @@ class HeaderItem extends Item {
           top: Dimens.spacingMedium,
           bottom: Dimens.spacingMedium,
           right: Dimens.spacingStandard)})
-      : super(title.hashCode);
+      : super(title);
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition) {
-    return Padding(
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double> animation]) {
+    var widget = Padding(
         padding: insets,
         child: Text(
           title,
           style: Styles.sectionHeader,
         ));
+
+    if (animation != null) {
+      return FadeTransition(
+        opacity: animation,
+        child: SizeTransition(
+          sizeFactor: animation,
+          child: widget,
+        ),
+      );
+    } else {
+      return widget;
+    }
   }
+
+  @override
+  bool shouldAnimateRemove() => true;
 }
 
 class MetadataItem extends Item {
   String title;
   String content;
 
-  MetadataItem(this.title, this.content) : super(content.hashCode);
+  MetadataItem(this.title, this.content) : super(content);
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double> animation]) {
     return Padding(
         padding: EdgeInsets.only(
             bottom: Dimens.spacingStandard,
@@ -69,21 +86,22 @@ class SectionItem extends Item {
   bool navigates;
   bool slidable;
 
-  Function onNavigated;
-  Function onDismissed;
+  Function onReturnFromNavigation;
+  Function onItemDismissed;
 
   SectionItem(this.searchContext,
       {this.hasTitle = false,
       this.navigates = true,
       this.slidable = false,
-      this.onNavigated,
-      this.onDismissed})
-      : super(searchContext.section.callNumber.hashCode) {
+      this.onReturnFromNavigation,
+      this.onItemDismissed})
+      : super(searchContext.section.callNumber) {
     section = searchContext.section;
   }
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double> animation]) {
     var table = Table(
       columnWidths: {
         0: FlexColumnWidth(0.30),
@@ -160,8 +178,8 @@ class SectionItem extends Item {
               Navigator.of(context)
                   .pushNamed(UCTRoutes.section)
                   .then((changed) {
-                if (onNavigated != null) {
-                  onNavigated(changed);
+                if (onReturnFromNavigation != null) {
+                  onReturnFromNavigation(changed);
                 }
               });
             },
@@ -243,11 +261,11 @@ class SectionItem extends Item {
       );
     }
 
-    if (onDismissed != null) {
+    if (onItemDismissed != null) {
       widget = Dismissible(
           onDismissed: (direction) {
-            if (onDismissed != null) {
-              onDismissed(searchContext, this, position, adapterPosition);
+            if (onItemDismissed != null) {
+              onItemDismissed(searchContext, this, position, adapterPosition);
             }
           },
           key: Key(section.topicName),
@@ -262,10 +280,11 @@ class SubscribeItem extends Item {
   final TrackedStatusProvider statusProvider;
   final Function callback;
 
-  SubscribeItem(this.statusProvider, this.callback) : super(0);
+  SubscribeItem(this.statusProvider, this.callback) : super("");
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double> animation]) {
     return Material(
         type: MaterialType.transparency,
         color: Colors.transparent,
@@ -302,10 +321,11 @@ class SubscribeItem extends Item {
 }
 
 class DividerItem extends Item {
-  const DividerItem() : super(1);
+  const DividerItem() : super("");
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double> animation]) {
     return Divider(
       indent: Dimens.spacingStandard,
     );
@@ -321,10 +341,11 @@ class SpaceItem extends Item {
     this.width: Dimens.spacingStandard,
   })  : assert(height >= 0.0),
         assert(width >= 0.0),
-        super(1);
+        super("");
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double> animation]) {
     return SizedBox(height: height, width: width);
   }
 }

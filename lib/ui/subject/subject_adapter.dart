@@ -5,13 +5,14 @@ class SubjectTitleItem extends Item {
   Function callback;
   Subject subject;
 
-  SubjectTitleItem(this.subject, this.callback) : super(subject.hashCode);
+  SubjectTitleItem(this.subject, this.callback) : super(subject.topicName);
 
   @override
   int itemType() => 1;
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double> animation]) {
     final insets = new EdgeInsets.symmetric(
         horizontal: 32.0, vertical: Dimens.spacingStandard);
 

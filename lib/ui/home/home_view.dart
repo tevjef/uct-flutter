@@ -33,7 +33,7 @@ class HomeListState extends State<HomePage>
     if (isLoading) {
       widget = Widgets.makeLoading();
     } else {
-      widget = getListView();
+      widget = getAnimatedList();
     }
 
     return WillPopScope(
