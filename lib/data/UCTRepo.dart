@@ -12,6 +12,9 @@ class UCTRepo {
   TrackedSectionDao trackedSectionDatabase;
   RecentSelectionDao recentSelectionDatabase;
 
+  DateTime lastRefresh;
+  Duration minTimeBetweenRefresh = Duration(seconds: 5);
+
   UCTRepo(this.searchContext, this.apiClient, this.trackedSectionDatabase,
       this.recentSelectionDatabase);
 
@@ -50,6 +53,10 @@ class UCTRepo {
     var allTrackedSections =
         await trackedSectionDatabase.getAllTrackedSections();
 
+    if (!showRefresh()) {
+      return allTrackedSections;
+    }
+
     List<Future<TrackedSection>> allCalls =
         allTrackedSections.map((trackedSection) {
       return Future(() async {
@@ -70,6 +77,24 @@ class UCTRepo {
     List<TrackedSection> newTrackedSections = await Future.wait(allCalls);
 
     return newTrackedSections;
+  }
+
+  bool showRefresh() {
+    var currentTime = DateTime.now();
+
+    if (lastRefresh == null) {
+      lastRefresh = currentTime;
+      return true;
+    }
+
+    var shouldRefresh = currentTime.millisecondsSinceEpoch -
+            lastRefresh.millisecondsSinceEpoch >
+        minTimeBetweenRefresh.inMilliseconds;
+
+    if (shouldRefresh) {
+      lastRefresh = currentTime;
+    }
+    return shouldRefresh;
   }
 }
 

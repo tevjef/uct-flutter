@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../data/lib.dart';
 import 'rv.dart';
 import 'styles.dart';
 
@@ -12,7 +13,7 @@ abstract class BaseView {
 
   void showMessage(String message, [SnackBarAction action]);
 
-  void showErrorMessage(String message, [SnackBarAction action]);
+  void showErrorMessage(Exception error, [Function retryAction]);
 }
 
 abstract class ListOps {
@@ -59,9 +60,11 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
   }
 
   @override
-  void showErrorMessage(String message, [SnackBarAction action]) {
-    scaffoldKey.currentState?.showSnackBar(
-        Widgets.makeSnackBar(message, SnackBarType.error, action));
+  void showErrorMessage(Exception error, [Function retry]) {
+    scaffoldKey.currentState?.hideCurrentSnackBar();
+
+    scaffoldKey.currentState
+        ?.showSnackBar(Widgets.makeErrorSnackBar(error, retry));
   }
 
   Future<Null> handleRefresh() {
@@ -104,6 +107,13 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
 enum SnackBarType { error, neutral, success }
 
 class Widgets {
+  static SnackBar makeErrorSnackBar(Exception error, Function action) {
+    if (error is Retryable && action != null) {
+      return makeSnackBar(error.toString(), SnackBarType.error,
+          SnackBarAction(label: "Retry", onPressed: action));
+    }
+  }
+
   static SnackBar makeSnackBar(String message,
       [SnackBarType type = SnackBarType.neutral,
       SnackBarAction action,

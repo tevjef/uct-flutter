@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -60,7 +61,8 @@ class UCTApiClient implements UCTApi {
   }
 
   Future<Response> getResponse(String url) {
-    return http.get("$baseUrl" + "$url").then((http.Response response) {
+    return ErrorTransformer.transform(
+        http.get("$baseUrl" + "$url").then((http.Response response) {
       logHttp(response);
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
@@ -68,7 +70,7 @@ class UCTApiClient implements UCTApi {
             "Error while getting response [StatusCode:$statusCode, Error:${response.reasonPhrase}]");
       }
       return Response.fromBuffer(response.bodyBytes);
-    });
+    }));
   }
 
   void logHttp(http.Response response) {
@@ -118,4 +120,47 @@ class UCTApiClient implements UCTApi {
       return true;
     });
   }
+}
+
+class ErrorTransformer<T> {
+  static Future<T> transform<T>(Future<T> f) {
+    return f.catchError((error) {
+      if (error is IOException) {
+        throw NetworkError(
+            "Could not connect to Course Trakr servers.", true, error);
+      }
+      throw GenericError("Opps! Something went wrong.", error);
+    });
+  }
+}
+
+abstract class Retryable {
+  bool canRetry();
+}
+
+class NetworkError implements Exception, Retryable {
+  final String message;
+  final bool isRetryable;
+  final Exception cause;
+
+  const NetworkError(this.message, this.isRetryable, this.cause);
+
+  @override
+  String toString() => message;
+
+  @override
+  bool canRetry() => isRetryable;
+}
+
+class GenericError implements Exception, Retryable {
+  final String message;
+  final Exception cause;
+
+  const GenericError(this.message, this.cause);
+
+  @override
+  String toString() => message;
+
+  @override
+  bool canRetry() => false;
 }
