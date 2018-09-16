@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -11,8 +13,13 @@ void main() {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 
+  FirebaseAnalytics analytics = new FirebaseAnalytics();
+
   runApp(MaterialApp(
     title: 'Course Tracker',
+    navigatorObservers: [
+      new FirebaseAnalyticsObserver(analytics: analytics),
+    ],
 //    theme: _buildDarkTheme(),
     theme: new ThemeData(
       accentColor: Colors.black,
