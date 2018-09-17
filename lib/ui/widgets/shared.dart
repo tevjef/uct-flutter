@@ -97,7 +97,7 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
     return oldItem;
   }
 
-  AnimatedList getAnimatedList() {
+  AnimatedList makeAnimatedListView() {
     adapter.setListKey(listKey);
     return AnimatedList(
         key: listKey,
@@ -105,7 +105,7 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
         itemBuilder: adapter.onCreateWidgetWithAnimation);
   }
 
-  ListView getListView() => ListView.builder(
+  ListView makeListView() => ListView.builder(
       padding: EdgeInsets.only(top: Dimens.spacingMedium),
       itemCount: adapter.getItemCount(),
       itemBuilder: adapter.onCreateWidget);
@@ -120,6 +120,8 @@ class Widgets {
     if (error is Retryable && action != null) {
       return makeSnackBar(error.toString(), SnackBarType.error,
           SnackBarAction(label: "Retry", onPressed: action));
+    } else {
+      return makeSnackBar(error.toString(), SnackBarType.error);
     }
   }
 

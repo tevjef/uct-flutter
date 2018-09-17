@@ -33,7 +33,7 @@ class HomeListState extends State<HomePage>
     if (isLoading) {
       widget = Widgets.makeLoading();
     } else {
-      widget = getAnimatedList();
+      widget = makeAnimatedListView();
     }
 
     return WillPopScope(
@@ -43,7 +43,7 @@ class HomeListState extends State<HomePage>
       child: Scaffold(
         key: scaffoldKey,
         appBar: new AppBar(
-          title: new Text("Tracked Sections"),
+          title: new Text(S.of(context).homeTitle),
           actions: <Widget>[
             Widgets.makeIconWithBadge("5", () {}),
           ],

@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 
 import 'core/lib.dart';
@@ -20,6 +21,14 @@ void main() {
     navigatorObservers: [
       new FirebaseAnalyticsObserver(analytics: analytics),
     ],
+    localizationsDelegates: [
+      S.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+    ],
+    localeResolutionCallback:
+        S.delegate.resolution(fallback: new Locale("en", "")),
+    supportedLocales: S.delegate.supportedLocales,
 //    theme: _buildDarkTheme(),
     theme: new ThemeData(
       accentColor: Colors.black,
