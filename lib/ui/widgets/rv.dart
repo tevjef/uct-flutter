@@ -126,6 +126,8 @@ abstract class Item {
   bool shouldAnimateRemove() => false;
 
   bool shouldAnimateAddition() => false;
+
+  String getFastScrollLabel() {}
 }
 
 class Adapter {
@@ -139,6 +141,35 @@ class Adapter {
 
   Widget onCreateWidget(BuildContext context, int adapterPosition) {
     return onCreateWidgetWithAnimation(context, adapterPosition, null);
+  }
+
+  Tuple2<Item, int> getItemAtPosition(int adapterPosition) {
+    int count = 0;
+    for (var index = 0; index < _items.length; index++) {
+      var item = _items[index];
+
+      if (item is GroupItem) {
+        // Pass the animated list key so that the group an animate itself.
+        item.listKey = listKey;
+
+        var groupCount = item.getItemCount();
+        if (adapterPosition < count + groupCount) {
+          var groupItem = item.getItem(adapterPosition - count);
+          var idx = item.getItemPositionInGroup(groupItem);
+          return Tuple2(groupItem, idx);
+        } else {
+          count += groupCount;
+        }
+      } else {
+        if (count == adapterPosition) {
+          Item ungroupedItem = _items[index];
+          return Tuple2(ungroupedItem, index);
+        } else {
+          count += 1;
+        }
+      }
+    }
+    return null;
   }
 
   int getItemPositionInAdapter(Item itemToFind) {
@@ -169,30 +200,13 @@ class Adapter {
 
   Widget onCreateWidgetWithAnimation(
       BuildContext context, int adapterPosition, Animation<double> animation) {
-    int count = 0;
-    for (var index = 0; index < _items.length; index++) {
-      var item = _items[index];
+    Tuple2<Item, int> itemIndexTuple = getItemAtPosition(adapterPosition);
 
-      if (item is GroupItem) {
-        // Pass the animated list key so that the group an animate itself.
-        item.listKey = listKey;
-
-        var groupCount = item.getItemCount();
-        if (adapterPosition < count + groupCount) {
-          var groupItem = item.getItem(adapterPosition - count);
-          var idx = item.getItemPositionInGroup(groupItem);
-          return groupItem.create(context, idx, adapterPosition, animation);
-        } else {
-          count += groupCount;
-        }
-      } else {
-        if (count == adapterPosition) {
-          Item ungroupedItem = _items[index];
-          return ungroupedItem.create(
-              context, index, adapterPosition, animation);
-        } else {
-          count += 1;
-        }
+    if (itemIndexTuple != null) {
+      var item = itemIndexTuple.item1;
+      var index = itemIndexTuple.item2;
+      if (item != null) {
+        return item.create(context, index, adapterPosition, animation);
       }
     }
 
@@ -278,6 +292,43 @@ class Adapter {
     }
 
     return removed;
+  }
+
+  String _getFastScrollLabel(int position) {
+    Tuple2<Item, int> itemIndexTuple = getItemAtPosition(position);
+
+    if (itemIndexTuple != null) {
+      var item = itemIndexTuple.item1;
+      if (item != null) {
+        return item.getFastScrollLabel();
+      }
+    }
+
+    return null;
+  }
+
+  String getFastScrollLabel(int position, {int radius = 6}) {
+    var label = _getFastScrollLabel(position);
+
+    if (label == null) {
+      for (int i = 0; i < radius / 2; i++) {
+        label = _getFastScrollLabel(position - i);
+        if (label != null) {
+          return label;
+        }
+
+        label = _getFastScrollLabel(position + i);
+        if (label != null) {
+          return label;
+        }
+      }
+
+      if (label == null) {
+        label = "NONE";
+      }
+    }
+
+    return label;
   }
 
   Item getItemAt(int position) => _items[position];

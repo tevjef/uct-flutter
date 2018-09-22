@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../data/lib.dart';
+import 'draggable_scrollbar.dart';
 import 'rv.dart';
 import 'styles.dart';
 
@@ -47,6 +48,8 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+
+  final ScrollController _scrollController = ScrollController();
 
   bool isLoading;
   bool isRefreshing;
@@ -132,18 +135,38 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
     return oldItem;
   }
 
-  AnimatedList makeAnimatedListView() {
+  Widget makeAnimatedListView() {
     adapter.setListKey(listKey);
-    return AnimatedList(
-        key: listKey,
-        initialItemCount: adapter.getItemCount(),
-        itemBuilder: adapter.onCreateWidgetWithAnimation);
+    return DraggableScrollbar.semicircle(
+        labelTextBuilder: (double offset) {
+          final int currentItem = _scrollController.hasClients
+              ? (_scrollController.offset /
+                      _scrollController.position.maxScrollExtent *
+                      adapter.getItemCount())
+                  .floor()
+              : 0;
+
+          var label = adapter.getFastScrollLabel(currentItem);
+
+          return Text(label);
+        },
+        child: AnimatedList(
+            controller: _scrollController,
+            key: listKey,
+            initialItemCount: adapter.getItemCount(),
+            itemBuilder: adapter.onCreateWidgetWithAnimation),
+        controller: _scrollController);
   }
 
-  ListView makeListView() => ListView.builder(
-      padding: EdgeInsets.only(top: Dimens.spacingMedium),
-      itemCount: adapter.getItemCount(),
-      itemBuilder: adapter.onCreateWidget);
+  Widget makeListView() {
+    return DraggableScrollbar.semicircle(
+        child: ListView.builder(
+            controller: _scrollController,
+            padding: EdgeInsets.only(top: Dimens.spacingMedium),
+            itemCount: adapter.getItemCount(),
+            itemBuilder: adapter.onCreateWidget),
+        controller: _scrollController);
+  }
 
   Widget makeLDEList() {
     return makeLDEWidget(makeAnimatedListView());

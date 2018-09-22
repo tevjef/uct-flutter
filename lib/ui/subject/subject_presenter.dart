@@ -76,7 +76,7 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
 
     // Build list of recent subject that have been clicked.
     var recentSubjectItems = recentSubjects.map((subject) {
-      return SubjectTitleItem(subject, subjectClickCallback);
+      return SubjectTitleItem(subject, subjectClickCallback, hasLabel: false);
     });
 
     // Add header and all the recent items to the adapter.

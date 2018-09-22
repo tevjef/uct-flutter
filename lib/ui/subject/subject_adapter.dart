@@ -3,10 +3,13 @@ import '../../data/lib.dart';
 import '../widgets/lib.dart';
 
 class SubjectTitleItem extends Item {
-  Function callback;
-  Subject subject;
+  final Function callback;
+  final Subject subject;
 
-  SubjectTitleItem(this.subject, this.callback) : super(subject.topicName);
+  bool hasLabel;
+
+  SubjectTitleItem(this.subject, this.callback, {this.hasLabel = true})
+      : super(subject.topicName);
 
   @override
   Widget create(BuildContext context, int position, int adapterPosition,
@@ -25,5 +28,10 @@ class SubjectTitleItem extends Item {
             style: Styles.caption,
           )),
     );
+  }
+
+  @override
+  String getFastScrollLabel() {
+    return subject.name.substring(0, 1).toUpperCase();
   }
 }
