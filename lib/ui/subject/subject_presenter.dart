@@ -15,12 +15,13 @@ class SubjectPresenter {
   Function subjectClickCallback;
 
   SubjectPresenter(this.view) {
-    apiClient = new Injector().apiClient;
-    searchContext = new Injector().searchContext;
+    final injector = Injector.getInjector();
+    apiClient = injector.get();
+    searchContext = injector.get();
     searchContext.reset();
 
-    recentSelectionDatabase = new Injector().recentSelectionDatabase;
-    preferenceDao = new Injector().preferenceDao;
+    recentSelectionDatabase = injector.get();
+    preferenceDao = injector.get();
 
     subjectClickCallback = (context, Subject subject) {
       searchContext.updateWith(subject: subject);

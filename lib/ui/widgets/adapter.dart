@@ -174,7 +174,7 @@ class SectionItem extends Item {
           color: Colors.transparent,
           child: InkWell(
             onTap: () {
-              var searchContext = new Injector().searchContext;
+              var searchContext = Injector.getInjector().get<SearchContext>();
               searchContext.updateWithAnother(this.searchContext);
 
               Navigator.of(context)

@@ -14,9 +14,10 @@ class CoursePresenter {
   String topicName;
 
   CoursePresenter(this.view, this.topicName) {
-    apiClient = new Injector().apiClient;
-    searchContext = new Injector().searchContext;
-    recentSelectionDatabase = new Injector().recentSelectionDatabase;
+    final injector = Injector.getInjector();
+    apiClient = injector.get();
+    searchContext = injector.get();
+    recentSelectionDatabase = injector.get();
 
     courseClickCallback = (context, Course course) {
       searchContext.updateWith(course: course);

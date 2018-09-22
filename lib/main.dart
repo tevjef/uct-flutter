@@ -16,6 +16,8 @@ void main() {
 
   FirebaseAnalytics analytics = new FirebaseAnalytics();
 
+  Locator.init();
+
   runApp(MaterialApp(
     title: 'Course Tracker',
     navigatorObservers: [

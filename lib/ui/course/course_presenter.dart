@@ -9,7 +9,8 @@ class CoursePresenter {
   Course course;
 
   CoursePresenter(this.view) {
-    searchContext = new Injector().searchContext;
+    final injector = Injector.getInjector();
+    searchContext = injector.get();
     course = searchContext.course;
   }
 

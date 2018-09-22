@@ -8,7 +8,7 @@ class CoursesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SearchContext searchContext = Injector().searchContext;
+    final SearchContext searchContext = Injector.getInjector().get();
 
     final title =
         "${searchContext.subject.name} (${searchContext.subject.number})";
@@ -47,7 +47,7 @@ class CourseListState extends State<_CourseList> implements CourseView {
   bool isLoading;
 
   CourseListState() {
-    searchContext = Injector().searchContext;
+    searchContext = Injector.getInjector().get();
     presenter = new CoursePresenter(this, searchContext.subject.topicName);
   }
 

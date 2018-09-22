@@ -4,7 +4,7 @@ import '../widgets/lib.dart';
 import 'course_presenter.dart';
 
 class CoursePage extends StatelessWidget {
-  final SearchContext searchContext = Injector().searchContext;
+  final SearchContext searchContext = Injector.getInjector().get();
 
   CoursePage({Key key}) : super(key: key);
 

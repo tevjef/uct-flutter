@@ -24,7 +24,7 @@ class SectionDetailState extends State<SectionDetailsPage>
   Widget list;
 
   SectionDetailState() {
-    searchContext = Injector().searchContext;
+    searchContext = Injector.getInjector().get();
     presenter = SectionPresenter(this, searchContext);
 
     section = searchContext.section;

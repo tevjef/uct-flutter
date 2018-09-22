@@ -11,10 +11,11 @@ class OptionPresenter {
   Function optionClickCallback;
 
   OptionPresenter(this.view) {
-    apiClient = new Injector().apiClient;
-    searchContext = new Injector().searchContext;
-    recentSelectionDatabase = new Injector().recentSelectionDatabase;
-    preferenceDao = new Injector().preferenceDao;
+    final injector = Injector.getInjector();
+    apiClient = injector.get();
+    searchContext = injector.get();
+    recentSelectionDatabase = injector.get();
+    preferenceDao = injector.get();
   }
 
   void loadUniversities() async {

@@ -13,8 +13,9 @@ class HomePresenter {
   TrackedSectionDao trackedSectionDatabase;
 
   HomePresenter(this.view) {
-    uctRepo = new Injector().uctRepo;
-    trackedSectionDatabase = Injector().trackedSectionDatabase;
+    final injector = Injector.getInjector();
+    uctRepo = injector.get();
+    trackedSectionDatabase = injector.get();
   }
 
   void onInitState() {

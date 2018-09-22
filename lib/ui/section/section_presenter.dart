@@ -12,8 +12,10 @@ class SectionPresenter {
   TrackedSectionDao trackedSectionDatabase;
 
   SectionPresenter(this.view, this.searchContext) {
-    trackedSectionDatabase = Injector().trackedSectionDatabase;
-    uctRepo = Injector().uctRepo;
+    final injector = Injector.getInjector();
+    trackedSectionDatabase = injector.get();
+    uctRepo = injector.get();
+
     section = searchContext.section;
   }
 
