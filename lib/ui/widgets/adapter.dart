@@ -111,7 +111,7 @@ class SectionItem extends Item {
       children: section.meetings.map((meeting) {
         var time = "";
         if (meeting.startTime != "") {
-          time = "${meeting.startTime} - ${meeting.endTime}";
+          time = S.of(context).meetingTime(meeting.startTime, meeting.endTime);
         }
         return TableRow(
           children: <Widget>[
@@ -135,7 +135,7 @@ class SectionItem extends Item {
         return s;
       }
 
-      return acc + " | " + s;
+      return S.of(context).professorList(acc, s);
     });
 
     Widget instructorsWidget = Container();
@@ -152,7 +152,9 @@ class SectionItem extends Item {
       courseNameWidget = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text("${searchContext.course.name} (${searchContext.course.number})",
+          Text(
+              S.of(context).headerMessage(
+                  searchContext.course.name, searchContext.course.number),
               maxLines: 1,
               textAlign: TextAlign.start,
               overflow: TextOverflow.ellipsis,
@@ -229,7 +231,9 @@ class SectionItem extends Item {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: section.status == "Open" ? Colors.green : Colors.red,
+                color: section.status == S.of(context).openStatus
+                    ? Colors.green
+                    : Colors.red,
               ),
               child: Text(
                 section.number,
@@ -244,7 +248,7 @@ class SectionItem extends Item {
     if (slidable) {
       var actions = <Widget>[
         new IconSlideAction(
-          caption: 'Add',
+          caption: S.of(context).add,
           color: Colors.transparent,
           foregroundColor: Colors.black,
           icon: Icons.add,
@@ -304,7 +308,7 @@ class SubscribeItem extends Item {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  "Subscribe to recieve notifications",
+                  S.of(context).subscribeReason,
                   textAlign: TextAlign.start,
                   style: Styles.caption.copyWith(color: Colors.black),
                 ),

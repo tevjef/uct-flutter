@@ -17,6 +17,11 @@ class HomePresenter {
     trackedSectionDatabase = Injector().trackedSectionDatabase;
   }
 
+  void onInitState() {
+    view.showLoading(true);
+    loadTrackedSections();
+  }
+
   void loadTrackedSections() async {
     List<Item> adapterItems = List();
 
@@ -54,7 +59,10 @@ class HomePresenter {
 
       // Add a header to the group.
       group.addHeader(HeaderItem(
-          "${subject.name} (${subject.number})".toUpperCase(),
+          S
+              .of(view.getContext())
+              .headerMessage(subject.name, subject.number)
+              .toUpperCase(),
           insets: const EdgeInsets.only(
               left: Dimens.spacingStandard,
               top: Dimens.spacingMedium,
@@ -66,7 +74,7 @@ class HomePresenter {
         // Add the display cell of the data
         group.addItem(SectionItem(searchContext,
             hasTitle: true,
-            onReturnFromNavigation: onReturn,
+            onReturnFromNavigation: onReturnFromNavigation,
             onItemDismissed: onSectionItemDismissed(group)));
       });
 
@@ -86,7 +94,7 @@ class HomePresenter {
 
       // Create an undo action.
       var action = SnackBarAction(
-          label: "Undo",
+          label: S.of(view.getContext()).undo,
           onPressed: () {
             group.insert(position, removedItem);
             view.updateItem(group);
@@ -94,12 +102,14 @@ class HomePresenter {
 
       // Show a message when an item is removed.
       view.showMessage(
-          "Unsubscried from ${searchContext.section.number} of ${searchContext.course.name}.",
+          S.of(view.getContext()).unsubscribeMessage(
+              searchContext.section.number, searchContext.course.name),
           action);
     };
   }
 
-  void onReturn(bool changed) {
+  void onReturnFromNavigation(bool changed) {
+    view.showLoading(true);
     loadTrackedSections();
   }
 }

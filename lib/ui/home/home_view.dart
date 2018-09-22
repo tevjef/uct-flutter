@@ -13,7 +13,6 @@ class HomeListState extends State<HomePage>
     with LDEViewMixin
     implements HomeView {
   HomePresenter presenter;
-  Widget list;
 
   HomeListState() {
     presenter = new HomePresenter(this);
@@ -22,20 +21,11 @@ class HomeListState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    showLoading(true);
-    refreshData();
+    presenter.onInitState();
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget widget;
-
-    if (isLoading) {
-      widget = Widgets.makeLoading();
-    } else {
-      widget = makeAnimatedListView();
-    }
-
     return WillPopScope(
       onWillPop: () {
         return Future<bool>.value(true);
@@ -49,7 +39,9 @@ class HomeListState extends State<HomePage>
           ],
         ),
         body: RefreshIndicator(
-            key: refreshIndicatorKey, onRefresh: handleRefresh, child: widget),
+            key: refreshIndicatorKey,
+            onRefresh: handleRefresh,
+            child: makeLDEWidget()),
         floatingActionButton: FloatingActionButton(
             child: new Icon(
               Icons.add,
@@ -60,7 +52,7 @@ class HomeListState extends State<HomePage>
               Navigator.of(context)
                   .pushNamed(UCTRoutes.subjects)
                   .then((changed) {
-                presenter.loadTrackedSections();
+                handleRefresh();
               });
             }),
       ),
@@ -69,6 +61,31 @@ class HomeListState extends State<HomePage>
 
   @override
   void refreshData() {
+    showLoading(true);
     presenter.loadTrackedSections();
+  }
+
+  Widget makeEmptyStateWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: Dimens.spacingXxxlarge),
+          child: Image.asset("res/images/board.png"),
+        ),
+        Container(
+          padding: EdgeInsets.only(
+              left: Dimens.spacingXlarge,
+              right: Dimens.spacingXlarge,
+              top: Dimens.spacingXlarge,
+              bottom: Dimens.spacingXxxlarge),
+          child: Text(
+            S.of(context).homeEmpty,
+            style: Styles.sectionLargeHeader.copyWith(fontSize: 18.0),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
   }
 }

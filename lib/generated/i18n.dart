@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -21,22 +20,34 @@ class S implements WidgetsLocalizations {
   @override
   TextDirection get textDirection => TextDirection.ltr;
 
+  String get add => "Add";
+  String get closedStatus => "Closed";
+  String get homeEmpty =>
+      "You don't seem to be tracking any sections. Try adding some!";
   String get homeTitle => "Tracked Sections";
+  String get openStatus => "Open";
+  String get subscribeReason => "Subscribe to receive notifications";
+  String get undo => "Undo";
+  String headerMessage(String title, String meta) => "$title ($meta)";
+  String meetingTime(String startTime, String endTime) =>
+      "$startTime - $endTime";
+  String professorList(String firstProf, String secondProf) =>
+      "$firstProf | $secondProf";
+  String unsubscribeMessage(String sectionNumber, String sectionName) =>
+      "Unsubscribed from $sectionNumber of $sectionName.";
 }
 
 class en extends S {
   const en();
 }
 
-
-class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocalizations> {
+class GeneratedLocalizationsDelegate
+    extends LocalizationsDelegate<WidgetsLocalizations> {
   const GeneratedLocalizationsDelegate();
 
   List<Locale> get supportedLocales {
     return const <Locale>[
-
       const Locale("en", ""),
-
     ];
   }
 
@@ -58,7 +69,6 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
   Future<WidgetsLocalizations> load(Locale locale) {
     final String lang = getLang(locale);
     switch (lang) {
-
       case "en":
         return new SynchronousFuture<WidgetsLocalizations>(const en());
 

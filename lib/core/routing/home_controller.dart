@@ -10,12 +10,6 @@ class HomeController extends StatefulWidget {
 class HomeControllerState extends State<HomeController>
     with TickerProviderStateMixin {
   @override
-  void initState() {
-    MaterialPageRoute.debugEnableFadingRoutes = true;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return new Scaffold(
       primary: false,

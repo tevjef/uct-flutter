@@ -7,7 +7,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
-      sdk: flutter
+    sdk: flutter
   scoped_model: ^0.3.0
   sqflite: any
   path_provider: any
@@ -25,7 +25,7 @@ dev_dependencies:
     sdk: flutter
 
 dependency_overrides:
-    logging: ^0.11.3+2
+  logging: ^0.11.3+2
 
 
 # For information on the generic Dart part of this file, see the
@@ -39,16 +39,19 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   fonts:
-      - family: ProductSans
-        fonts:
-          - asset: fonts/Product-Sans-Regular.ttf
-          - asset: fonts/Product-Sans-Italic.ttf
-            style: italic
-          - asset: fonts/Product-Sans-Bold.ttf
-            weight: 700
-          - asset: fonts/Product-Sans-Bold-Italic.ttf
-            weight: 700
-            style: italic
+  - family: ProductSans
+    fonts:
+    - asset: fonts/Product-Sans-Regular.ttf
+    - asset: fonts/Product-Sans-Italic.ttf
+      style: italic
+    - asset: fonts/Product-Sans-Bold.ttf
+      weight: 700
+    - asset: fonts/Product-Sans-Bold-Italic.ttf
+      weight: 700
+      style: italic
+
+  assets:
+  - res/images/board.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

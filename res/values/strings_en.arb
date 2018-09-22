@@ -1,3 +1,13 @@
 {
-  "homeTitle": "Tracked Sections"
+  "homeTitle": "Tracked Sections",
+  "homeEmpty": "You don't seem to be tracking any sections. Try adding some!",
+  "undo": "Undo",
+  "unsubscribeMessage": "Unsubscribed from $sectionNumber of $sectionName.",
+  "headerMessage": "$title ($meta)",
+  "meetingTime": "$startTime - $endTime",
+  "subscribeReason": "Subscribe to receive notifications",
+  "professorList": "$firstProf | $secondProf",
+  "add": "Add",
+  "openStatus": "Open",
+  "closedStatus": "Closed"
 }

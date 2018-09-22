@@ -34,7 +34,7 @@ PODS:
 
 DEPENDENCIES:
   - firebase_analytics (from `Pods/.symlinks/plugins/firebase_analytics/ios`)
-  - Flutter (from `Pods/.symlinks/flutter/ios-profile`)
+  - Flutter (from `Pods/.symlinks/flutter/ios`)
   - path_provider (from `Pods/.symlinks/plugins/path_provider/ios`)
   - sqflite (from `Pods/.symlinks/plugins/sqflite/ios`)
 
@@ -52,7 +52,7 @@ EXTERNAL SOURCES:
   firebase_analytics:
     :path: Pods/.symlinks/plugins/firebase_analytics/ios
   Flutter:
-    :path: Pods/.symlinks/flutter/ios-profile
+    :path: Pods/.symlinks/flutter/ios
   path_provider:
     :path: Pods/.symlinks/plugins/path_provider/ios
   sqflite:
@@ -69,7 +69,7 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
-  sqflite: d1612813fa7db7c667bed9f1d1b508deffc56999
+  sqflite: 801b6b0983f722fa29baf00d1476e4556ada6de4
 
 PODFILE CHECKSUM: ea0518673586564c605fb6593d385c0e3708ff8d
 

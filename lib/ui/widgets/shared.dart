@@ -6,7 +6,7 @@ import '../../data/lib.dart';
 import 'rv.dart';
 import 'styles.dart';
 
-abstract class BaseView {
+abstract class BaseView extends ContextProvider {
   void showLoading(bool isLoading);
 
   void setListData(List<Item> adapterItems);
@@ -14,6 +14,10 @@ abstract class BaseView {
   void showMessage(String message, [SnackBarAction action]);
 
   void showErrorMessage(Exception error, [Function retryAction]);
+}
+
+abstract class ContextProvider {
+  BuildContext getContext();
 }
 
 abstract class ListOps {
@@ -32,6 +36,8 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
 
   bool isLoading;
+  bool isRefreshing;
+
   Completer<Null> completer;
 
   Adapter adapter = Adapter();
@@ -39,7 +45,13 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
   @override
   void showLoading(bool isLoading) {
     this.isLoading = isLoading;
-    if (!isLoading && completer != null) {
+    this.isRefreshing = isLoading;
+
+    if (isRefreshing && adapter.getItemCount() != 0) {
+      refreshIndicatorKey.currentState.show();
+    }
+
+    if (!isRefreshing && completer != null) {
       completer.complete(null);
     }
 
@@ -109,6 +121,28 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
       padding: EdgeInsets.only(top: Dimens.spacingMedium),
       itemCount: adapter.getItemCount(),
       itemBuilder: adapter.onCreateWidget);
+
+  Widget makeLDEWidget() {
+    Widget widget;
+
+    if (isLoading) {
+      widget = Widgets.makeLoading();
+    } else {
+      if (adapter.getItemCount() == 0) {
+        widget = makeEmptyStateWidget();
+      } else {
+        widget = makeAnimatedListView();
+      }
+    }
+
+    return widget;
+  }
+
+  BuildContext getContext() {
+    return context;
+  }
+
+  Widget makeEmptyStateWidget();
 
   void refreshData();
 }
