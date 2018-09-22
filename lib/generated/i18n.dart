@@ -26,13 +26,17 @@ class S implements WidgetsLocalizations {
       "You don't seem to be tracking any sections. Try adding some!";
   String get homeTitle => "Tracked Sections";
   String get openStatus => "Open";
+  String get recents => "RECENTS";
   String get subscribeReason => "Subscribe to receive notifications";
   String get undo => "Undo";
+  String allMeta(String count) => "ALL ($count)";
   String headerMessage(String title, String meta) => "$title ($meta)";
   String meetingTime(String startTime, String endTime) =>
       "$startTime - $endTime";
   String professorList(String firstProf, String secondProf) =>
       "$firstProf | $secondProf";
+  String subjectTitle(String uniAbbr, String season, String year) =>
+      "$uniAbbr $season $year";
   String unsubscribeMessage(String sectionNumber, String sectionName) =>
       "Unsubscribed from $sectionNumber of $sectionName.";
 }

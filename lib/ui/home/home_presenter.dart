@@ -6,13 +6,11 @@ import '../widgets/lib.dart';
 
 abstract class HomeView implements BaseView, ListOps {}
 
-class HomePresenter {
-  HomeView view;
-
+class HomePresenter extends BasePresenter<HomeView> {
   UCTRepo uctRepo;
   TrackedSectionDao trackedSectionDatabase;
 
-  HomePresenter(this.view) {
+  HomePresenter(HomeView view) : super(view) {
     final injector = Injector.getInjector();
     uctRepo = injector.get();
     trackedSectionDatabase = injector.get();
@@ -61,7 +59,7 @@ class HomePresenter {
       // Add a header to the group.
       group.addHeader(HeaderItem(
           S
-              .of(view.getContext())
+              .of(context)
               .headerMessage(subject.name, subject.number)
               .toUpperCase(),
           insets: const EdgeInsets.only(
@@ -95,7 +93,7 @@ class HomePresenter {
 
       // Create an undo action.
       var action = SnackBarAction(
-          label: S.of(view.getContext()).undo,
+          label: S.of(context).undo,
           onPressed: () {
             group.insert(position, removedItem);
             view.updateItem(group);
@@ -103,7 +101,7 @@ class HomePresenter {
 
       // Show a message when an item is removed.
       view.showMessage(
-          S.of(view.getContext()).unsubscribeMessage(
+          S.of(context).unsubscribeMessage(
               searchContext.section.number, searchContext.course.name),
           action);
     };

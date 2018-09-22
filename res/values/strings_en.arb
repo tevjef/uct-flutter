@@ -9,5 +9,8 @@
   "professorList": "$firstProf | $secondProf",
   "add": "Add",
   "openStatus": "Open",
-  "closedStatus": "Closed"
+  "closedStatus": "Closed",
+  "allMeta": "ALL ($count)",
+  "subjectTitle": "$uniAbbr $season $year",
+  "recents": "RECENTS"
 }

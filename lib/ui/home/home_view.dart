@@ -19,12 +19,6 @@ class HomeListState extends State<HomePage>
   }
 
   @override
-  void initState() {
-    super.initState();
-    presenter.onInitState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
@@ -38,10 +32,7 @@ class HomeListState extends State<HomePage>
             Widgets.makeIconWithBadge("5", () {}),
           ],
         ),
-        body: RefreshIndicator(
-            key: refreshIndicatorKey,
-            onRefresh: handleRefresh,
-            child: makeLDEWidget()),
+        body: makeRefreshingList(),
         floatingActionButton: FloatingActionButton(
             child: new Icon(
               Icons.add,

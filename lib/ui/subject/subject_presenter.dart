@@ -3,18 +3,13 @@ import '../../data/lib.dart';
 import '../widgets/lib.dart';
 import 'subject_adapter.dart';
 
-class SubjectPresenter {
-  SubjectView view;
+class SubjectPresenter extends BasePresenter<SubjectView> {
   UCTApiClient apiClient;
   RecentSelectionDao recentSelectionDatabase;
   SearchContext searchContext;
-
-  List<Subject> subjects;
   PreferenceDao preferenceDao;
 
-  Function subjectClickCallback;
-
-  SubjectPresenter(this.view) {
+  SubjectPresenter(SubjectView view) : super(view) {
     final injector = Injector.getInjector();
     apiClient = injector.get();
     searchContext = injector.get();
@@ -22,16 +17,6 @@ class SubjectPresenter {
 
     recentSelectionDatabase = injector.get();
     preferenceDao = injector.get();
-
-    subjectClickCallback = (context, Subject subject) {
-      searchContext.updateWith(subject: subject);
-
-      addToRecent(subject.topicName);
-
-      Navigator.of(context).pushNamed(UCTRoutes.courses).then((result) {
-        updateSubjectList();
-      });
-    };
   }
 
   void loadSubjects() async {
@@ -39,63 +24,76 @@ class SubjectPresenter {
     var defaultSemester = await preferenceDao.getDefaultSemester();
 
     if (defaultUniversity == null || defaultSemester == null) {
-      view.onDefaultError();
+      view.onUniversityNotSet();
       return;
     }
 
     searchContext.university = defaultUniversity.university;
     searchContext.semester = defaultSemester.semester;
 
-    apiClient
-        .subjects(
-            defaultUniversity.university.topicName,
-            defaultSemester.semester.season.toString(),
-            defaultSemester.semester.year.toString())
-        .then((subjects) {
-      this.subjects = subjects;
-
-      updateSubjectList();
-      view.setTitle(defaultUniversity.university.abbr +
-          " " +
-          _upperCaseFirstLetter(defaultSemester.semester.season.toString()) +
-          " " +
+    try {
+      var subjects = await apiClient.subjects(
+          defaultUniversity.university.topicName,
+          defaultSemester.semester.season.toString(),
           defaultSemester.semester.year.toString());
-    }).catchError((onError) {
-      print(onError);
 
-      view.onSubjectError(onError.toString());
-    });
+      updateSubjectList(subjects);
+
+      view.setTitle(S.of(context).subjectTitle(
+          defaultUniversity.university.abbr,
+          _upperCaseFirstLetter(defaultSemester.semester.season.toString()),
+          defaultSemester.semester.year.toString()));
+    } catch (e) {
+      view.showErrorMessage(e, loadSubjects);
+      return;
+    }
   }
 
-  void updateSubjectList() async {
-    var recent = await recentSelectionDatabase
+  void updateSubjectList(List<Subject> subjects) async {
+    var recentSubjectSelections = await recentSelectionDatabase
         .getRecentSubjectSelection(searchContext.searchTopicName);
 
     List<Item> adapterItems = List();
 
+    // Find all the subjects in the list that are have matching entries in the
+    // database for the this subject's particular topic name.
     var recentSubjects = subjects.where((it) {
-      return recent.any((recentSelection) {
+      return recentSubjectSelections.any((recentSelection) {
         return it.topicName == recentSelection.topicName;
       });
     });
 
+    // Subject click callback function
+    Function subjectClickCallback = (context, Subject subject) {
+      searchContext.updateWith(subject: subject);
+      addToRecent(subject.topicName);
+
+      Navigator.of(context).pushNamed(UCTRoutes.courses).then((result) {
+        loadSubjects();
+      });
+    };
+
+    // Build list of recent subject that have been clicked.
     var recentSubjectItems = recentSubjects.map((subject) {
       return SubjectTitleItem(subject, subjectClickCallback);
     });
 
+    // Add header and all the recent items to the adapter.
     if (recentSubjectItems.isNotEmpty) {
-      adapterItems.add(HeaderItem("RECENT"));
+      adapterItems.add(HeaderItem(S.of(context).recents));
+      adapterItems.addAll(recentSubjectItems);
     }
 
-    adapterItems.addAll(recentSubjectItems);
+    // Add header for all the items in the subject list.
+    adapterItems
+        .add(HeaderItem(S.of(context).allMeta(subjects.length.toString())));
 
-    adapterItems.add(HeaderItem("ALL (${subjects.length})"));
-    final addItems = subjects.map((subject) {
+    // Add all the items for the subject list
+    adapterItems.addAll(subjects.map((subject) {
       return SubjectTitleItem(subject, subjectClickCallback);
-    });
+    }));
 
-    adapterItems.addAll(addItems);
-    view.onSubjectSuccess(adapterItems);
+    view.setListData(adapterItems);
   }
 
   void addToRecent(String subjectTopicName) async {
@@ -109,14 +107,15 @@ class SubjectPresenter {
   String _upperCaseFirstLetter(String word) {
     return '${word.substring(0, 1).toUpperCase()}${word.substring(1).toLowerCase()}';
   }
+
+  @override
+  void onInitState() {
+    view.showLoading(true);
+    loadSubjects();
+  }
 }
 
-abstract class SubjectView {
+abstract class SubjectView extends BaseView {
   void setTitle(String title);
-
-  void onDefaultError();
-
-  void onSubjectSuccess(List<Item> adapterItems);
-
-  void onSubjectError(String message);
+  void onUniversityNotSet();
 }

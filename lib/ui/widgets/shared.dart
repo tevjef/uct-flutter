@@ -16,6 +16,16 @@ abstract class BaseView extends ContextProvider {
   void showErrorMessage(Exception error, [Function retryAction]);
 }
 
+abstract class BasePresenter<T extends BaseView> {
+  final T view;
+
+  const BasePresenter(this.view);
+
+  BuildContext get context => view.getContext();
+
+  void onInitState();
+}
+
 abstract class ContextProvider {
   BuildContext getContext();
 }
@@ -40,7 +50,15 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
 
   Completer<Null> completer;
 
+  BasePresenter get presenter;
+
   Adapter adapter = Adapter();
+
+  @override
+  void initState() {
+    super.initState();
+    presenter.onInitState();
+  }
 
   @override
   void showLoading(bool isLoading) {
@@ -138,11 +156,18 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
     return widget;
   }
 
+  Widget makeRefreshingList() {
+    return RefreshIndicator(
+        key: refreshIndicatorKey,
+        onRefresh: handleRefresh,
+        child: makeLDEWidget());
+  }
+
   BuildContext getContext() {
     return context;
   }
 
-  Widget makeEmptyStateWidget();
+  Widget makeEmptyStateWidget() {}
 
   void refreshData();
 }

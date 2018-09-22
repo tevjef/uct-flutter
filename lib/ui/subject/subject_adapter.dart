@@ -1,3 +1,4 @@
+import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
 
@@ -6,9 +7,6 @@ class SubjectTitleItem extends Item {
   Subject subject;
 
   SubjectTitleItem(this.subject, this.callback) : super(subject.topicName);
-
-  @override
-  int itemType() => 1;
 
   @override
   Widget create(BuildContext context, int position, int adapterPosition,
@@ -23,7 +21,7 @@ class SubjectTitleItem extends Item {
       child: new Container(
           padding: insets,
           child: new Text(
-            "${subject.name} (${subject.number})",
+            S.of(context).headerMessage(subject.name, subject.number),
             style: Styles.caption,
           )),
     );
