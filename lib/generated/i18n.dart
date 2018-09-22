@@ -1,3 +1,4 @@
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -22,36 +23,40 @@ class S implements WidgetsLocalizations {
 
   String get add => "Add";
   String get closedStatus => "Closed";
-  String get homeEmpty =>
-      "You don't seem to be tracking any sections. Try adding some!";
+  String get homeEmpty => "You don't seem to be tracking any sections. Try adding some!";
   String get homeTitle => "Tracked Sections";
   String get openStatus => "Open";
+  String get options => "Options";
+  String get please_select_a_university => "Please select a university.";
   String get recents => "RECENTS";
+  String get selectSemester => "Select a semester";
+  String get selectUniversity => "Select your university";
+  String get semester => "Semester";
   String get subscribeReason => "Subscribe to receive notifications";
   String get undo => "Undo";
+  String get university => "University";
   String allMeta(String count) => "ALL ($count)";
   String headerMessage(String title, String meta) => "$title ($meta)";
-  String meetingTime(String startTime, String endTime) =>
-      "$startTime - $endTime";
-  String professorList(String firstProf, String secondProf) =>
-      "$firstProf | $secondProf";
-  String subjectTitle(String uniAbbr, String season, String year) =>
-      "$uniAbbr $season $year";
-  String unsubscribeMessage(String sectionNumber, String sectionName) =>
-      "Unsubscribed from $sectionNumber of $sectionName.";
+  String meetingTime(String startTime, String endTime) => "$startTime - $endTime";
+  String professorList(String firstProf, String secondProf) => "$firstProf | $secondProf";
+  String semesterFull(String season, String year) => "$season $year";
+  String subjectTitle(String uniAbbr, String season, String year) => "$uniAbbr $season $year";
+  String unsubscribeMessage(String sectionNumber, String sectionName) => "Unsubscribed from $sectionNumber of $sectionName.";
 }
 
 class en extends S {
   const en();
 }
 
-class GeneratedLocalizationsDelegate
-    extends LocalizationsDelegate<WidgetsLocalizations> {
+
+class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocalizations> {
   const GeneratedLocalizationsDelegate();
 
   List<Locale> get supportedLocales {
     return const <Locale>[
+
       const Locale("en", ""),
+
     ];
   }
 
@@ -73,6 +78,7 @@ class GeneratedLocalizationsDelegate
   Future<WidgetsLocalizations> load(Locale locale) {
     final String lang = getLang(locale);
     switch (lang) {
+
       case "en":
         return new SynchronousFuture<WidgetsLocalizations>(const en());
 

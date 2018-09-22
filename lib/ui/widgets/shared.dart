@@ -23,7 +23,10 @@ abstract class BasePresenter<T extends BaseView> {
 
   BuildContext get context => view.getContext();
 
-  void onInitState();
+  @mustCallSuper
+  void onInitState() {
+    view.showLoading(true);
+  }
 }
 
 abstract class ContextProvider {
@@ -60,13 +63,15 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
     presenter.onInitState();
   }
 
+  bool isList() => true;
+
   @override
   void showLoading(bool isLoading) {
     this.isLoading = isLoading;
     this.isRefreshing = isLoading;
 
-    if (isRefreshing && adapter.getItemCount() != 0) {
-      refreshIndicatorKey.currentState.show();
+    if (isRefreshing && (adapter.getItemCount() != 0 || !isList())) {
+      refreshIndicatorKey.currentState?.show();
     }
 
     if (!isRefreshing && completer != null) {
@@ -140,27 +145,36 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
       itemCount: adapter.getItemCount(),
       itemBuilder: adapter.onCreateWidget);
 
-  Widget makeLDEWidget() {
-    Widget widget;
+  Widget makeLDEList() {
+    return makeLDEWidget(makeAnimatedListView());
+  }
+
+  Widget makeLDEWidget(Widget widget) {
+    Widget toReturn = widget;
 
     if (isLoading) {
-      widget = Widgets.makeLoading();
+      toReturn = Widgets.makeLoading();
     } else {
-      if (adapter.getItemCount() == 0) {
-        widget = makeEmptyStateWidget();
-      } else {
-        widget = makeAnimatedListView();
+      if (adapter.getItemCount() == 0 && isList()) {
+        toReturn = makeEmptyStateWidget();
       }
     }
 
-    return widget;
+    return toReturn;
   }
 
   Widget makeRefreshingList() {
     return RefreshIndicator(
         key: refreshIndicatorKey,
         onRefresh: handleRefresh,
-        child: makeLDEWidget());
+        child: makeLDEList());
+  }
+
+  Widget makeRefreshingWidget(Widget widget) {
+    return RefreshIndicator(
+        key: refreshIndicatorKey,
+        onRefresh: handleRefresh,
+        child: makeLDEWidget(widget));
   }
 
   BuildContext getContext() {

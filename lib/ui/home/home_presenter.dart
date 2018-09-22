@@ -17,7 +17,7 @@ class HomePresenter extends BasePresenter<HomeView> {
   }
 
   void onInitState() {
-    view.showLoading(true);
+    super.onInitState();
     loadTrackedSections();
   }
 

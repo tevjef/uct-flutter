@@ -52,7 +52,6 @@ class HomeListState extends State<HomePage>
 
   @override
   void refreshData() {
-    showLoading(true);
     presenter.loadTrackedSections();
   }
 

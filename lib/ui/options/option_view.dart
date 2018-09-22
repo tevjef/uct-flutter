@@ -7,13 +7,13 @@ class OptionPage extends StatefulWidget {
   OptionPage({Key key}) : super(key: key);
 
   @override
-  OptionListState createState() => new OptionListState();
+  OptionListState createState() => OptionListState();
 }
 
-class OptionListState extends State<OptionPage> implements OptionView {
+class OptionListState extends State<OptionPage>
+    with LDEViewMixin
+    implements OptionView {
   OptionPresenter presenter;
-
-  bool isLoading = true;
 
   List<University> universities = List();
   List<Semester> semesters = List();
@@ -22,90 +22,90 @@ class OptionListState extends State<OptionPage> implements OptionView {
   Semester selectedSemester;
 
   OptionListState() {
-    presenter = new OptionPresenter(this);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    presenter.loadUniversities();
+    presenter = OptionPresenter(this);
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget widget;
+    Widget universityButton = DropdownButton<University>(
+      value: selectedUniversity,
+      onChanged: (University newValue) {
+        presenter.updateDefaultUniversity(newValue);
+      },
+      isDense: true,
+      items: universities.map((University value) {
+        return DropdownMenuItem<University>(
+            value: value,
+            child: Container(
+                width: MediaQuery.of(context).size.width * .80,
+                child: Text(
+                  value.name,
+                  overflow: TextOverflow.ellipsis,
+                )));
+      }).toList(),
+    );
 
-    if (isLoading) {
-      widget = Widgets.makeLoading();
-    } else {
-      widget = DropdownButtonHideUnderline(
-        child: ListView(
-          padding: const EdgeInsets.all(Dimens.spacingStandard),
-          children: <Widget>[
-            new InputDecorator(
-              decoration: const InputDecoration(
-                labelText: 'University',
-                hintText: 'Choose an university',
-              ),
-              isEmpty: selectedUniversity == null,
-              child: new DropdownButton<University>(
-                value: selectedUniversity,
-                isDense: true,
-                onChanged: (University newValue) {
-                  presenter.updateDefaultUniversity(newValue);
-                },
-                items: universities.map((University value) {
-                  return new DropdownMenuItem<University>(
-                      value: value,
-                      child: Container(
-                          width: MediaQuery.of(context).size.width * .80,
-                          child: new Text(
-                            value.name,
-                            overflow: TextOverflow.ellipsis,
-                          )));
-                }).toList(),
-              ),
+    Widget semesterButton;
+    if (selectedSemester != null) {
+      semesterButton = DropdownButton<Semester>(
+        value: selectedSemester,
+        onChanged: (Semester newValue) {
+          presenter.updateDefaultSemester(newValue);
+        },
+        isDense: true,
+        items: semesters.map((Semester value) {
+          return DropdownMenuItem<Semester>(
+            value: value,
+            child: Text(
+              S.of(context).semesterFull(
+                  TextUtils.upperCaseFirstLetter(value.season),
+                  value.year.toString()),
+              softWrap: true,
             ),
-            new InputDecorator(
-              decoration: const InputDecoration(
-                labelText: 'Semester',
-                hintText: 'Choose an semester',
-              ),
-              isEmpty: selectedSemester == null ||
-                  !semesters.contains(selectedSemester),
-              child: new DropdownButton<Semester>(
-                value: selectedSemester,
-                isDense: true,
-                onChanged: (Semester newValue) {
-                  presenter.updateDefaultSemester(newValue);
-                },
-                items: semesters.map((Semester value) {
-                  return new DropdownMenuItem<Semester>(
-                    value: value,
-                    child: new Text(
-                      "${_upperCaseFirstLetter(value.season)} ${value.year}",
-                      softWrap: true,
-                    ),
-                  );
-                }).toList(),
-              ),
-            )
-          ],
-        ),
+          );
+        }).toList(),
       );
     }
 
+    Widget widget = ListView(
+      padding: const EdgeInsets.symmetric(horizontal: Dimens.spacingStandard),
+      children: <Widget>[
+        DropdownButtonHideUnderline(
+          child: InputDecorator(
+              decoration: InputDecoration(
+                labelText: S.of(context).university,
+                hintText: S.of(context).selectUniversity,
+                helperText: S.of(context).selectUniversity,
+              ),
+              isEmpty: selectedUniversity == null,
+              child: universityButton),
+        ),
+        DropdownButtonHideUnderline(
+          child: InputDecorator(
+              decoration: InputDecoration(
+                  labelText: S.of(context).semester,
+                  hintText: S.of(context).selectSemester,
+                  helperText: S.of(context).selectSemester),
+              isEmpty: selectedSemester == null ||
+                  !semesters.contains(selectedSemester),
+              child: semesterButton),
+        )
+      ],
+    );
+
     return WillPopScope(
       onWillPop: () {
+        showMessage(S.of(context).please_select_a_university);
         return Future<bool>.value(
             selectedUniversity != null && selectedSemester != null);
       },
       child: Scaffold(
-        appBar: new AppBar(
-          title: new Text("Options"),
+        key: scaffoldKey,
+        appBar: AppBar(
+          title: Text(S.of(context).options),
           actions: <Widget>[
             IconButton(
-                icon: new Icon(
+                icon: Icon(
                   Icons.check,
                   color: Colors.black,
                 ),
@@ -114,14 +114,9 @@ class OptionListState extends State<OptionPage> implements OptionView {
                 }),
           ],
         ),
-        body: widget,
+        body: makeRefreshingWidget(widget),
       ),
     );
-  }
-
-  @override
-  void onOptionError(String message) {
-    setState(() {});
   }
 
   @override
@@ -129,10 +124,6 @@ class OptionListState extends State<OptionPage> implements OptionView {
     setState(() {
       this.universities = universities;
     });
-  }
-
-  String _upperCaseFirstLetter(String word) {
-    return '${word.substring(0, 1).toUpperCase()}${word.substring(1).toLowerCase()}';
   }
 
   @override
@@ -146,20 +137,25 @@ class OptionListState extends State<OptionPage> implements OptionView {
 
   @override
   void setSelectedUniversity(University university) {
+    if (university == null) {
+      return;
+    }
+
     setState(() {
       this.selectedUniversity = university;
       this.semesters = university.availableSemesters;
 
       if (!semesters.contains(selectedSemester)) {
-        selectedSemester = semesters[0];
+        presenter.updateDefaultSemester(semesters[0]);
       }
     });
   }
 
   @override
-  void showLoading(bool isLoading) {
-    setState(() {
-      this.isLoading = isLoading;
-    });
+  bool isList() => false;
+
+  @override
+  void refreshData() {
+    presenter.loadUniversities();
   }
 }

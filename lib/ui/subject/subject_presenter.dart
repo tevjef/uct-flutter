@@ -41,7 +41,8 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
 
       view.setTitle(S.of(context).subjectTitle(
           defaultUniversity.university.abbr,
-          _upperCaseFirstLetter(defaultSemester.semester.season.toString()),
+          TextUtils.upperCaseFirstLetter(
+              defaultSemester.semester.season.toString()),
           defaultSemester.semester.year.toString()));
     } catch (e) {
       view.showErrorMessage(e, loadSubjects);
@@ -104,13 +105,9 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
         await recentSelectionDatabase.insertSubjectSelection(recentSelection);
   }
 
-  String _upperCaseFirstLetter(String word) {
-    return '${word.substring(0, 1).toUpperCase()}${word.substring(1).toLowerCase()}';
-  }
-
   @override
   void onInitState() {
-    view.showLoading(true);
+    super.onInitState();
     loadSubjects();
   }
 }

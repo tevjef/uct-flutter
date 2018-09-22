@@ -12,5 +12,12 @@
   "closedStatus": "Closed",
   "allMeta": "ALL ($count)",
   "subjectTitle": "$uniAbbr $season $year",
-  "recents": "RECENTS"
+  "semesterFull": "$season $year",
+  "semester": "Semester",
+  "university": "University",
+  "recents": "RECENTS",
+  "selectUniversity": "Select your university",
+  "selectSemester": "Select a semester",
+  "options": "Options",
+  "please_select_a_university": "Please select a university."
 }

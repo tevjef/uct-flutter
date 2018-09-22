@@ -27,6 +27,7 @@ class SubjectListState extends State<SubjectPage>
         return Future<bool>.value(true);
       },
       child: Scaffold(
+          key: scaffoldKey,
           appBar: new AppBar(
             title: new Text(title),
             actions: <Widget>[
@@ -50,10 +51,8 @@ class SubjectListState extends State<SubjectPage>
 
   @override
   void onUniversityNotSet() {
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pushNamed(UCTRoutes.options).then((onValue) {
-        refreshData();
-      });
+    Navigator.of(context).pushNamed(UCTRoutes.options).then((onValue) {
+      handleRefresh();
     });
   }
 
@@ -66,7 +65,6 @@ class SubjectListState extends State<SubjectPage>
 
   @override
   void refreshData() {
-    showLoading(true);
     presenter.loadSubjects();
   }
 }
