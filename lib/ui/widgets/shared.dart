@@ -137,6 +137,16 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
 
   Widget makeAnimatedListView() {
     adapter.setListKey(listKey);
+
+    var list = AnimatedList(
+        key: listKey,
+        initialItemCount: adapter.getItemCount(),
+        padding: EdgeInsets.symmetric(vertical: Dimens.spacingMedium),
+        itemBuilder: adapter.onCreateWidgetWithAnimation);
+
+    return Scrollbar(child: list);
+    /*
+    https://github.com/flutter/flutter/issues/22180
     return DraggableScrollbar.semicircle(
         labelTextBuilder: (double offset) {
           final int currentItem = _scrollController.hasClients
@@ -148,14 +158,14 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
 
           var label = adapter.getFastScrollLabel(currentItem);
 
+          if (label == null) {
+            label = "";
+          }
+
           return Text(label);
         },
-        child: AnimatedList(
-            controller: _scrollController,
-            key: listKey,
-            initialItemCount: adapter.getItemCount(),
-            itemBuilder: adapter.onCreateWidgetWithAnimation),
-        controller: _scrollController);
+        child: list,
+        controller: _scrollController);*/
   }
 
   Widget makeListView() {

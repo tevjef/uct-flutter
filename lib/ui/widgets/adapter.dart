@@ -24,11 +24,12 @@ class HeaderItem extends Item {
   Widget create(BuildContext context, int position, int adapterPosition,
       [Animation<double> animation]) {
     var widget = Padding(
-        padding: insets,
-        child: Text(
-          title,
-          style: Styles.sectionHeader,
-        ));
+      padding: insets,
+      child: Text(
+        title,
+        style: Styles.sectionHeader,
+      ),
+    );
 
     if (animation != null) {
       return FadeTransition(
@@ -84,7 +85,7 @@ class SectionItem extends Item {
 
   bool hasTitle;
   bool navigates;
-  bool slidable;
+  bool canSlide;
 
   Function onReturnFromNavigation;
   Function onItemDismissed;
@@ -92,7 +93,7 @@ class SectionItem extends Item {
   SectionItem(this.searchContext,
       {this.hasTitle = false,
       this.navigates = true,
-      this.slidable = false,
+      this.canSlide = false,
       this.onReturnFromNavigation,
       this.onItemDismissed})
       : super(searchContext.section.callNumber) {
@@ -115,14 +116,22 @@ class SectionItem extends Item {
         }
         return TableRow(
           children: <Widget>[
-            Text(meeting.day, style: Styles.body1Primary),
+            Text(meeting.day,
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+                style: Styles.body1Primary),
             Text(
               time,
+              maxLines: 1,
+              overflow: TextOverflow.fade,
               style: Styles.body1Primary,
               textAlign: TextAlign.center,
             ),
             Text(meeting.room.isEmpty ? meeting.classType : meeting.room,
-                textAlign: TextAlign.end, style: Styles.body1Primary),
+                textAlign: TextAlign.end,
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+                style: Styles.body1Primary),
           ],
         );
       }).toList(),
@@ -245,7 +254,7 @@ class SectionItem extends Item {
       ),
     );
 
-    if (slidable) {
+    if (canSlide) {
       var actions = <Widget>[
         new IconSlideAction(
           caption: S.of(context).add,

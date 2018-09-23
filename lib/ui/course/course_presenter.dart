@@ -29,10 +29,10 @@ class CoursePresenter {
       course.sections.forEach((section) {
         if (all == false && section.status == "Closed") {
           sectionItem.add(SectionItem(searchContext.copyWith(section: section),
-              slidable: true));
+              canSlide: true));
         } else if (all) {
           sectionItem.add(SectionItem(searchContext.copyWith(section: section),
-              slidable: true));
+              canSlide: true));
         }
       });
     }
