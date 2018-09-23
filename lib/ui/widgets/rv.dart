@@ -213,10 +213,12 @@ class Adapter {
     return null;
   }
 
-  int getItemCount() {
+  int getItemCount() => countItems(_items);
+
+  static int countItems(List<Item> items) {
     var count = 0;
 
-    for (Item i in _items) {
+    for (Item i in items) {
       if (i is GroupItem) {
         count += i.getItemCount();
       } else {

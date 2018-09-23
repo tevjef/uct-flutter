@@ -70,6 +70,7 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
       addToRecent(subject.topicName);
 
       Navigator.of(context).pushNamed(UCTRoutes.courses).then((result) {
+        view.showLoading(true);
         loadSubjects();
       });
     };

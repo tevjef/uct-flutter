@@ -51,10 +51,13 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
 
   final ScrollController _scrollController = ScrollController();
 
-  bool isLoading;
+  bool isFullLoading;
   bool isRefreshing;
 
   Completer<Null> completer;
+
+  bool shouldFullLoad = false;
+  bool isList = true;
 
   BasePresenter get presenter;
 
@@ -66,15 +69,14 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
     presenter.onInitState();
   }
 
-  bool isList() => true;
-
   @override
   void showLoading(bool isLoading) {
     setState(() {
-      this.isLoading = isLoading && (adapter.getItemCount() == 0 || !isList());
+      this.isFullLoading = isLoading &&
+          (shouldFullLoad || !isList || adapter.getItemCount() == 0);
       this.isRefreshing = isLoading;
 
-      if (isRefreshing && (adapter.getItemCount() != 0 || !isList())) {
+      if (isRefreshing && !shouldFullLoad) {
         refreshIndicatorKey.currentState?.show();
       }
 
@@ -180,17 +182,13 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
         controller: _scrollController);
   }
 
-  Widget makeLDEList() {
-    return makeLDEWidget(makeAnimatedListView());
-  }
-
   Widget makeLDEWidget(Widget widget) {
     Widget toReturn = widget;
 
-    if (isLoading) {
+    if (isFullLoading) {
       toReturn = Widgets.makeLoading();
     } else {
-      if (adapter.getItemCount() == 0 && isList()) {
+      if (adapter.getItemCount() == 0 && isList) {
         toReturn = makeEmptyStateWidget();
       }
     }
@@ -198,16 +196,16 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
     return toReturn;
   }
 
-  Widget makeRefreshingList({isAnimated = true}) {
+  Widget makeRefreshingList({shouldFullLoad = false}) {
+    this.shouldFullLoad = shouldFullLoad;
     return RefreshIndicator(
         key: refreshIndicatorKey,
         onRefresh: handleRefresh,
-        child: isAnimated
-            ? makeLDEWidget(makeAnimatedListView())
-            : makeLDEWidget(makeLDEList()));
+        child: makeLDEWidget(makeAnimatedListView()));
   }
 
   Widget makeRefreshingWidget(Widget widget) {
+    this.isList = false;
     return RefreshIndicator(
         key: refreshIndicatorKey,
         onRefresh: handleRefresh,

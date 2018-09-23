@@ -149,9 +149,6 @@ class OptionListState extends State<OptionPage>
   }
 
   @override
-  bool isList() => false;
-
-  @override
   void refreshData() {
     presenter.loadUniversities();
   }

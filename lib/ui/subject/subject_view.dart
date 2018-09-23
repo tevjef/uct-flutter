@@ -45,7 +45,7 @@ class SubjectListState extends State<SubjectPage>
                   }),
             ],
           ),
-          body: makeRefreshingList(isAnimated: false)),
+          body: makeRefreshingList(shouldFullLoad: true)),
     );
   }
 
