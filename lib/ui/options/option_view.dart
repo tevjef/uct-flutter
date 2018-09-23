@@ -136,7 +136,7 @@ class OptionListState extends State<OptionPage>
   }
 
   @override
-  void setSelectedUniversity(University university) {
+  void setSelectedUniversity(University university, Semester semester) {
     if (university == null) {
       return;
     }
@@ -144,10 +144,7 @@ class OptionListState extends State<OptionPage>
     setState(() {
       this.selectedUniversity = university;
       this.semesters = university.availableSemesters;
-
-      if (!semesters.contains(selectedSemester)) {
-        presenter.updateDefaultSemester(semesters[0]);
-      }
+      this.selectedSemester = semester;
     });
   }
 

@@ -40,12 +40,12 @@ class SubjectListState extends State<SubjectPage>
                     Navigator.of(context)
                         .pushNamed(UCTRoutes.options)
                         .then((bool) {
-                      presenter.loadSubjects();
+                      handleRefresh();
                     });
                   }),
             ],
           ),
-          body: makeRefreshingList()),
+          body: makeRefreshingList(isAnimated: false)),
     );
   }
 

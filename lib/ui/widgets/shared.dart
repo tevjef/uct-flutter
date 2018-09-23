@@ -70,18 +70,20 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
 
   @override
   void showLoading(bool isLoading) {
-    this.isLoading = isLoading;
-    this.isRefreshing = isLoading;
+    setState(() {
+      this.isLoading = isLoading && (adapter.getItemCount() == 0 || !isList());
+      this.isRefreshing = isLoading;
 
-    if (isRefreshing && (adapter.getItemCount() != 0 || !isList())) {
-      refreshIndicatorKey.currentState?.show();
-    }
+      if (isRefreshing && (adapter.getItemCount() != 0 || !isList())) {
+        refreshIndicatorKey.currentState?.show();
+      }
 
-    if (!isRefreshing && completer != null) {
-      completer.complete(null);
-    }
+      if (!isRefreshing && completer != null) {
+        completer.complete(null);
+      }
 
-    completer = Completer();
+      completer = Completer();
+    });
   }
 
   @override
@@ -196,11 +198,13 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
     return toReturn;
   }
 
-  Widget makeRefreshingList() {
+  Widget makeRefreshingList({isAnimated = true}) {
     return RefreshIndicator(
         key: refreshIndicatorKey,
         onRefresh: handleRefresh,
-        child: makeLDEList());
+        child: isAnimated
+            ? makeLDEWidget(makeAnimatedListView())
+            : makeLDEWidget(makeLDEList()));
   }
 
   Widget makeRefreshingWidget(Widget widget) {

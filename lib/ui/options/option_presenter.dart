@@ -30,8 +30,8 @@ class OptionPresenter extends BasePresenter<OptionView> {
     var defaultSemester = await _getDefaultSemester(defaultUniversity);
 
     view.onOptionSuccess(universities);
-    view.setSelectedUniversity(defaultUniversity.university);
-    view.setSelectedSemester(defaultSemester.semester);
+    view.setSelectedUniversity(
+        defaultUniversity.university, defaultSemester?.semester);
 
     view.showLoading(false);
   }
@@ -39,9 +39,22 @@ class OptionPresenter extends BasePresenter<OptionView> {
   Future<DefaultSemester> _getDefaultSemester(
       DefaultUniversity defaultUniversity) async {
     var defaultSemester = await preferenceDao.getDefaultSemester();
-    if (defaultSemester == null) {
+    if (defaultSemester == null && defaultUniversity.university != null) {
       DefaultSemester ds = DefaultSemester();
+      ds.semester = defaultUniversity.university.availableSemesters[0];
       defaultSemester = ds;
+      await preferenceDao.insertSemester(ds.semester);
+    }
+
+    // There is a semester and university
+    if (defaultSemester != null &&
+        defaultUniversity.university != null &&
+        !defaultUniversity.university.availableSemesters
+            .contains(defaultSemester.semester)) {
+      DefaultSemester ds = DefaultSemester();
+      ds.semester = defaultUniversity.university.availableSemesters[0];
+      defaultSemester = ds;
+      await preferenceDao.insertSemester(ds.semester);
     }
     return defaultSemester;
   }
@@ -59,10 +72,9 @@ class OptionPresenter extends BasePresenter<OptionView> {
 
   void updateDefaultUniversity(University university) async {
     var du = await preferenceDao.insertUniversity(university);
-    view.setSelectedUniversity(du.university);
-
     var ds = await _getDefaultSemester(du);
-    view.setSelectedSemester(ds.semester);
+
+    view.setSelectedUniversity(du.university, ds.semester);
   }
 
   void updateDefaultSemester(Semester semester) async {
@@ -72,7 +84,7 @@ class OptionPresenter extends BasePresenter<OptionView> {
 }
 
 abstract class OptionView extends BaseView {
-  void setSelectedUniversity(University university);
+  void setSelectedUniversity(University university, Semester semester);
 
   void setSelectedSemester(Semester semester);
 
