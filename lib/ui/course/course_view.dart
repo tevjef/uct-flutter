@@ -10,13 +10,14 @@ class CoursePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title =
-        "${searchContext.course.name} (${searchContext.course.number})";
+    final title = S
+        .of(context)
+        .headerMessage(searchContext.course.name, searchContext.course.number);
 
     var allSections = 0;
     var closedSections = 0;
     searchContext.course.sections.forEach((Section section) {
-      if (section.status == "Closed") {
+      if (section.status == S.of(context).closedStatus) {
         closedSections++;
       }
       allSections++;
@@ -51,8 +52,10 @@ class CoursePage extends StatelessWidget {
             labelStyle: Styles.sectionHeader,
             unselectedLabelStyle: Styles.sectionHeader,
             tabs: [
-              new Tab(text: "ALL SECTIONS ($allSections)"),
-              new Tab(text: "CLOSED ($closedSections)"),
+              new Tab(text: S.of(context).allSections(allSections.toString())),
+              new Tab(
+                  text:
+                      S.of(context).closedSections(closedSections.toString())),
             ],
           ),
         ),
@@ -76,10 +79,10 @@ class _CourseList extends StatefulWidget {
   _CourseListState createState() => new _CourseListState(all);
 }
 
-class _CourseListState extends State<_CourseList> implements CourseView {
+class _CourseListState extends State<_CourseList>
+    with LDEViewMixin<_CourseList>
+    implements CourseView {
   CoursePresenter presenter;
-  Adapter adapter = Adapter();
-  bool isLoading;
   bool _all;
 
   _CourseListState(bool all) {
@@ -90,45 +93,21 @@ class _CourseListState extends State<_CourseList> implements CourseView {
   @override
   void initState() {
     super.initState();
-    isLoading = true;
     presenter.loadCourse(_all);
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget widget;
-
-    if (isLoading) {
-      widget = new Center(
-          child: new Padding(
-              padding: const EdgeInsets.only(
-                  left: Dimens.spacingStandard, right: Dimens.spacingStandard),
-              child: new CircularProgressIndicator()));
-    } else {
-      widget = getListView();
-    }
-
-    return widget;
+    return makeRefreshingList();
   }
 
   @override
-  void onCourseError(String message) {
-    setState(() {
-      this.isLoading = false;
-    });
+  void refreshData() {
+    presenter.loadCourse(_all);
   }
 
   @override
-  void onCourseSuccess(List<Item> adapterItems) {
-    setState(() {
-      this.isLoading = false;
-      this.adapter.swapData(adapterItems);
-    });
+  Widget makeEmptyStateWidget() {
+    return Container();
   }
-
-  Widget getListView() => StatefulListView(
-        adapter.getItemCount(),
-        adapter.onCreateWidget,
-        padding: new EdgeInsets.only(top: Dimens.spacingStandard),
-      );
 }

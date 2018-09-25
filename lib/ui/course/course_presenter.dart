@@ -2,13 +2,11 @@ import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
 
-class CoursePresenter {
-  CourseView view;
-  UCTApiClient apiClient;
+class CoursePresenter extends BasePresenter<CourseView> {
   SearchContext searchContext;
   Course course;
 
-  CoursePresenter(this.view) {
+  CoursePresenter(CourseView view) : super(view) {
     final injector = Injector.getInjector();
     searchContext = injector.get();
     course = searchContext.course;
@@ -39,12 +37,9 @@ class CoursePresenter {
 
     adapterItems.addAll(metaItems);
     adapterItems.addAll(sectionItem);
-    view.onCourseSuccess(adapterItems);
+
+    view.setListData(adapterItems);
   }
 }
 
-abstract class CourseView {
-  void onCourseSuccess(List<Item> adapterItems);
-
-  void onCourseError(String message);
-}
+abstract class CourseView extends BaseView {}

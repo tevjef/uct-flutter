@@ -20,5 +20,7 @@
   "selectSemester": "Select a semester",
   "options": "Options",
   "please_select_a_university": "Please select a university.",
-  "numOfOpen": "$openNum open sections of $totalNum"
+  "numOfOpen": "$openNum open sections of $totalNum",
+  "allSections": "ALL SECTIONS ($allSections)",
+  "closedSections": "CLOSED ($closedSections)"
 }
