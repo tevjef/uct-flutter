@@ -19,5 +19,6 @@
   "selectUniversity": "Select your university",
   "selectSemester": "Select a semester",
   "options": "Options",
-  "please_select_a_university": "Please select a university."
+  "please_select_a_university": "Please select a university.",
+  "numOfOpen": "$openNum open sections of $totalNum"
 }

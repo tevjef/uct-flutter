@@ -38,6 +38,7 @@ class S implements WidgetsLocalizations {
   String allMeta(String count) => "ALL ($count)";
   String headerMessage(String title, String meta) => "$title ($meta)";
   String meetingTime(String startTime, String endTime) => "$startTime - $endTime";
+  String numOfOpen(String openNum, String totalNum) => "$openNum open sections of $totalNum";
   String professorList(String firstProf, String secondProf) => "$firstProf | $secondProf";
   String semesterFull(String season, String year) => "$season $year";
   String subjectTitle(String uniAbbr, String season, String year) => "$uniAbbr $season $year";

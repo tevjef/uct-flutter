@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
 
@@ -15,7 +16,7 @@ class CourseTitleItem extends Item {
     int total = course.sections.length;
     int open = 0;
     course.sections.forEach((section) {
-      if (section.status == "Open") {
+      if (section.status == S.of(context).openStatus) {
         open++;
       }
     });
@@ -59,12 +60,14 @@ class CourseTitleItem extends Item {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(
-                      "${course.name} (${course.number})",
+                      S.of(context).headerMessage(course.name, course.number),
                       style: Styles.caption,
                       overflow: TextOverflow.fade,
                     ),
                     new Text(
-                      "${open} open sections of ${total}",
+                      S
+                          .of(context)
+                          .numOfOpen(open.toString(), total.toString()),
                       style: Styles.body1Secondary,
                     )
                   ])),

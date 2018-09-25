@@ -3,43 +3,36 @@ import '../../data/lib.dart';
 import '../widgets/lib.dart';
 import 'courses_adapter.dart';
 
-class CoursePresenter {
-  CourseView view;
+class CoursePresenter extends BasePresenter<CoursesView> {
   UCTApiClient apiClient;
   SearchContext searchContext;
   RecentSelectionDao recentSelectionDatabase;
-  Function courseClickCallback;
+
   List<Course> courses;
 
-  String topicName;
-
-  CoursePresenter(this.view, this.topicName) {
+  CoursePresenter(CoursesView view) : super(view) {
     final injector = Injector.getInjector();
     apiClient = injector.get();
     searchContext = injector.get();
     recentSelectionDatabase = injector.get();
-
-    courseClickCallback = (context, Course course) {
-      searchContext.updateWith(course: course);
-      addToRecent(course.topicName);
-
-      Navigator.of(context).pushNamed(UCTRoutes.course).then((changed) {
-        updateCourseList();
-      });
-    };
   }
 
-  void loadCourses() {
-    apiClient.courses(topicName).then((courses) {
-      this.courses = courses;
-      updateCourseList();
-    }).catchError((onError) {
-      print(onError);
-      view.onCourseError(onError.toString());
-    });
+  @override
+  void onInitState() {
+    super.onInitState();
+    loadCourses();
   }
 
-  void updateCourseList() async {
+  void loadCourses() async {
+    try {
+      var courses = await apiClient.courses(searchContext.subject.topicName);
+      _updateCourseList(courses);
+    } catch (e) {
+      view.showErrorMessage(e, loadCourses);
+    }
+  }
+
+  void _updateCourseList(List<Course> courses) async {
     var recent = await recentSelectionDatabase
         .getRecentCourseSelection(searchContext.subject.topicName);
 
@@ -51,23 +44,33 @@ class CoursePresenter {
       });
     });
 
+    var courseClickCallback = (context, Course course) {
+      searchContext.updateWith(course: course);
+      addToRecent(course.topicName);
+
+      Navigator.of(context).pushNamed(UCTRoutes.course).then((changed) {
+        loadCourses();
+      });
+    };
+
     var recentCourseItems = recentCourses.map((course) {
       return CourseTitleItem(course, courseClickCallback);
     });
 
     if (recentCourseItems.isNotEmpty && courses.length > 5) {
-      adapterItems.add(HeaderItem("RECENT"));
+      adapterItems.add(HeaderItem(S.of(context).recents));
       adapterItems.addAll(recentCourseItems);
     }
 
-    adapterItems.add(HeaderItem("ALL (${courses.length})"));
+    adapterItems
+        .add(HeaderItem(S.of(context).allMeta(courses.length.toString())));
 
     final addItems = courses.map((course) {
       return CourseTitleItem(course, courseClickCallback);
     });
 
     adapterItems.addAll(addItems);
-    view.onCourseSuccess(adapterItems);
+    view.setListData(adapterItems);
   }
 
   void addToRecent(String courseTopicName) async {
@@ -79,8 +82,4 @@ class CoursePresenter {
   }
 }
 
-abstract class CourseView {
-  void onCourseSuccess(List<Item> adapterItems);
-
-  void onCourseError(String message);
-}
+abstract class CoursesView extends BaseView {}
