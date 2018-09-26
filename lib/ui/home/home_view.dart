@@ -61,7 +61,7 @@ class HomeListState extends State<HomePage>
       children: <Widget>[
         Container(
           padding: EdgeInsets.symmetric(horizontal: Dimens.spacingXxxlarge),
-          child: Image.asset("res/images/board.png"),
+          child: Image.asset("res/images/board.webp"),
         ),
         Container(
           padding: EdgeInsets.only(
