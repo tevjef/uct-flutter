@@ -2,24 +2,21 @@ import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
 
-class SectionPresenter {
-  SectionView view;
-  Section section;
-
+class SectionPresenter extends BasePresenter<SectionView> {
   SearchContext searchContext;
-  UCTApiClient apiClient;
   UCTRepo uctRepo;
   TrackedSectionDao trackedSectionDatabase;
 
-  SectionPresenter(this.view, this.searchContext) {
+  SectionPresenter(SectionView view) : super(view) {
     final injector = Injector.getInjector();
     trackedSectionDatabase = injector.get();
     uctRepo = injector.get();
-
-    section = searchContext.section;
+    searchContext = injector.get();
   }
 
   void loadSection() async {
+    Section section = searchContext.section;
+
     List<Item> adapterItems = List();
 
     adapterItems.add(SubscribeItem(view, (value) {
@@ -37,16 +34,15 @@ class SectionPresenter {
 
     adapterItems.addAll(metaItems);
     adapterItems.add(SectionItem(searchContext, navigates: false));
-    view.onSectionSuccess(adapterItems);
-    loadStatus();
+    view.setListData(adapterItems);
+    loadStatus(section);
   }
 
-  void loadStatus() {
-    trackedSectionDatabase
-        .isSectionTracked(section.topicName)
-        .then((isTracked) {
-      view.setSectionStatus(isTracked);
-    });
+  void loadStatus(Section section) async {
+    var isTracked =
+        await trackedSectionDatabase.isSectionTracked(section.topicName);
+
+    view.setSectionStatus(isTracked);
   }
 
   void toggleSection(SearchContext searchContext) {
@@ -56,10 +52,6 @@ class SectionPresenter {
   }
 }
 
-abstract class SectionView implements TrackedStatusProvider {
-  void onSectionSuccess(List<Item> adapterItems);
-
-  void onSectionError(String message);
-
+abstract class SectionView extends BaseView implements TrackedStatusProvider {
   void setSectionStatus(bool isTracked);
 }

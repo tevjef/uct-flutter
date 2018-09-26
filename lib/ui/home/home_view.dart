@@ -22,7 +22,7 @@ class HomeListState extends State<HomePage>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        return Future<bool>.value(true);
+        return Navigator.of(context).maybePop(false);
       },
       child: Scaffold(
         key: scaffoldKey,

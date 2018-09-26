@@ -22,5 +22,8 @@
   "please_select_a_university": "Please select a university.",
   "numOfOpen": "$openNum open sections of $totalNum",
   "allSections": "ALL SECTIONS ($allSections)",
-  "closedSections": "CLOSED ($closedSections)"
+  "closedSections": "CLOSED ($closedSections)",
+  "section": "SECTION",
+  "index": "INDEX",
+  "credits": "CREDITS"
 }

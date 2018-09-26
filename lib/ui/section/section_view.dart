@@ -11,23 +11,19 @@ class SectionDetailsPage extends StatefulWidget {
 }
 
 class SectionDetailState extends State<SectionDetailsPage>
+    with LDEViewMixin
     implements SectionView {
   SearchContext searchContext;
-  final Adapter adapter = Adapter();
 
+  // Used to determine if the Home screen should be undated.
   bool initialTrackedStatus;
+  bool isTracked = false;
 
   SectionPresenter presenter;
-  Section section;
-  bool isLoading = true;
-  bool isTracked = false;
-  Widget list;
 
   SectionDetailState() {
     searchContext = Injector.getInjector().get();
-    presenter = SectionPresenter(this, searchContext);
-
-    section = searchContext.section;
+    presenter = SectionPresenter(this);
   }
 
   @override
@@ -38,8 +34,9 @@ class SectionDetailState extends State<SectionDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    final title =
-        "${searchContext.course.name} (${searchContext.course.number})";
+    final title = S
+        .of(context)
+        .headerMessage(searchContext.course.name, searchContext.course.number);
 
     final section = searchContext.section;
 
@@ -58,6 +55,18 @@ class SectionDetailState extends State<SectionDetailsPage>
                         Navigator.of(context)
                             .pop(initialTrackedStatus != isTracked);
                       }),
+                  actions: <Widget>[
+                    new IconButton(
+                      icon: new Icon(
+                        Icons.undo,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            UCTRoutes.home, (Route<dynamic> route) => false);
+                      },
+                    )
+                  ],
                   title: Container(
                     child: Text(title),
                   ),
@@ -79,7 +88,7 @@ class SectionDetailState extends State<SectionDetailsPage>
                                 ),
                                 SizedBox(height: 6.0),
                                 Text(
-                                  "SECTION",
+                                  S.of(context).section,
                                   style: Styles.sectionHeaderLight,
                                 ),
                               ],
@@ -93,12 +102,12 @@ class SectionDetailState extends State<SectionDetailsPage>
                                 ),
                                 SizedBox(height: 6.0),
                                 Text(
-                                  "INDEX",
+                                  S.of(context).index,
                                   style: Styles.sectionHeaderLight,
                                 ),
                               ],
                             ),
-                            buildCredits()
+                            buildCredits(section)
                           ],
                         ),
                       ),
@@ -107,13 +116,13 @@ class SectionDetailState extends State<SectionDetailsPage>
               ],
             ),
             preferredSize: Size.fromHeight(140.0)),
-        body: getListView());
+        body: makeListView());
   }
 
-  Widget buildCredits() {
+  Widget buildCredits(Section section) {
     var defaultCredits = 0.toDouble();
     var credits = double.parse(section.credits) ?? defaultCredits;
-    if (credits == defaultCredits) {
+    if (credits == defaultCredits || credits == -1.0) {
       return Container();
     }
 
@@ -126,21 +135,11 @@ class SectionDetailState extends State<SectionDetailsPage>
         ),
         SizedBox(height: 6.0),
         Text(
-          "CREDITS",
+          S.of(context).credits,
           style: Styles.sectionHeaderLight,
         ),
       ],
     );
-  }
-
-  @override
-  void onSectionError(String message) {
-    // TODO: implement onSectionError
-  }
-
-  @override
-  void onSectionSuccess(List<Item> adapterItems) {
-    setState(() => this.adapter.swapData(adapterItems));
   }
 
   @override
@@ -154,14 +153,11 @@ class SectionDetailState extends State<SectionDetailsPage>
     });
   }
 
-  Widget getListView() {
-    return ListView.builder(
-        itemCount: adapter.getItemCount(),
-        itemBuilder: (BuildContext context, int position) {
-          return adapter.onCreateWidget(context, position);
-        });
-  }
-
   @override
   bool trackedStatus() => isTracked;
+
+  @override
+  void refreshData() {
+    presenter.loadSection();
+  }
 }

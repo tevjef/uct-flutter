@@ -22,13 +22,16 @@ class S implements WidgetsLocalizations {
 
   String get add => "Add";
   String get closedStatus => "Closed";
+  String get credits => "CREDITS";
   String get homeEmpty =>
       "You don't seem to be tracking any sections. Try adding some!";
   String get homeTitle => "Tracked Sections";
+  String get index => "INDEX";
   String get openStatus => "Open";
   String get options => "Options";
   String get please_select_a_university => "Please select a university.";
   String get recents => "RECENTS";
+  String get section => "SECTION";
   String get selectSemester => "Select a semester";
   String get selectUniversity => "Select your university";
   String get semester => "Semester";
