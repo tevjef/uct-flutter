@@ -16,6 +16,7 @@ dependencies:
   tuple: ^1.0.2
   firebase_analytics: ^1.0.3
   firebase_messaging: ^2.0.0
+  flutter_local_notifications: ^0.3.8
   flutter_simple_dependency_injection: any
 
   # The following adds the Cupertino Icons font to your application.
