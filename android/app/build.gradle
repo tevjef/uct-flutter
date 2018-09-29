@@ -15,27 +15,60 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-  compileSdkVersion 27
+  compileSdkVersion 28
 
   lintOptions {
     disable 'InvalidPackage'
   }
 
+  signingConfigs {
+    debug {
+      if (rootProject.file('debug.properties').exists()) {
+        final def props = new Properties()
+        props.load(new FileInputStream(rootProject.file('debug.properties')))
+
+        storeFile file(props['DEBUG_STORE_FILE'])
+        storePassword props['DEBUG_STORE_PASSWORD']
+        keyAlias props['DEBUG_KEY_ALIAS']
+        keyPassword props['DEBUG_KEY_PASSWORD']
+      }
+    }
+    release {
+      if (rootProject.file('release.properties').exists()) {
+        final def props = new Properties()
+        props.load(new FileInputStream(rootProject.file('release.properties')))
+
+        storeFile file(props['RELEASE_STORE_FILE'])
+        storePassword props['RELEASE_STORE_PASSWORD']
+        keyAlias props['RELEASE_KEY_ALIAS']
+        keyPassword props['RELEASE_KEY_PASSWORD']
+        v2SigningEnabled true
+      }
+    }
+  }
+
   defaultConfig {
     // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-    applicationId "io.coursetrakr.uctflutter"
+    applicationId "com.tevinjeffrey.rutgersct"
     minSdkVersion 16
-    targetSdkVersion 27
-    versionCode 1
-    versionName "1.0"
+    targetSdkVersion 28
+    versionCode rootProject.ext.buildVersion
+    versionName "2.0.0"
+    signingConfig signingConfigs.debug
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    resConfigs 'en'
+
   }
 
   buildTypes {
     release {
-      // TODO: Add your own signing config for the release build.
-      // Signing with the debug keys for now, so `flutter run --release` works.
-      signingConfig signingConfigs.debug
+      signingConfig signingConfigs.release
+    }
+
+    debug {
+      proguardFiles 'proguard-rules.pro'
+      applicationIdSuffix '.debug'
     }
   }
 }
@@ -45,10 +78,10 @@ flutter {
 }
 
 dependencies {
-  implementation 'com.android.support:appcompat-v7:27.1.1'
-  implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-  implementation 'com.android.support:design:27.1.1'
+  implementation 'com.android.support:appcompat-v7:28.0.0'
+  implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+  implementation 'com.android.support:design:28.0.0'
   testImplementation 'junit:junit:4.12'
-  androidTestImplementation 'com.android.support.test:runner:1.0.1'
-  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+  androidTestImplementation 'com.android.support.test:runner:1.0.2'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

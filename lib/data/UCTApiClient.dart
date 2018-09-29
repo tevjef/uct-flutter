@@ -90,6 +90,7 @@ class UCTApiClient implements UCTApi {
         'notificationId': notificationId,
       },
     ).then((response) {
+      logHttp(response);
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
         throw new Exception(
@@ -103,14 +104,18 @@ class UCTApiClient implements UCTApi {
   @override
   Future<bool> subscription(
       bool isSubscribed, String topicName, String fcmToken) {
+    var body = {
+      'isSubscribed': isSubscribed.toString(),
+      'topicName': topicName,
+      'fcmToken': fcmToken,
+    };
+
     return http.post(
       "$baseUrl" + "/subscription",
-      body: {
-        'isSubscribed': isSubscribed,
-        'topicName': topicName,
-        'fcmToken': fcmToken,
-      },
+      body: body,
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
     ).then((response) {
+      logHttp(response);
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
         throw new Exception(

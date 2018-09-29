@@ -45,10 +45,13 @@ class SectionPresenter extends BasePresenter<SectionView> {
     view.setSectionStatus(isTracked);
   }
 
-  void toggleSection(SearchContext searchContext) {
-    uctRepo.toggleSection(searchContext).then((isTracked) {
+  void toggleSection(SearchContext searchContext) async {
+    try {
+      var isTracked = await uctRepo.toggleSection(searchContext);
       view.setSectionStatus(isTracked);
-    });
+    } catch (e) {
+      view.showErrorMessage(e);
+    }
   }
 }
 

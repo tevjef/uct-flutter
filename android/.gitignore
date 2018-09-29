@@ -7,4 +7,5 @@
 .DS_Store
 /build
 /captures
-GeneratedPluginRegistrant.java
+app/src/main/java/com/flutter/plugins/GeneratedPluginRegistrant.java
+*.properties

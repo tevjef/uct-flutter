@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 import '../data/UCTApiClient.dart';
 import '../data/db/recent.dart';
 import '../data/db/tracked.dart';
@@ -15,37 +17,62 @@ class UCTRepo {
   DateTime lastRefresh;
   Duration minTimeBetweenRefresh = Duration(seconds: 5);
 
+  final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
+
   UCTRepo(this.searchContext, this.apiClient, this.trackedSectionDatabase,
-      this.recentSelectionDatabase);
+      this.recentSelectionDatabase) {
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+    );
+
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+
+    _firebaseMessaging.getToken().then((token) {
+      print("Push Messaging token: $token");
+    }).catchError((onError) {
+      print(onError);
+    });
+  }
 
   Future<bool> toggleSection(SearchContext searchContext) async {
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
+
     var isTracked = await trackedSectionDatabase
         .isSectionTracked(searchContext.sectionTopicName);
 
+    var token = await _firebaseMessaging.getToken();
+    print("Push Messaging token: $token");
+
     if (isTracked) {
-      return trackedSectionDatabase
-          .deleteTrackedSection(searchContext.sectionTopicName)
-          .then((trackedSection) {
-        return !isTracked;
-      });
-      ;
-//          .then((didDelete) {
-//        if (didDelete) {
-//          apiClient.subscription(
-//              false, searchContext.topicName, "aaaaaasaaaaaaaa");
-//        }
-      // Unregister from FCM
+      var numDeleted = await trackedSectionDatabase
+          .deleteTrackedSection(searchContext.sectionTopicName);
+
+      _firebaseMessaging.unsubscribeFromTopic(searchContext.sectionTopicName);
+
+      apiClient.subscription(false, searchContext.sectionTopicName, token);
+
+      return !isTracked;
     } else {
-      return trackedSectionDatabase
-          .insertSearchContext(searchContext)
-          .then((trackedSection) {
-        return !isTracked;
-      });
-//          .then((trackedSection) {
-//        apiClient.subscription(
-//            true, searchContext.topicName, "aaaaaasaaaaaaaa");
-//      });
-      // Register to FCM
+      var trackedSection =
+          await trackedSectionDatabase.insertSearchContext(searchContext);
+
+      _firebaseMessaging.subscribeToTopic(trackedSection.topicName);
+
+      apiClient.subscription(true, trackedSection.topicName, token);
+
+      return !isTracked;
     }
   }
 
