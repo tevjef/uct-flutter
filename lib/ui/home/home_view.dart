@@ -22,15 +22,17 @@ class HomeListState extends State<HomePage>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        return Navigator.of(context).maybePop(false);
+        return Future(() {
+          return true;
+        });
       },
       child: Scaffold(
         key: scaffoldKey,
         appBar: new AppBar(
           title: new Text(S.of(context).homeTitle),
-          actions: <Widget>[
-            Widgets.makeIconWithBadge("5", () {}),
-          ],
+//          actions: <Widget>[
+//            Widgets.makeIconWithBadge("5", () {}),
+//          ],
         ),
         body: makeRefreshingList(),
         floatingActionButton: FloatingActionButton(

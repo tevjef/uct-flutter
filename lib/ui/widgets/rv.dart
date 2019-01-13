@@ -18,7 +18,12 @@ class GroupItem extends Item with ListMixin<Item> {
 
   int getItemCount() => _items.length + getHeaderCount();
 
+  List<Item> getItems() => _items.toList();
+
   bool update(Item item) => Utils.replace(_items, item).item1;
+
+  bool updateAll(GroupItem item) =>
+      Utils.replaceAll(_items, item.getItems()).item1;
 
   void addItems(List<Item> items) => _items.addAll(items);
 
@@ -202,6 +207,8 @@ class Adapter {
       BuildContext context, int adapterPosition, Animation<double> animation) {
     Tuple2<Item, int> itemIndexTuple = getItemAtPosition(adapterPosition);
 
+    var count = getItemCount();
+
     if (itemIndexTuple != null) {
       var item = itemIndexTuple.item1;
       var index = itemIndexTuple.item2;
@@ -239,7 +246,7 @@ class Adapter {
           _items[index] = item;
           return true;
         } else if (i is GroupItem) {
-          updated = i.update(item);
+          updated = i.updateAll(item);
         } else {
           return Utils.replace(_items, item).item1;
         }
@@ -357,5 +364,17 @@ class Utils {
     items.replaceRange(index, index + 1, [item]);
 
     return Tuple2(true, index);
+  }
+
+  static Tuple2<bool, int> replaceAll(
+      List<Item> items, List<Item> itemsToReplace) {
+    var replacedItem = false;
+    for (var i in itemsToReplace) {
+      var tupe = replace(items, i);
+      if (tupe.item1) {
+        replacedItem = true;
+      }
+    }
+    return Tuple2(replacedItem, -1);
   }
 }

@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -24,7 +23,8 @@ class S implements WidgetsLocalizations {
   String get add => "Add";
   String get closedStatus => "Closed";
   String get credits => "CREDITS";
-  String get homeEmpty => "You don't seem to be tracking any sections. Try adding some!";
+  String get homeEmpty =>
+      "You don't seem to be tracking any sections. Try adding some!";
   String get homeTitle => "Tracked Sections";
   String get index => "INDEX";
   String get openStatus => "Open";
@@ -42,33 +42,36 @@ class S implements WidgetsLocalizations {
   String allSections(String allSections) => "ALL SECTIONS ($allSections)";
   String closedSections(String closedSections) => "CLOSED ($closedSections)";
   String headerMessage(String title, String meta) => "$title ($meta)";
-  String meetingTime(String startTime, String endTime) => "$startTime - $endTime";
-  String numOfOpen(String openNum, String totalNum) => "$openNum open sections of $totalNum";
-  String professorList(String firstProf, String secondProf) => "$firstProf | $secondProf";
+  String meetingTime(String startTime, String endTime) =>
+      "$startTime - $endTime";
+  String numOfOpen(String openNum, String totalNum) =>
+      "$openNum open sections of $totalNum";
+  String professorList(String firstProf, String secondProf) =>
+      "$firstProf | $secondProf";
   String semesterFull(String season, String year) => "$season $year";
-  String subjectTitle(String uniAbbr, String season, String year) => "$uniAbbr $season $year";
-  String unsubscribeMessage(String sectionNumber, String sectionName) => "Unsubscribed from $sectionNumber of $sectionName.";
+  String subjectTitle(String uniAbbr, String season, String year) =>
+      "$uniAbbr $season $year";
+  String unsubscribeMessage(String sectionNumber, String sectionName) =>
+      "Unsubscribed from $sectionNumber of $sectionName.";
 }
 
 class en extends S {
   const en();
 }
 
-
-class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocalizations> {
+class GeneratedLocalizationsDelegate
+    extends LocalizationsDelegate<WidgetsLocalizations> {
   const GeneratedLocalizationsDelegate();
 
   List<Locale> get supportedLocales {
     return const <Locale>[
-
       const Locale("en", ""),
-
     ];
   }
 
   LocaleResolutionCallback resolution({Locale fallback}) {
     return (Locale locale, Iterable<Locale> supported) {
-      final Locale languageLocale = new Locale(locale.languageCode, "");
+      final Locale languageLocale = new Locale('en', "");
       if (supported.contains(locale))
         return locale;
       else if (supported.contains(languageLocale))
@@ -84,7 +87,6 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
   Future<WidgetsLocalizations> load(Locale locale) {
     final String lang = getLang(locale);
     switch (lang) {
-
       case "en":
         return new SynchronousFuture<WidgetsLocalizations>(const en());
 

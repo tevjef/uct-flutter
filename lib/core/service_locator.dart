@@ -22,6 +22,9 @@ class Locator {
 
     injector.map<SearchContext>((i) => new SearchContext(), isSingleton: true);
 
+    injector.map<NotificationRepo>((i) => new NotificationRepo(),
+        isSingleton: true);
+
     injector.map<UCTRepo>(
         (i) => new UCTRepo(
               i.get<SearchContext>(),

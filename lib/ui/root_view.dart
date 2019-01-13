@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/lib.dart';
+import '../data/lib.dart';
 import '../ui/screens.dart';
 
 class RootPage extends StatefulWidget {
@@ -11,6 +12,8 @@ class RootPage extends StatefulWidget {
 }
 
 class RootPageState extends State<RootPage> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   int currentIndex = 0;
 
   List<Widget> pages = <Widget>[
@@ -21,6 +24,11 @@ class RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
+    final injector = Injector.getInjector();
+
+    NotificationRepo notificationRepo = injector.get();
+    notificationRepo.register(scaffoldKey);
+
     final BottomNavigationBar bottomNavigationBar = new BottomNavigationBar(
         items: [
           new BottomNavigationBarItem(
@@ -35,7 +43,9 @@ class RootPageState extends State<RootPage> {
         onTap: onTabTapped);
 
     return new Scaffold(
-        bottomNavigationBar: bottomNavigationBar, body: pages[currentIndex]);
+        key: scaffoldKey,
+//        bottomNavigationBar: bottomNavigationBar,
+        body: pages[currentIndex]);
   }
 
   void onTabTapped(int index) {
