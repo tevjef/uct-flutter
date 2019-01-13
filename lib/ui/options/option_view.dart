@@ -28,25 +28,25 @@ class OptionListState extends State<OptionPage>
   @override
   Widget build(BuildContext context) {
     Widget universityButton = DropdownButton<University>(
-      value: selectedUniversity,
-      onChanged: (University newValue) {
-        presenter.updateDefaultUniversity(newValue);
-      },
-      isDense: true,
-      items: universities.map((University value) {
-        return DropdownMenuItem<University>(
-            value: value,
-            child: Container(
-                width: MediaQuery.of(context).size.width * .80,
-                child: Text(
-                  value.name,
-                  overflow: TextOverflow.ellipsis,
-                )));
-      }).toList(),
-    );
+        value: selectedUniversity,
+        onChanged: (University newValue) {
+          presenter.updateDefaultUniversity(newValue);
+        },
+        isDense: true,
+        items: universities.map((University value) {
+          return DropdownMenuItem<University>(
+              value: value,
+              child: Container(
+                  width: MediaQuery.of(context).size.width * .80,
+                  child: Text(
+                    value.name,
+                    overflow: TextOverflow.ellipsis,
+                  )));
+        }).toList(),
+      );
 
     Widget semesterButton;
-    if (selectedSemester != null) {
+    if (selectedSemester != null && semesters.contains(selectedSemester)) {
       semesterButton = DropdownButton<Semester>(
         value: selectedSemester,
         onChanged: (Semester newValue) {
@@ -77,7 +77,8 @@ class OptionListState extends State<OptionPage>
                 hintText: S.of(context).selectUniversity,
                 helperText: S.of(context).selectUniversity,
               ),
-              isEmpty: selectedUniversity == null,
+              isEmpty: selectedUniversity == null ||
+                  !universities.contains(selectedUniversity),
               child: universityButton),
         ),
         DropdownButtonHideUnderline(
@@ -92,6 +93,8 @@ class OptionListState extends State<OptionPage>
         )
       ],
     );
+
+    Widget ldeWidget = makeRefreshingWidget(widget);
 
     return WillPopScope(
       onWillPop: () {
@@ -114,7 +117,7 @@ class OptionListState extends State<OptionPage>
                 }),
           ],
         ),
-        body: makeRefreshingWidget(widget),
+        body: ldeWidget,
       ),
     );
   }

@@ -63,6 +63,17 @@ class OptionPresenter extends BasePresenter<OptionView> {
       List<University> universities) async {
     var defaultUniversity = await preferenceDao.getDefaultUniversity();
 
+    // If there exists a university save in the database. Update it with the one from the backend.
+    // University.resolvedSemesters can become out of sync with the model in the backend.
+    // This can cause issue with equality on with some widgets. e.g DropDownButton
+    if (defaultUniversity != null) {
+      var updatedUniversity = universities
+          .where((university) =>
+              university.topicName == defaultUniversity.university.topicName)
+          .elementAt(0);
+      defaultUniversity = await preferenceDao.insertUniversity(updatedUniversity);
+    }
+
     if (defaultUniversity == null) {
       DefaultUniversity du = DefaultUniversity();
       defaultUniversity = du;
