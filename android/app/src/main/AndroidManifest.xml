@@ -19,7 +19,7 @@
   <application
       android:name="io.flutter.app.FlutterApplication"
       android:icon="@mipmap/ic_launcher"
-      android:label="uctflutter"
+      android:label="@string/appname"
       >
     <activity
         android:name=".MainActivity"
@@ -40,16 +40,6 @@
           android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
           android:value="true"
           />
-
-      <meta-data
-          android:name="com.google.firebase.messaging.default_notification_icon"
-          android:resource="@drawable/ic_notification"
-          />
-      <meta-data
-          android:name="com.google.firebase.messaging.default_notification_color"
-          android:resource="@color/blue_grey"
-          />
-
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
@@ -60,6 +50,14 @@
         <category android:name="android.intent.category.DEFAULT" />
     </intent-filter>
     </activity>
+    <meta-data
+        android:name="com.google.firebase.messaging.default_notification_icon"
+        android:resource="@drawable/ic_notification"
+        />
+    <meta-data
+        android:name="com.google.firebase.messaging.default_notification_color"
+        android:resource="@color/blue_grey"
+        />
   </application>
 
 </manifest>
