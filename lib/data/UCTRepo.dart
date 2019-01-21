@@ -21,28 +21,6 @@ class UCTRepo {
 
   UCTRepo(this.searchContext, this.apiClient, this.trackedSectionDatabase,
       this.recentSelectionDatabase) {
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-      },
-    );
-
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
-
-    _firebaseMessaging.getToken().then((token) {
-      print("Push Messaging token: $token");
-    }).catchError((onError) {
-      print(onError);
-    });
   }
 
   Future<bool> toggleSection(SearchContext searchContext) async {
