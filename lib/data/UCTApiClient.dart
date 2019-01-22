@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
-
+import 'metriced_http_client.dart';
 import 'proto/model.pb.dart';
 
 abstract class UCTApi {
@@ -29,6 +29,8 @@ class UCTApiClient implements UCTApi {
   UCTApiClient(this.baseUrl);
 
   final Logger log = new Logger('UCTApiClient');
+
+  final MetricHttpClient httpClient = MetricHttpClient(http.Client());
 
   @override
   Future<List<University>> universities() {
@@ -62,7 +64,7 @@ class UCTApiClient implements UCTApi {
 
   Future<Response> getResponse(String url) {
     return ErrorTransformer.transform(
-        http.get("$baseUrl" + "$url").then((http.Response response) {
+        httpClient.get("$baseUrl" + "$url").then((http.Response response) {
       logHttp(response);
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
@@ -81,7 +83,7 @@ class UCTApiClient implements UCTApi {
   @override
   Future<bool> acknowledgeNotification(String receiveAt, String topicName,
       String fcmToken, String notificationId) {
-    return http.post(
+    return httpClient.post(
       "$baseUrl" + "/notification",
       body: {
         'receiveAt': receiveAt,
@@ -110,7 +112,7 @@ class UCTApiClient implements UCTApi {
       'fcmToken': fcmToken,
     };
 
-    return http.post(
+    return httpClient.post(
       "$baseUrl" + "/subscription",
       body: body,
       headers: {"Content-Type": "application/x-www-form-urlencoded"},
