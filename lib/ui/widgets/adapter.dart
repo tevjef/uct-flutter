@@ -84,18 +84,16 @@ class SectionItem extends Item {
   Section section;
 
   bool hasTitle;
-  bool navigates;
   bool canSlide;
 
-  Function onReturnFromNavigation;
+  Function onSectionClicked;
   Function onItemDismissed;
 
   SectionItem(this.searchContext,
       {this.hasTitle = false,
-      this.navigates = true,
       this.canSlide = false,
-      this.onReturnFromNavigation,
-      this.onItemDismissed})
+      this.onItemDismissed,
+      this.onSectionClicked})
       : super(searchContext.section.callNumber) {
     section = searchContext.section;
   }
@@ -176,28 +174,22 @@ class SectionItem extends Item {
 
     Widget navigationWidget = Container();
 
-    if (navigates) {
-      navigationWidget = Positioned.fill(
-        child: Material(
-          borderRadius: BorderRadius.all(Radius.circular(6.0)),
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              var searchContext = Injector.getInjector().get<SearchContext>();
-              searchContext.updateWithAnother(this.searchContext);
+    navigationWidget = Positioned.fill(
+      child: Material(
+        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            var searchContext = Injector.getInjector().get<SearchContext>();
+            searchContext.updateWithAnother(this.searchContext);
 
-              Navigator.of(context)
-                  .pushNamed(UCTRoutes.section)
-                  .then((changed) {
-                if (onReturnFromNavigation != null) {
-                  onReturnFromNavigation(changed);
-                }
-              });
-            },
-          ),
+            if (onSectionClicked != null) {
+              onSectionClicked(section);
+            }
+          },
         ),
-      );
-    }
+      ),
+    );
 
     Widget widget = Container(
       margin: EdgeInsets.only(

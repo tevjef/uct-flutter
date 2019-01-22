@@ -1,4 +1,5 @@
 import '../../core/lib.dart';
+import '../../data/lib.dart';
 import '../widgets/lib.dart';
 import 'home_presenter.dart';
 
@@ -22,17 +23,12 @@ class HomeListState extends State<HomePage>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        return Future(() {
-          return true;
-        });
+        return Future<bool>.value(true);
       },
       child: Scaffold(
         key: scaffoldKey,
         appBar: new AppBar(
           title: new Text(S.of(context).homeTitle),
-//          actions: <Widget>[
-//            Widgets.makeIconWithBadge("5", () {}),
-//          ],
         ),
         body: makeRefreshingList(),
         floatingActionButton: FloatingActionButton(
@@ -42,11 +38,7 @@ class HomeListState extends State<HomePage>
             ),
             backgroundColor: AppColors.white,
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(UCTRoutes.subjects)
-                  .then((changed) {
-                handleRefresh();
-              });
+              presenter.onFabClicked();
             }),
       ),
     );
@@ -79,5 +71,19 @@ class HomeListState extends State<HomePage>
         ),
       ],
     );
+  }
+
+  @override
+  void navigateToSubjects() {
+    Navigator.of(context).pushNamed(UCTRoutes.subjects).then((changed) {
+      handleRefresh();
+    });
+  }
+
+  @override
+  void navigateToSection() {
+    Navigator.of(context).pushNamed(UCTRoutes.section).then((changed) {
+      handleRefresh();
+    });
   }
 }

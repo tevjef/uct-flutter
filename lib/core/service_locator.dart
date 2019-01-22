@@ -22,15 +22,18 @@ class Locator {
 
     injector.map<SearchContext>((i) => new SearchContext(), isSingleton: true);
 
-    injector.map<NotificationRepo>((i) => new NotificationRepo(),
+    injector.map<AnalyticsLogger>((i) => new AnalyticsLogger(),
+        isSingleton: true);
+
+    injector.map<NotificationRepo>((i) => new NotificationRepo(i.get()),
         isSingleton: true);
 
     injector.map<UCTRepo>(
         (i) => new UCTRepo(
-              i.get<SearchContext>(),
-              i.get<UCTApiClient>(),
-              i.get<TrackedSectionDao>(),
-              i.get<RecentSelectionDao>(),
+              i.get(),
+              i.get(),
+              i.get(),
+              i.get(),
             ),
         isSingleton: true);
   }

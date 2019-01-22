@@ -4,6 +4,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import '../ui/widgets/lib.dart';
+import 'analytics/analytics.dart';
+import 'analytics/analytics_keys.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationRepo {
@@ -11,10 +13,12 @@ class NotificationRepo {
 
   final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  AnalyticsLogger analyticsLogger;
 
   final String groupKey = "io.crousetrakr.section";
 
-  NotificationRepo() {
+  NotificationRepo(AnalyticsLogger analyticsLogger) {
+    this.analyticsLogger = analyticsLogger;
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('ic_notification');
     var initializationSettingsIOS = new IOSInitializationSettings();
@@ -32,6 +36,8 @@ class NotificationRepo {
 
         var isOpen = isSectionOpen(title);
 
+        analyticsLogger.logEvent(AKeys.EVENT_FOREGROUND_NOTIFICATION);
+        
         createSectionNotification(isOpen, title, body).then((a) {});
 
         scaffoldKey?.currentState

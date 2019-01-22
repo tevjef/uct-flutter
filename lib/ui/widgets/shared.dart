@@ -91,7 +91,6 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
 
   @override
   void setListData(List<Item> items) {
-    showLoading(false);
     swapItems(items);
   }
 

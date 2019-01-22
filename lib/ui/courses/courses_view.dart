@@ -13,10 +13,10 @@ class CoursesPage extends StatefulWidget {
 class CoursesListState extends State<CoursesPage>
     with LDEViewMixin
     implements CoursesView {
-  CoursePresenter presenter;
+  CoursesPresenter presenter;
 
   CoursesListState() {
-    presenter = new CoursePresenter(this);
+    presenter = new CoursesPresenter(this);
   }
 
   @override
@@ -31,6 +31,7 @@ class CoursesListState extends State<CoursesPage>
         return Future<bool>.value(true);
       },
       child: new Scaffold(
+        key: scaffoldKey,
         appBar: AppBar(
             leading: new IconButton(
                 icon: new Icon(
@@ -49,5 +50,12 @@ class CoursesListState extends State<CoursesPage>
   @override
   void refreshData() {
     presenter.loadCourses();
+  }
+
+  @override
+  void navigateToCourse() {
+    Navigator.of(context).pushNamed(UCTRoutes.course).then((changed) {
+      handleRefresh();
+    });
   }
 }

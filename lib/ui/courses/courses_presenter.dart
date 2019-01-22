@@ -3,15 +3,17 @@ import '../../data/lib.dart';
 import '../widgets/lib.dart';
 import 'courses_adapter.dart';
 
-class CoursePresenter extends BasePresenter<CoursesView> {
+class CoursesPresenter extends BasePresenter<CoursesView> {
   UCTApiClient apiClient;
   SearchContext searchContext;
   RecentSelectionDao recentSelectionDatabase;
+  AnalyticsLogger analyticsLogger;
 
   List<Course> courses;
 
-  CoursePresenter(CoursesView view) : super(view) {
+  CoursesPresenter(CoursesView view) : super(view) {
     final injector = Injector.getInjector();
+    analyticsLogger = injector.get();
     apiClient = injector.get();
     searchContext = injector.get();
     recentSelectionDatabase = injector.get();
@@ -48,9 +50,10 @@ class CoursePresenter extends BasePresenter<CoursesView> {
       searchContext.updateWith(course: course);
       addToRecent(course.topicName);
 
-      Navigator.of(context).pushNamed(UCTRoutes.course).then((changed) {
-        loadCourses();
-      });
+      var parameters = {AKeys.IS_RECENT: recentCourses.contains(course)};
+      analyticsLogger.logEvent(AKeys.EVENT_COURSE_CLICKED, parameters: parameters);
+      
+      view.navigateToCourse();
     };
 
     var recentCourseItems = recentCourses.map((course) {
@@ -71,6 +74,7 @@ class CoursePresenter extends BasePresenter<CoursesView> {
 
     adapterItems.addAll(addItems);
     view.setListData(adapterItems);
+    view.showLoading(false);
   }
 
   void addToRecent(String courseTopicName) async {
@@ -82,4 +86,6 @@ class CoursePresenter extends BasePresenter<CoursesView> {
   }
 }
 
-abstract class CoursesView extends BaseView {}
+abstract class CoursesView extends BaseView {
+  void navigateToCourse();
+}

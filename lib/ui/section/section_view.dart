@@ -18,6 +18,7 @@ class SectionDetailState extends State<SectionDetailsPage>
   // Used to determine if the Home screen should be undated.
   bool initialTrackedStatus;
   bool isTracked = false;
+  int numTrackedSections;
 
   SectionPresenter presenter;
 
@@ -56,16 +57,9 @@ class SectionDetailState extends State<SectionDetailsPage>
                             .pop(initialTrackedStatus != isTracked);
                       }),
                   actions: <Widget>[
-                    new IconButton(
-                      icon: new Icon(
-                        Icons.undo,
-                        color: Colors.black,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            UCTRoutes.home, (Route<dynamic> route) => false);
-                      },
-                    )
+                    Widgets.makeIconWithBadge(numTrackedSections.toString(), () {
+                      presenter.onTrackedSectionsClicked();
+                    }),
                   ],
                   title: Container(
                     child: Text(title),
@@ -159,5 +153,18 @@ class SectionDetailState extends State<SectionDetailsPage>
   @override
   void refreshData() {
     presenter.loadSection();
+  }
+
+  @override
+  void onPopToTrackedSections() {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        UCTRoutes.home, (Route<dynamic> route) => false);
+  }
+
+  @override
+  void setNumTrackedSections(int numTrackedSections) {
+    setState(() {
+      this.numTrackedSections = numTrackedSections;
+    });
   }
 }

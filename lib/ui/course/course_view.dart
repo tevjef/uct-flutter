@@ -23,47 +23,55 @@ class CoursePage extends StatelessWidget {
       allSections++;
     });
 
-    return new DefaultTabController(
-      length: 2,
-      child: new Scaffold(
-        appBar: AppBar(
-          leading: new IconButton(
-              icon: new Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
-          actions: <Widget>[
-            new IconButton(
+    return WillPopScope(
+      onWillPop: () {
+        Future<bool>.value(true);
+      },
+      child: new DefaultTabController(
+        length: 2,
+        child: new Scaffold(
+          appBar: AppBar(
+            leading: new IconButton(
                 icon: new Icon(
-                  Icons.playlist_add,
+                  Icons.arrow_back,
                   color: Colors.black,
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
-                }),
-          ],
-          title: new Container(
-            child: new Text(title),
+                }), 
+            actions: <Widget>[
+              // TODO implemnet add all courses.
+              // new IconButton(
+              //     icon: new Icon(
+              //       Icons.playlist_add,
+              //       color: Colors.black,
+              //     ),
+              //     onPressed: () {
+              //       Navigator.of(context).pop();
+              //     }),
+            ],
+            title: new Container(
+              child: new Text(title),
+            ),
+            bottom: new TabBar(
+              labelStyle: Styles.sectionHeader,
+              unselectedLabelStyle: Styles.sectionHeader,
+              tabs: [
+                new Tab(
+                    text: S.of(context).allSections(allSections.toString())),
+                new Tab(
+                    text: S
+                        .of(context)
+                        .closedSections(closedSections.toString())),
+              ],
+            ),
           ),
-          bottom: new TabBar(
-            labelStyle: Styles.sectionHeader,
-            unselectedLabelStyle: Styles.sectionHeader,
-            tabs: [
-              new Tab(text: S.of(context).allSections(allSections.toString())),
-              new Tab(
-                  text:
-                      S.of(context).closedSections(closedSections.toString())),
+          body: new TabBarView(
+            children: [
+              new _CourseList(all: true),
+              new _CourseList(all: false),
             ],
           ),
-        ),
-        body: new TabBarView(
-          children: [
-            new _CourseList(all: true),
-            new _CourseList(all: false),
-          ],
         ),
       ),
     );
@@ -109,5 +117,12 @@ class _CourseListState extends State<_CourseList>
   @override
   Widget makeEmptyStateWidget() {
     return Container();
+  }
+
+  @override
+  void navigateToSection() {
+    Navigator.of(context).pushNamed(UCTRoutes.section).then((changed) {
+      // handleRefresh();
+    });
   }
 }

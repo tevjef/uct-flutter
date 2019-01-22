@@ -14,7 +14,7 @@ dependencies:
   collection: ^1.14.11
   flutter_slidable: ^0.4.6
   tuple: ^1.0.2
-  firebase_analytics: ^1.0.6
+  firebase_analytics: ^1.1.0
   firebase_messaging: ^2.1.0
   http: ^0.12.0
   flutter_simple_dependency_injection: any
@@ -42,17 +42,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  fonts:
-  - family: ProductSans
-    fonts:
-    - asset: fonts/Product-Sans-Regular.ttf
-    - asset: fonts/Product-Sans-Italic.ttf
-      style: italic
-    - asset: fonts/Product-Sans-Bold.ttf
-      weight: 700
-    - asset: fonts/Product-Sans-Bold-Italic.ttf
-      weight: 700
-      style: italic
+  # fonts:
 
   assets:
   - res/images/board.webp

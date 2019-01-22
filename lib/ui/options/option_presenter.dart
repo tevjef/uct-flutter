@@ -7,11 +7,13 @@ class OptionPresenter extends BasePresenter<OptionView> {
   RecentSelectionDao recentSelectionDatabase;
   PreferenceDao preferenceDao;
   SearchContext searchContext;
+  AnalyticsLogger analyticsLogger;
 
   Function optionClickCallback;
 
   OptionPresenter(OptionView view) : super(view) {
     final injector = Injector.getInjector();
+    analyticsLogger = injector.get();
     apiClient = injector.get();
     searchContext = injector.get();
     recentSelectionDatabase = injector.get();
@@ -71,7 +73,8 @@ class OptionPresenter extends BasePresenter<OptionView> {
           .where((university) =>
               university.topicName == defaultUniversity.university.topicName)
           .elementAt(0);
-      defaultUniversity = await preferenceDao.insertUniversity(updatedUniversity);
+      defaultUniversity =
+          await preferenceDao.insertUniversity(updatedUniversity);
     }
 
     if (defaultUniversity == null) {
@@ -82,6 +85,8 @@ class OptionPresenter extends BasePresenter<OptionView> {
   }
 
   void updateDefaultUniversity(University university) async {
+    analyticsLogger.logEvent(AKeys.EVENT_UNIVERSITY_CHANGED);
+
     var du = await preferenceDao.insertUniversity(university);
     var ds = await _getDefaultSemester(du);
 
@@ -89,6 +94,8 @@ class OptionPresenter extends BasePresenter<OptionView> {
   }
 
   void updateDefaultSemester(Semester semester) async {
+    analyticsLogger.logEvent(AKeys.EVENT_SEMESTER_CHANGED);
+
     var ds = await preferenceDao.insertSemester(semester);
     view.setSelectedSemester(ds.semester);
   }

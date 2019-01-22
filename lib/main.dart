@@ -14,9 +14,9 @@ void main() {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 
-  FirebaseAnalytics analytics = new FirebaseAnalytics();
 
   Locator.init();
+  FirebaseAnalytics analytics = new FirebaseAnalytics();
 
   runApp(MaterialApp(
     title: 'Course Tracker',
@@ -35,7 +35,6 @@ void main() {
     theme: new ThemeData(
       accentColor: Colors.black,
       indicatorColor: Colors.black,
-      fontFamily: "ProductSans",
       primarySwatch: AppColors.white,
     ),
     routes: <String, WidgetBuilder>{

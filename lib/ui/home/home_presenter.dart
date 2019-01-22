@@ -4,14 +4,19 @@ import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
 
-abstract class HomeView implements BaseView, ListOps {}
+abstract class HomeView implements BaseView, ListOps {
+  void navigateToSection();
+  void navigateToSubjects();
+}
 
 class HomePresenter extends BasePresenter<HomeView> {
   UCTRepo uctRepo;
   TrackedSectionDao trackedSectionDatabase;
+  AnalyticsLogger analyticsLogger;
 
   HomePresenter(HomeView view) : super(view) {
     final injector = Injector.getInjector();
+    analyticsLogger = injector.get();
     uctRepo = injector.get();
     trackedSectionDatabase = injector.get();
   }
@@ -73,7 +78,7 @@ class HomePresenter extends BasePresenter<HomeView> {
         // Add the display cell of the data
         group.addItem(SectionItem(searchContext,
             hasTitle: true,
-            onReturnFromNavigation: onReturnFromNavigation,
+            onSectionClicked: onSectionClicked,
             onItemDismissed: onSectionItemDismissed(group)));
       });
 
@@ -83,6 +88,18 @@ class HomePresenter extends BasePresenter<HomeView> {
 
     // Update the UI with the
     view.setListData(adapterItems);
+    view.showLoading(false);
+  }
+
+  void onSectionClicked(Section section) {
+    var parameters = {
+      AKeys.STATUS: section.status,
+      AKeys.ORIGIN: AKeys.ORIGIN_TRACKED_SECTIONS
+    };
+    analyticsLogger.logEvent(AKeys.EVENT_SECTION_CLICKED,
+        parameters: parameters);
+
+    view.navigateToSection();
   }
 
   Function onSectionItemDismissed(GroupItem group) {
@@ -93,22 +110,29 @@ class HomePresenter extends BasePresenter<HomeView> {
 
       // Create an undo action.
       var action = SnackBarAction(
-          label: S.of(context).undo,
-          onPressed: () {
-            group.insert(position, removedItem);
-            view.updateItem(group);
-          });
+          // TODO renable undo some other time.
+          // There's an issue with headers not showing up.
+          // label: S.of(context).undo,
+          // onPressed: () {
+          // group.insert(position, removedItem);
+          // view.updateItem(group);
+          // }
+          );
 
       // Show a message when an item is removed.
       view.showMessage(
           S.of(context).unsubscribeMessage(
               searchContext.section.number, searchContext.course.name),
           action);
+
+      var parameters = {AKeys.STATUS: searchContext.section.status};
+      analyticsLogger.logEvent(AKeys.EVENT_SECTION_REMOVED,
+          parameters: parameters);
     };
   }
 
-  void onReturnFromNavigation(bool changed) {
-    view.showLoading(true);
-    loadTrackedSections();
+  void onFabClicked() {
+    analyticsLogger.logEvent(AKeys.EVENT_NEW_SEARCH);
+    view.navigateToSubjects();
   }
 }

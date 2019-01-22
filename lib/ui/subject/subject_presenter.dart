@@ -8,10 +8,12 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
   RecentSelectionDao recentSelectionDatabase;
   SearchContext searchContext;
   PreferenceDao preferenceDao;
+  AnalyticsLogger analyticsLogger;
 
   SubjectPresenter(SubjectView view) : super(view) {
     final injector = Injector.getInjector();
     apiClient = injector.get();
+    analyticsLogger = injector.get();
     searchContext = injector.get();
     searchContext.reset();
 
@@ -69,10 +71,11 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
       searchContext.updateWith(subject: subject);
       addToRecent(subject.topicName);
 
-      Navigator.of(context).pushNamed(UCTRoutes.courses).then((result) {
-        view.showLoading(true);
-        loadSubjects();
-      });
+      var parameters = {AKeys.IS_RECENT: recentSubjects.contains(subject)};
+      analyticsLogger.logEvent(AKeys.EVENT_SUBJECT_CLICKED,
+          parameters: parameters);
+
+      view.navigateToCourse();
     };
 
     // Build list of recent subject that have been clicked.
@@ -96,6 +99,7 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
     }));
 
     view.setListData(adapterItems);
+    view.showLoading(false);
   }
 
   void addToRecent(String subjectTopicName) async {
@@ -111,9 +115,16 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
     super.onInitState();
     loadSubjects();
   }
+
+  void onSettingsClick() {
+    analyticsLogger.logEvent(AKeys.EVENT_SETTINGS_CLICKED);
+    view.navigateToOptions();
+  }
 }
 
 abstract class SubjectView extends BaseView {
   void setTitle(String title);
   void onUniversityNotSet();
+  void navigateToOptions();
+  void navigateToCourse();
 }

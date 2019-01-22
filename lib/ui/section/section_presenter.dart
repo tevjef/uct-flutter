@@ -6,10 +6,12 @@ class SectionPresenter extends BasePresenter<SectionView> {
   SearchContext searchContext;
   UCTRepo uctRepo;
   TrackedSectionDao trackedSectionDatabase;
+  AnalyticsLogger analyticsLogger;
 
   SectionPresenter(SectionView view) : super(view) {
     final injector = Injector.getInjector();
     trackedSectionDatabase = injector.get();
+    analyticsLogger = injector.get();
     uctRepo = injector.get();
     searchContext = injector.get();
   }
@@ -21,6 +23,8 @@ class SectionPresenter extends BasePresenter<SectionView> {
 
     adapterItems.add(SubscribeItem(view, (value) {
       toggleSection(searchContext);
+      var parameters = {AKeys.STATUS: searchContext.section.status};
+      analyticsLogger.logEvent(AKeys.EVENT_SUBSCRIBE, parameters: parameters);
     }));
 
     adapterItems.add(SpaceItem(height: Dimens.spacingStandard));
@@ -33,8 +37,12 @@ class SectionPresenter extends BasePresenter<SectionView> {
     }
 
     adapterItems.addAll(metaItems);
-    adapterItems.add(SectionItem(searchContext, navigates: false));
+    adapterItems.add(SectionItem(searchContext));
+
+    loadTrackedSectionCount();
+
     view.setListData(adapterItems);
+    view.showLoading(false);
     loadStatus(section);
   }
 
@@ -45,6 +53,12 @@ class SectionPresenter extends BasePresenter<SectionView> {
     view.setSectionStatus(isTracked);
   }
 
+  void loadTrackedSectionCount() async {
+    var numTrackedSections =
+        (await trackedSectionDatabase.getAllTrackedSections()).length;
+    view.setNumTrackedSections(numTrackedSections);
+  }
+
   void toggleSection(SearchContext searchContext) async {
     try {
       var isTracked = await uctRepo.toggleSection(searchContext);
@@ -52,9 +66,21 @@ class SectionPresenter extends BasePresenter<SectionView> {
     } catch (e) {
       view.showErrorMessage(e);
     }
+
+    loadTrackedSectionCount();
+  }
+
+  void onTrackedSectionsClicked() {
+    var parameters = {AKeys.STATUS: searchContext.section.status};
+    analyticsLogger.logEvent(AKeys.EVENT_POP_TO_TRACKED_SECTIONS,
+        parameters: parameters);
+
+    view.onPopToTrackedSections();
   }
 }
 
 abstract class SectionView extends BaseView implements TrackedStatusProvider {
   void setSectionStatus(bool isTracked);
+  void onPopToTrackedSections();
+  void setNumTrackedSections(int numTrackedSections);
 }

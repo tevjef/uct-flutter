@@ -37,11 +37,7 @@ class SubjectListState extends State<SubjectPage>
                     color: Colors.black,
                   ),
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(UCTRoutes.options)
-                        .then((bool) {
-                      handleRefresh();
-                    });
+                    presenter.onSettingsClick();
                   }),
             ],
           ),
@@ -66,5 +62,19 @@ class SubjectListState extends State<SubjectPage>
   @override
   void refreshData() {
     presenter.loadSubjects();
+  }
+
+  @override
+  void navigateToOptions() {
+    Navigator.of(context).pushNamed(UCTRoutes.options).then((changed) {
+      handleRefresh();
+    });
+  }
+
+  @override
+  void navigateToCourse() {
+    Navigator.of(context).pushNamed(UCTRoutes.courses).then((result) {
+      handleRefresh();
+    });
   }
 }
