@@ -109,7 +109,7 @@ class HomePresenter extends BasePresenter<HomeView> {
       var removedItem = view.removeItem(item);
 
       // Create an undo action.
-      var action = SnackBarAction(
+      // var action = SnackBarAction(
           // TODO renable undo some other time.
           // There's an issue with headers not showing up.
           // label: S.of(context).undo,
@@ -117,17 +117,19 @@ class HomePresenter extends BasePresenter<HomeView> {
           // group.insert(position, removedItem);
           // view.updateItem(group);
           // }
-          );
+          // );
 
       // Show a message when an item is removed.
       view.showMessage(
           S.of(context).unsubscribeMessage(
-              searchContext.section.number, searchContext.course.name),
-          action);
+              searchContext.section.number, searchContext.course.name));
+
+      trackedSectionDatabase.deleteTrackedSection(searchContext.section.topicName);
 
       var parameters = {AKeys.STATUS: searchContext.section.status};
       analyticsLogger.logEvent(AKeys.EVENT_SECTION_REMOVED,
           parameters: parameters);
+      
     };
   }
 

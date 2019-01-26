@@ -7,6 +7,9 @@ PODS:
   - Firebase/Messaging (5.14.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (= 3.2.2)
+  - Firebase/Performance (5.14.0):
+    - Firebase/Core
+    - FirebasePerformance (= 2.2.1)
   - firebase_analytics (0.0.1):
     - Firebase/Core
     - Flutter
@@ -14,6 +17,13 @@ PODS:
     - Firebase/Core
     - Firebase/Messaging
     - Flutter
+  - firebase_performance (0.0.1):
+    - Firebase/Core
+    - Firebase/Performance
+    - Flutter
+  - FirebaseABTesting (2.0.0):
+    - FirebaseCore (~> 5.0)
+    - Protobuf (~> 3.5)
   - FirebaseAnalytics (5.4.0):
     - FirebaseCore (~> 5.1)
     - FirebaseInstanceID (~> 3.3)
@@ -37,6 +47,24 @@ PODS:
     - GoogleUtilities/Environment (~> 5.2)
     - GoogleUtilities/Reachability (~> 5.2)
     - Protobuf (~> 3.1)
+  - FirebasePerformance (2.2.1):
+    - FirebaseAnalytics (~> 5.3)
+    - FirebaseInstanceID (~> 3.3)
+    - FirebaseRemoteConfig (~> 3.1)
+    - GoogleToolboxForMac/Logger (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+    - GoogleUtilities/ISASwizzler (~> 5.2)
+    - GoogleUtilities/MethodSwizzler (~> 5.2)
+    - GTMSessionFetcher/Core (~> 1.1)
+    - Protobuf (~> 3.5)
+  - FirebaseRemoteConfig (3.1.0):
+    - FirebaseABTesting (~> 2.0)
+    - FirebaseAnalytics (~> 5.3)
+    - FirebaseCore (~> 5.1)
+    - FirebaseInstanceID (~> 3.3)
+    - GoogleUtilities/Environment (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - Protobuf (~> 3.5)
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
@@ -49,11 +77,17 @@ PODS:
     - GoogleUtilities/Network (~> 5.2)
     - "GoogleUtilities/NSData+zlib (~> 5.2)"
     - nanopb (~> 0.3)
+  - GoogleToolboxForMac/Defines (2.2.0)
+  - GoogleToolboxForMac/Logger (2.2.0):
+    - GoogleToolboxForMac/Defines (= 2.2.0)
+  - "GoogleToolboxForMac/NSData+zlib (2.2.0)":
+    - GoogleToolboxForMac/Defines (= 2.2.0)
   - GoogleUtilities/AppDelegateSwizzler (5.3.6):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
   - GoogleUtilities/Environment (5.3.6)
+  - GoogleUtilities/ISASwizzler (5.3.6)
   - GoogleUtilities/Logger (5.3.6):
     - GoogleUtilities/Environment
   - GoogleUtilities/MethodSwizzler (5.3.6):
@@ -67,11 +101,14 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (5.3.6):
     - GoogleUtilities/Logger
+  - GTMSessionFetcher/Core (1.2.1)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
+  - package_info (0.0.1):
+    - Flutter
   - path_provider (0.0.1):
     - Flutter
   - Protobuf (3.6.1)
@@ -82,22 +119,29 @@ PODS:
 DEPENDENCIES:
   - firebase_analytics (from `Pods/.symlinks/plugins/firebase_analytics/ios`)
   - firebase_messaging (from `Pods/.symlinks/plugins/firebase_messaging/ios`)
+  - firebase_performance (from `Pods/.symlinks/plugins/firebase_performance/ios`)
   - Flutter (from `Pods/.symlinks/flutter/ios`)
   - flutter_local_notifications (from `Pods/.symlinks/plugins/flutter_local_notifications/ios`)
+  - package_info (from `Pods/.symlinks/plugins/package_info/ios`)
   - path_provider (from `Pods/.symlinks/plugins/path_provider/ios`)
   - sqflite (from `Pods/.symlinks/plugins/sqflite/ios`)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Firebase
+    - FirebaseABTesting
     - FirebaseAnalytics
     - FirebaseAnalyticsInterop
     - FirebaseCore
     - FirebaseInstanceID
     - FirebaseMessaging
+    - FirebasePerformance
+    - FirebaseRemoteConfig
     - FMDB
     - GoogleAppMeasurement
+    - GoogleToolboxForMac
     - GoogleUtilities
+    - GTMSessionFetcher
     - nanopb
     - Protobuf
 
@@ -106,10 +150,14 @@ EXTERNAL SOURCES:
     :path: Pods/.symlinks/plugins/firebase_analytics/ios
   firebase_messaging:
     :path: Pods/.symlinks/plugins/firebase_messaging/ios
+  firebase_performance:
+    :path: Pods/.symlinks/plugins/firebase_performance/ios
   Flutter:
     :path: Pods/.symlinks/flutter/ios
   flutter_local_notifications:
     :path: Pods/.symlinks/plugins/flutter_local_notifications/ios
+  package_info:
+    :path: Pods/.symlinks/plugins/package_info/ios
   path_provider:
     :path: Pods/.symlinks/plugins/path_provider/ios
   sqflite:
@@ -119,17 +167,24 @@ SPEC CHECKSUMS:
   Firebase: 963d5685fae888a56d6d4d9cfce6b9c976958798
   firebase_analytics: fcc60a9de4b8e07aa5af8941303a7f5fe6e0383f
   firebase_messaging: a5f5d4a9491b660f33a1f94bd0596558f820bad1
+  firebase_performance: 66d2630faa8a2281681ed710d6d39dd49151cd8c
+  FirebaseABTesting: 1f50b8d50f5e3469eea54e7463a7b7fe221d1f5e
   FirebaseAnalytics: c06f9d70577d79074214700a71fd5d39de5550fb
   FirebaseAnalyticsInterop: e5f21be9af6548372e2f0815834ff909bff395a2
   FirebaseCore: 8f49b70f57ab5cbb032ef41d64992ded21606459
   FirebaseInstanceID: e2fa4cb35ef5558c200f7f0ad8a53e212215f93e
   FirebaseMessaging: b412996f6a09337d232bb3a6676ce4d1f353d024
+  FirebasePerformance: 071ef097e7fb2d4f2f27fac1d4ed72ae3dd737d7
+  FirebaseRemoteConfig: 7e11c65f0769c09bff6947997c209515058c5318
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
   flutter_local_notifications: 696a74904e0a0ab754e27a5f761da4a7f9153710
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleAppMeasurement: 98b71f5e04142793729a5ef23e5b96651ff4b70f
+  GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
   GoogleUtilities: 95996bea7c7d9b8fb811b7507669a4a8762f80c7
+  GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  package_info: d7c98b64f60add4c2908b9d94d82a45d3c8827ad
   path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
   sqflite: 801b6b0983f722fa29baf00d1476e4556ada6de4

@@ -106,7 +106,7 @@ class _CourseListState extends State<_CourseList>
 
   @override
   Widget build(BuildContext context) {
-    return makeRefreshingList();
+    return makeListView();
   }
 
   @override
