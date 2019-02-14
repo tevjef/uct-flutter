@@ -110,7 +110,7 @@ class _CourseListState extends State<_CourseList>
   }
 
   @override
-  void refreshData() {
+  void onRefreshData() {
     presenter.loadCourse(_all);
   }
 

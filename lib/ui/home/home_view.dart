@@ -45,7 +45,7 @@ class HomeListState extends State<HomePage>
   }
 
   @override
-  void refreshData() {
+  void onRefreshData() {
     presenter.loadTrackedSections();
   }
 
@@ -76,14 +76,14 @@ class HomeListState extends State<HomePage>
   @override
   void navigateToSubjects() {
     Navigator.of(context).pushNamed(UCTRoutes.subjects).then((changed) {
-      handleRefresh();
+      refreshData();
     });
   }
 
   @override
   void navigateToSection() {
     Navigator.of(context).pushNamed(UCTRoutes.section).then((changed) {
-      handleRefresh();
+      refreshData();
     });
   }
 }

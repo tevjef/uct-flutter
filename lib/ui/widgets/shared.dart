@@ -57,7 +57,6 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
 
   Completer<Null> completer;
 
-  bool shouldFullLoad = false;
   bool isList = true;
 
   BasePresenter get presenter;
@@ -73,11 +72,11 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
   @override
   void showLoading(bool isLoading) {
     setState(() {
-      this.isFullLoading = isLoading &&
-          (shouldFullLoad || !isList || adapter.getItemCount() == 0);
+      this.isFullLoading =
+          isLoading && (!isList || adapter.getItemCount() == 0);
       this.isRefreshing = isLoading;
 
-      if (isRefreshing && !shouldFullLoad) {
+      if (isRefreshing) {
         refreshIndicatorKey.currentState?.show();
       }
 
@@ -113,7 +112,7 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
   Future<Null> handleRefresh() {
     showLoading(true);
 
-    refreshData();
+    onRefreshData();
 
     return completer.future;
   }
@@ -196,8 +195,7 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
     return toReturn;
   }
 
-  Widget makeRefreshingList({shouldFullLoad = false}) {
-    this.shouldFullLoad = shouldFullLoad;
+  Widget makeRefreshingList() {
     return RefreshIndicator(
         key: refreshIndicatorKey,
         onRefresh: handleRefresh,
@@ -218,7 +216,11 @@ abstract class LDEViewMixin<T extends StatefulWidget> extends State<T>
 
   Widget makeEmptyStateWidget() {}
 
-  void refreshData();
+  void onRefreshData();
+
+  void refreshData() {
+    showLoading(true);
+  }
 }
 
 enum SnackBarType { error, neutral, success }

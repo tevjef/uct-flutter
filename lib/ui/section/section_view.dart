@@ -151,7 +151,7 @@ class SectionDetailState extends State<SectionDetailsPage>
   bool trackedStatus() => isTracked;
 
   @override
-  void refreshData() {
+  void onRefreshData() {
     presenter.loadSection();
   }
 

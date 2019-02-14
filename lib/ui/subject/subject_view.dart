@@ -41,14 +41,14 @@ class SubjectListState extends State<SubjectPage>
                   }),
             ],
           ),
-          body: makeRefreshingList(shouldFullLoad: true)),
+          body: makeRefreshingList()),
     );
   }
 
   @override
   void onUniversityNotSet() {
     Navigator.of(context).pushNamed(UCTRoutes.options).then((onValue) {
-      handleRefresh();
+      refreshData();
     });
   }
 
@@ -60,21 +60,21 @@ class SubjectListState extends State<SubjectPage>
   }
 
   @override
-  void refreshData() {
+  void onRefreshData() {
     presenter.loadSubjects();
   }
 
   @override
   void navigateToOptions() {
     Navigator.of(context).pushNamed(UCTRoutes.options).then((changed) {
-      handleRefresh();
+      refreshData();
     });
   }
 
   @override
   void navigateToCourse() {
     Navigator.of(context).pushNamed(UCTRoutes.courses).then((result) {
-      handleRefresh();
+      refreshData();
     });
   }
 }

@@ -48,14 +48,14 @@ class CoursesListState extends State<CoursesPage>
   }
 
   @override
-  void refreshData() {
+  void onRefreshData() {
     presenter.loadCourses();
   }
 
   @override
   void navigateToCourse() {
     Navigator.of(context).pushNamed(UCTRoutes.course).then((changed) {
-      handleRefresh();
+      showLoading(true);
     });
   }
 }

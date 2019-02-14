@@ -152,7 +152,7 @@ class OptionListState extends State<OptionPage>
   }
 
   @override
-  void refreshData() {
+  void onRefreshData() {
     presenter.loadUniversities();
   }
 }
