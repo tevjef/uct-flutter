@@ -25,5 +25,11 @@
   "closedSections": "CLOSED ($closedSections)",
   "section": "SECTION",
   "index": "INDEX",
-  "credits": "CREDITS"
+  "credits": "CREDITS",
+  "closedChannelTitleDesc": "Notify when sections close.",
+  "openChannelTitleDesc": "Notify when sections open.",
+  "closedChannelTitle": "Closed Sections",
+  "openChannelTitle": "Open Sections",
+  "genericChannelTitleDesc": "Announcements and app updates.",
+  "genericChannelTitle": "Other"
 }

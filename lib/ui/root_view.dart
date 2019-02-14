@@ -28,6 +28,7 @@ class RootPageState extends State<RootPage> {
 
     NotificationRepo notificationRepo = injector.get();
     notificationRepo.register(scaffoldKey);
+    notificationRepo.registerContext(context);
 
     final BottomNavigationBar bottomNavigationBar = new BottomNavigationBar(
         items: [

@@ -16,10 +16,12 @@ class AKeys {
   static String EVENT_POP_TO_TRACKED_SECTIONS = "pop_to_tracked_sections";
   static String EVENT_SUBSCRIBE = "section_subscribe";
   static String EVENT_FOREGROUND_NOTIFICATION = "foreground_notification";
-  
+  static String EVENT_NOTIFICATION_CLICKED = "notification_clicked";
+
   static String STATUS = "status";
   static String IS_RECENT = "is_recent";
-  
+  static String IS_FOREGROUND = "is_foreground";
+
   static String ORIGIN_TRACKED_SECTIONS = "tracked_sections";
   static String ORIGIN_COURSE_SECTION_LIST = "course_section_list";
 }

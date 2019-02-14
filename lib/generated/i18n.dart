@@ -12,7 +12,7 @@ class S implements WidgetsLocalizations {
   const S();
 
   static const GeneratedLocalizationsDelegate delegate =
-      GeneratedLocalizationsDelegate();
+    GeneratedLocalizationsDelegate();
 
   static S of(BuildContext context) => Localizations.of<S>(context, S);
 
@@ -20,12 +20,17 @@ class S implements WidgetsLocalizations {
   TextDirection get textDirection => TextDirection.ltr;
 
   String get add => "Add";
+  String get closedChannelTitle => "Closed Sections";
+  String get closedChannelTitleDesc => "Notify when sections close.";
   String get closedStatus => "Closed";
   String get credits => "CREDITS";
-  String get homeEmpty =>
-      "You don't seem to be tracking any sections. Try adding some!";
+  String get genericChannelTitle => "Other";
+  String get genericChannelTitleDesc => "Announcements and app updates.";
+  String get homeEmpty => "You don't seem to be tracking any sections. Try adding some!";
   String get homeTitle => "Tracked Sections";
   String get index => "INDEX";
+  String get openChannelTitle => "Open Sections";
+  String get openChannelTitleDesc => "Notify when sections open.";
   String get openStatus => "Open";
   String get options => "Options";
   String get please_select_a_university => "Please select a university.";
@@ -41,17 +46,12 @@ class S implements WidgetsLocalizations {
   String allSections(String allSections) => "ALL SECTIONS ($allSections)";
   String closedSections(String closedSections) => "CLOSED ($closedSections)";
   String headerMessage(String title, String meta) => "$title ($meta)";
-  String meetingTime(String startTime, String endTime) =>
-      "$startTime - $endTime";
-  String numOfOpen(String openNum, String totalNum) =>
-      "$openNum open sections of $totalNum";
-  String professorList(String firstProf, String secondProf) =>
-      "$firstProf | $secondProf";
+  String meetingTime(String startTime, String endTime) => "$startTime - $endTime";
+  String numOfOpen(String openNum, String totalNum) => "$openNum open sections of $totalNum";
+  String professorList(String firstProf, String secondProf) => "$firstProf | $secondProf";
   String semesterFull(String season, String year) => "$season $year";
-  String subjectTitle(String uniAbbr, String season, String year) =>
-      "$uniAbbr $season $year";
-  String unsubscribeMessage(String sectionNumber, String sectionName) =>
-      "Unsubscribed from $sectionNumber of $sectionName.";
+  String subjectTitle(String uniAbbr, String season, String year) => "$uniAbbr $season $year";
+  String unsubscribeMessage(String sectionNumber, String sectionName) => "Unsubscribed from $sectionNumber of $sectionName.";
 }
 
 class $en extends S {
@@ -107,7 +107,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
         case "en":
           return SynchronousFuture<S>(const $en());
         default:
-        // NO-OP.
+          // NO-OP.
       }
     }
     return SynchronousFuture<S>(const S());
@@ -115,14 +115,14 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
 
   @override
   bool isSupported(Locale locale) =>
-      locale != null && supportedLocales.contains(locale);
+    locale != null && supportedLocales.contains(locale);
 
   @override
   bool shouldReload(GeneratedLocalizationsDelegate old) => false;
 }
 
 String getLang(Locale l) => l == null
-    ? null
-    : l.countryCode != null && l.countryCode.isEmpty
-        ? l.languageCode
-        : l.toString();
+  ? null
+  : l.countryCode != null && l.countryCode.isEmpty
+    ? l.languageCode
+    : l.toString();

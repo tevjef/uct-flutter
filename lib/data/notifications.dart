@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:uctflutter/core/lib.dart';
 
 import '../ui/widgets/lib.dart';
 import 'analytics/analytics.dart';
 import 'analytics/analytics_keys.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationRepo {
   GlobalKey<ScaffoldState> scaffoldKey;
@@ -16,6 +17,8 @@ class NotificationRepo {
   AnalyticsLogger analyticsLogger;
 
   final String groupKey = "io.crousetrakr.section";
+
+  BuildContext _buildContext;
 
   NotificationRepo(AnalyticsLogger analyticsLogger) {
     this.analyticsLogger = analyticsLogger;
@@ -30,33 +33,44 @@ class NotificationRepo {
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
         var title = message['notification']['title'];
         var body = message['notification']['body'];
 
         var isOpen = isSectionOpen(title);
 
         analyticsLogger.logEvent(AKeys.EVENT_FOREGROUND_NOTIFICATION);
-        
+
         createSectionNotification(isOpen, title, body).then((a) {});
 
-        scaffoldKey?.currentState
-            ?.showSnackBar(Widgets.makeSnackBar("Message recieved $body"));
+        scaffoldKey?.currentState?.showSnackBar(Widgets.makeSnackBar(body));
       },
       onLaunch: (Map<String, dynamic> message) async {
-        // TODO analytics for notification click
-        print("onLaunch: $message");
+        var parameters = {AKeys.IS_FOREGROUND: false};
+        analyticsLogger.logEvent(AKeys.EVENT_FOREGROUND_NOTIFICATION,
+            parameters: parameters);
+
+        Navigator.of(_buildContext).pushNamedAndRemoveUntil(
+            UCTRoutes.home, (Route<dynamic> route) => false);
       },
       onResume: (Map<String, dynamic> message) async {
-        // TODO analytics for notification click
-        print("onResume: $message");
+        var parameters = {AKeys.IS_FOREGROUND: false};
+        analyticsLogger.logEvent(AKeys.EVENT_FOREGROUND_NOTIFICATION,
+            parameters: parameters);
+
+        Navigator.of(_buildContext).pushNamedAndRemoveUntil(
+            UCTRoutes.home, (Route<dynamic> route) => false);
       },
     );
   }
 
   Future onSelectNotification(String payload) async {
     if (payload != null) {
-      // TODO analytics for foreground notification click
+      var parameters = {AKeys.IS_FOREGROUND: true};
+      analyticsLogger.logEvent(AKeys.EVENT_FOREGROUND_NOTIFICATION,
+          parameters: parameters);
+
+      Navigator.of(_buildContext).pushNamedAndRemoveUntil(
+          UCTRoutes.home, (Route<dynamic> route) => false);
     }
   }
 
@@ -64,9 +78,15 @@ class NotificationRepo {
     scaffoldKey = key;
   }
 
+  void registerContext(BuildContext context) {
+    _buildContext = context;
+  }
+
   AndroidNotificationDetails createClosedChannel() {
-    return new AndroidNotificationDetails('channel_section_closed',
-        'Closed Sections', 'Notify when sections close',
+    return new AndroidNotificationDetails(
+        'channel_section_closed',
+        S.of(_buildContext).closedChannelTitle,
+        S.of(_buildContext).closedChannelTitleDesc,
         groupKey: groupKey,
         enableVibration: true,
         color: Color(0xF44336),
@@ -76,7 +96,9 @@ class NotificationRepo {
 
   AndroidNotificationDetails createOpenChannel() {
     return new AndroidNotificationDetails(
-        'channel_section_open', 'Open Sections', 'Notify when sections open',
+        'channel_section_open',
+        S.of(_buildContext).openChannelTitle,
+        S.of(_buildContext).openChannelTitleDesc,
         groupKey: groupKey,
         enableVibration: true,
         color: Color(0x4CAF50),
@@ -86,7 +108,9 @@ class NotificationRepo {
 
   AndroidNotificationDetails createGenericChannel() {
     return new AndroidNotificationDetails(
-        'channel_generic', 'Other', 'Announcements and app updates.',
+        'channel_generic',
+        S.of(_buildContext).genericChannelTitle,
+        S.of(_buildContext).genericChannelTitleDesc,
         groupKey: groupKey,
         enableVibration: false,
         color: Color(0x607D8B),
