@@ -14,7 +14,6 @@ void main() {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 
-
   Locator.init();
   FirebaseAnalytics analytics = new FirebaseAnalytics();
 

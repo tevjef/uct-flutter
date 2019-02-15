@@ -8,6 +8,7 @@ class CoursesPresenter extends BasePresenter<CoursesView> {
   SearchContext searchContext;
   RecentSelectionDao recentSelectionDatabase;
   AnalyticsLogger analyticsLogger;
+  AdInitializer adInitializer;
 
   List<Course> courses;
 
@@ -17,6 +18,9 @@ class CoursesPresenter extends BasePresenter<CoursesView> {
     apiClient = injector.get();
     searchContext = injector.get();
     recentSelectionDatabase = injector.get();
+    adInitializer = injector.get();
+
+    adInitializer.showBanner(true);
   }
 
   @override
@@ -51,8 +55,9 @@ class CoursesPresenter extends BasePresenter<CoursesView> {
       addToRecent(course.topicName);
 
       var parameters = {AKeys.IS_RECENT: recentCourses.contains(course)};
-      analyticsLogger.logEvent(AKeys.EVENT_COURSE_CLICKED, parameters: parameters);
-      
+      analyticsLogger.logEvent(AKeys.EVENT_COURSE_CLICKED,
+          parameters: parameters);
+
       view.navigateToCourse();
     };
 

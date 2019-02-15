@@ -42,7 +42,7 @@ class CoursesListState extends State<CoursesPage>
                   Navigator.of(context).pop();
                 }),
             title: new Text(title)),
-        body: makeRefreshingList(),
+        body: AdSafeArea(child: makeRefreshingList()),
       ),
     );
   }

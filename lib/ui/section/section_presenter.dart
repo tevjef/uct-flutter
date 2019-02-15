@@ -7,6 +7,7 @@ class SectionPresenter extends BasePresenter<SectionView> {
   UCTRepo uctRepo;
   TrackedSectionDao trackedSectionDatabase;
   AnalyticsLogger analyticsLogger;
+  AdInitializer adInitializer;
 
   SectionPresenter(SectionView view) : super(view) {
     final injector = Injector.getInjector();
@@ -14,6 +15,9 @@ class SectionPresenter extends BasePresenter<SectionView> {
     analyticsLogger = injector.get();
     uctRepo = injector.get();
     searchContext = injector.get();
+    adInitializer = injector.get();
+
+    adInitializer.showBanner(true);
   }
 
   void loadSection() async {

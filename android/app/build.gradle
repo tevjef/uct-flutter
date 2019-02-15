@@ -71,6 +71,11 @@ android {
       applicationIdSuffix '.debug'
     }
   }
+
+  packagingOptions {
+    exclude 'META-INF/androidx.localbroadcastmanager_localbroadcastmanager.version'
+    exclude 'META-INF/proguard/androidx-annotations.pro'
+  }
 }
 
 flutter {

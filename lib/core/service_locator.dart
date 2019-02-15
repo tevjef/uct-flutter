@@ -28,8 +28,11 @@ class Locator {
     injector.map<NotificationRepo>((i) => new NotificationRepo(i.get()),
         isSingleton: true);
 
+    injector.map<AdInitializer>((i) => new AdInitializer(), isSingleton: true);
+
     injector.map<UCTRepo>(
         (i) => new UCTRepo(
+              i.get(),
               i.get(),
               i.get(),
               i.get(),

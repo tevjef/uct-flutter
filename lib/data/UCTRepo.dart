@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../data/UCTApiClient.dart';
+import '../data/admob/ad_mob.dart';
 import '../data/db/recent.dart';
 import '../data/db/tracked.dart';
 import '../data/proto/model.pb.dart';
@@ -13,6 +14,7 @@ class UCTRepo {
   UCTApiClient apiClient;
   TrackedSectionDao trackedSectionDatabase;
   RecentSelectionDao recentSelectionDatabase;
+  AdInitializer adInitializer;
 
   DateTime lastRefresh;
   Duration minTimeBetweenRefresh = Duration(seconds: 5);
@@ -20,8 +22,7 @@ class UCTRepo {
   final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
 
   UCTRepo(this.searchContext, this.apiClient, this.trackedSectionDatabase,
-      this.recentSelectionDatabase) {
-  }
+      this.recentSelectionDatabase, this.adInitializer) {}
 
   Future<bool> toggleSection(SearchContext searchContext) async {
     _firebaseMessaging.requestNotificationPermissions(

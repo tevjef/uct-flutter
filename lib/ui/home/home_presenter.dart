@@ -13,12 +13,16 @@ class HomePresenter extends BasePresenter<HomeView> {
   UCTRepo uctRepo;
   TrackedSectionDao trackedSectionDatabase;
   AnalyticsLogger analyticsLogger;
+  AdInitializer adInitializer;
 
   HomePresenter(HomeView view) : super(view) {
     final injector = Injector.getInjector();
     analyticsLogger = injector.get();
     uctRepo = injector.get();
     trackedSectionDatabase = injector.get();
+    adInitializer = injector.get();
+
+    adInitializer.showBanner(true);
   }
 
   void onInitState() {
@@ -110,26 +114,25 @@ class HomePresenter extends BasePresenter<HomeView> {
 
       // Create an undo action.
       // var action = SnackBarAction(
-          // TODO renable undo some other time.
-          // There's an issue with headers not showing up.
-          // label: S.of(context).undo,
-          // onPressed: () {
-          // group.insert(position, removedItem);
-          // view.updateItem(group);
-          // }
-          // );
+      // TODO renable undo some other time.
+      // There's an issue with headers not showing up.
+      // label: S.of(context).undo,
+      // onPressed: () {
+      // group.insert(position, removedItem);
+      // view.updateItem(group);
+      // }
+      // );
 
       // Show a message when an item is removed.
-      view.showMessage(
-          S.of(context).unsubscribeMessage(
-              searchContext.section.number, searchContext.course.name));
+      view.showMessage(S.of(context).unsubscribeMessage(
+          searchContext.section.number, searchContext.course.name));
 
-      trackedSectionDatabase.deleteTrackedSection(searchContext.section.topicName);
+      trackedSectionDatabase
+          .deleteTrackedSection(searchContext.section.topicName);
 
       var parameters = {AKeys.STATUS: searchContext.section.status};
       analyticsLogger.logEvent(AKeys.EVENT_SECTION_REMOVED,
           parameters: parameters);
-      
     };
   }
 

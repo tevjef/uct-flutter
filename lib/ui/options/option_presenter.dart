@@ -8,6 +8,7 @@ class OptionPresenter extends BasePresenter<OptionView> {
   PreferenceDao preferenceDao;
   SearchContext searchContext;
   AnalyticsLogger analyticsLogger;
+  AdInitializer adInitializer;
 
   Function optionClickCallback;
 
@@ -18,6 +19,9 @@ class OptionPresenter extends BasePresenter<OptionView> {
     searchContext = injector.get();
     recentSelectionDatabase = injector.get();
     preferenceDao = injector.get();
+    adInitializer = injector.get();
+
+    adInitializer.showBanner(true);
   }
 
   @override

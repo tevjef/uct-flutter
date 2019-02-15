@@ -38,7 +38,7 @@ class CoursePage extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
-                }), 
+                }),
             actions: <Widget>[
               // TODO implemnet add all courses.
               // new IconButton(
@@ -106,7 +106,7 @@ class _CourseListState extends State<_CourseList>
 
   @override
   Widget build(BuildContext context) {
-    return makeListView();
+    return AdSafeArea(child: makeListView());
   }
 
   @override

@@ -57,7 +57,8 @@ class SectionDetailState extends State<SectionDetailsPage>
                             .pop(initialTrackedStatus != isTracked);
                       }),
                   actions: <Widget>[
-                    Widgets.makeIconWithBadge(numTrackedSections.toString(), () {
+                    Widgets.makeIconWithBadge(numTrackedSections.toString(),
+                        () {
                       presenter.onTrackedSectionsClicked();
                     }),
                   ],
@@ -110,7 +111,7 @@ class SectionDetailState extends State<SectionDetailsPage>
               ],
             ),
             preferredSize: Size.fromHeight(140.0)),
-        body: makeListView());
+        body: AdSafeArea(child: makeListView()));
   }
 
   Widget buildCredits(Section section) {

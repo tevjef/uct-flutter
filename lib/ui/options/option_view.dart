@@ -28,22 +28,22 @@ class OptionListState extends State<OptionPage>
   @override
   Widget build(BuildContext context) {
     Widget universityButton = DropdownButton<University>(
-        value: selectedUniversity,
-        onChanged: (University newValue) {
-          presenter.updateDefaultUniversity(newValue);
-        },
-        isDense: true,
-        items: universities.map((University value) {
-          return DropdownMenuItem<University>(
-              value: value,
-              child: Container(
-                  width: MediaQuery.of(context).size.width * .80,
-                  child: Text(
-                    value.name,
-                    overflow: TextOverflow.ellipsis,
-                  )));
-        }).toList(),
-      );
+      value: selectedUniversity,
+      onChanged: (University newValue) {
+        presenter.updateDefaultUniversity(newValue);
+      },
+      isDense: true,
+      items: universities.map((University value) {
+        return DropdownMenuItem<University>(
+            value: value,
+            child: Container(
+                width: MediaQuery.of(context).size.width * .80,
+                child: Text(
+                  value.name,
+                  overflow: TextOverflow.ellipsis,
+                )));
+      }).toList(),
+    );
 
     Widget semesterButton;
     if (selectedSemester != null && semesters.contains(selectedSemester)) {

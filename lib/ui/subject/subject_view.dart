@@ -41,7 +41,7 @@ class SubjectListState extends State<SubjectPage>
                   }),
             ],
           ),
-          body: makeRefreshingList()),
+          body: AdSafeArea(child: makeRefreshingList())),
     );
   }
 

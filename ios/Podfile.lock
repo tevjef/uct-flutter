@@ -1,4 +1,7 @@
 PODS:
+  - Firebase/AdMob (5.14.0):
+    - Firebase/Core
+    - Google-Mobile-Ads-SDK (~> 7.36)
   - Firebase/Core (5.14.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 5.4.0)
@@ -10,6 +13,10 @@ PODS:
   - Firebase/Performance (5.14.0):
     - Firebase/Core
     - FirebasePerformance (= 2.2.1)
+  - firebase_admob (0.0.1):
+    - Firebase/AdMob
+    - Firebase/Core
+    - Flutter
   - firebase_analytics (0.0.1):
     - Firebase/Core
     - Flutter
@@ -71,6 +78,7 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - Google-Mobile-Ads-SDK (7.36.0)
   - GoogleAppMeasurement (5.4.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
     - GoogleUtilities/MethodSwizzler (~> 5.2)
@@ -117,6 +125,7 @@ PODS:
     - FMDB (~> 2.7.2)
 
 DEPENDENCIES:
+  - firebase_admob (from `Pods/.symlinks/plugins/firebase_admob/ios`)
   - firebase_analytics (from `Pods/.symlinks/plugins/firebase_analytics/ios`)
   - firebase_messaging (from `Pods/.symlinks/plugins/firebase_messaging/ios`)
   - firebase_performance (from `Pods/.symlinks/plugins/firebase_performance/ios`)
@@ -138,6 +147,7 @@ SPEC REPOS:
     - FirebasePerformance
     - FirebaseRemoteConfig
     - FMDB
+    - Google-Mobile-Ads-SDK
     - GoogleAppMeasurement
     - GoogleToolboxForMac
     - GoogleUtilities
@@ -146,6 +156,8 @@ SPEC REPOS:
     - Protobuf
 
 EXTERNAL SOURCES:
+  firebase_admob:
+    :path: Pods/.symlinks/plugins/firebase_admob/ios
   firebase_analytics:
     :path: Pods/.symlinks/plugins/firebase_analytics/ios
   firebase_messaging:
@@ -165,7 +177,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Firebase: 963d5685fae888a56d6d4d9cfce6b9c976958798
-  firebase_analytics: fcc60a9de4b8e07aa5af8941303a7f5fe6e0383f
+  firebase_admob: b8cc46113ddf88a62fec340e9446607a5061a872
+  firebase_analytics: 06fd3e199bfbc003a9949b90f3e3c6332fa1299e
   firebase_messaging: a5f5d4a9491b660f33a1f94bd0596558f820bad1
   firebase_performance: 66d2630faa8a2281681ed710d6d39dd49151cd8c
   FirebaseABTesting: 1f50b8d50f5e3469eea54e7463a7b7fe221d1f5e
@@ -179,6 +192,7 @@ SPEC CHECKSUMS:
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
   flutter_local_notifications: 696a74904e0a0ab754e27a5f761da4a7f9153710
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  Google-Mobile-Ads-SDK: 5bb4d2cea811842e104a24780caef63b4808e1bd
   GoogleAppMeasurement: 98b71f5e04142793729a5ef23e5b96651ff4b70f
   GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
   GoogleUtilities: 95996bea7c7d9b8fb811b7507669a4a8762f80c7
@@ -187,7 +201,7 @@ SPEC CHECKSUMS:
   package_info: d7c98b64f60add4c2908b9d94d82a45d3c8827ad
   path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
-  sqflite: 801b6b0983f722fa29baf00d1476e4556ada6de4
+  sqflite: d1612813fa7db7c667bed9f1d1b508deffc56999
 
 PODFILE CHECKSUM: e3b71f0a96b89e9ba38a96b490cfb1130c1589af
 

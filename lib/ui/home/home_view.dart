@@ -14,13 +14,20 @@ class HomeListState extends State<HomePage>
     with LDEViewMixin
     implements HomeView {
   HomePresenter presenter;
+  AdInitializer adInitializer;
 
   HomeListState() {
+    final injector = Injector.getInjector();
+    adInitializer = injector.get();
+    adInitializer.showBanner(false);
+
     presenter = new HomePresenter(this);
   }
 
   @override
   Widget build(BuildContext context) {
+    adInitializer.showBanner(false);
+
     return WillPopScope(
       onWillPop: () {
         return Future<bool>.value(true);
@@ -46,6 +53,8 @@ class HomeListState extends State<HomePage>
 
   @override
   void onRefreshData() {
+    adInitializer.showBanner(false);
+
     presenter.loadTrackedSections();
   }
 
@@ -77,6 +86,7 @@ class HomeListState extends State<HomePage>
   void navigateToSubjects() {
     Navigator.of(context).pushNamed(UCTRoutes.subjects).then((changed) {
       refreshData();
+      adInitializer.showBanner(false);
     });
   }
 
@@ -84,6 +94,7 @@ class HomeListState extends State<HomePage>
   void navigateToSection() {
     Navigator.of(context).pushNamed(UCTRoutes.section).then((changed) {
       refreshData();
+      adInitializer.showBanner(false);
     });
   }
 }

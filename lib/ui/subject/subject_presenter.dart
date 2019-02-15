@@ -9,6 +9,7 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
   SearchContext searchContext;
   PreferenceDao preferenceDao;
   AnalyticsLogger analyticsLogger;
+  AdInitializer adInitializer;
 
   SubjectPresenter(SubjectView view) : super(view) {
     final injector = Injector.getInjector();
@@ -16,6 +17,9 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
     analyticsLogger = injector.get();
     searchContext = injector.get();
     searchContext.reset();
+    adInitializer = injector.get();
+
+    adInitializer.showBanner(true);
 
     recentSelectionDatabase = injector.get();
     preferenceDao = injector.get();
