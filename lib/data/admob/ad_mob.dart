@@ -14,45 +14,41 @@ class AdInitializer {
     FirebaseAdMob.instance.initialize(appId: appId);
   }
 
-  BannerAd myBanner;
+  BannerAd btmBanner;
 
-  bool isLoaded;
+  void showBanner(bool show) {
+    if (!isAdsEnabled()) {
+      return null;
+    }
 
-  BannerAd showBanner(bool show) {
-    if (myBanner == null) {
+    if (btmBanner == null && show) {
       MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-        keywords: <String>['flutterio', 'beautiful apps'],
-        contentUrl: 'https://flutter.io',
         childDirected: false,
         testDevices: <
             String>[], // Android emulators are considered test devices
       );
 
-      myBanner = BannerAd(
+      btmBanner = BannerAd(
         // Replace the testAdUnitId with an ad unit id from the AdMob dash.
         // https://developers.google.com/admob/android/test-ads
         // https://developers.google.com/admob/ios/test-ads
         adUnitId: BannerAd.testAdUnitId,
         size: AdSize.fullBanner,
         targetingInfo: targetingInfo,
-        listener: (MobileAdEvent event) {
-          print("BannerAd event is $event");
-        },
       );
     }
 
     if (show) {
-      myBanner.load().then((loaded) {
-        print("################# loaded $loaded");
-        myBanner.show();
+      btmBanner.load().then((loaded) {
+        btmBanner.show();
       });
-    } else {
-      myBanner.isLoaded().then((isLoaded) {
-        print("################# isLoaded $isLoaded");
-        if (isLoaded) {
-          myBanner.dispose().then((discarded) {
-            myBanner = null;
-          });
+    }
+
+    if (!show && btmBanner != null) {
+      btmBanner.load().then((loaded) {
+        if (btmBanner != null) {
+          btmBanner.dispose();
+          btmBanner = null;
         }
       });
     }

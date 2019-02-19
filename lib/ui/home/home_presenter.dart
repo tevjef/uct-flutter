@@ -6,6 +6,7 @@ import '../widgets/lib.dart';
 
 abstract class HomeView implements BaseView, ListOps {
   void navigateToSection();
+
   void navigateToSubjects();
 }
 
@@ -21,12 +22,11 @@ class HomePresenter extends BasePresenter<HomeView> {
     uctRepo = injector.get();
     trackedSectionDatabase = injector.get();
     adInitializer = injector.get();
-
-    adInitializer.showBanner(true);
   }
 
   void onInitState() {
     super.onInitState();
+    adInitializer.showBanner(false);
     loadTrackedSections();
   }
 
