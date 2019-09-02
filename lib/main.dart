@@ -19,6 +19,7 @@ void main() {
 
   runApp(MaterialApp(
     title: 'Course Tracker',
+    debugShowCheckedModeBanner: false,
     navigatorObservers: [
       new FirebaseAnalyticsObserver(analytics: analytics),
     ],

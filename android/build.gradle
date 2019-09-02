@@ -5,7 +5,7 @@ ext {
   if (System.getenv("BITRISE_BUILD_NUMBER") != null) {
     buildVersion = System.getenv("BITRISE_BUILD_NUMBER").toInteger()
   } else {
-    buildVersion = 100
+    buildVersion = 136
   }
 }
 
@@ -52,3 +52,25 @@ subprojects {
 task clean(type: Delete) {
   delete rootProject.buildDir
 }
+
+//project.afterEvaluate {
+//  tasks.getByPath(':app:assembleRelease').doLast {
+//    def src
+//    if(project.hasProperty('target-platform') &&
+//            project.property('target-platform') == 'android-arm64') {
+//      // If we are building the 64bit then we also want to add the 32bit libflutter.so
+//      src = "$flutterRoot/bin/cache/artifacts/engine/android-arm-release/flutter.jar"
+//    }else{
+//      // If we are building the opposite (32bit), we include the 64bit libflutter.so
+//      src = "$flutterRoot/bin/cache/artifacts/engine/android-arm64-release/flutter.jar"
+//    }
+//    copy {
+//      from zipTree(src)
+//      include 'lib/*/libflutter.so'
+//      into "src/main/jniLibs/"
+//      eachFile {
+//        it.path = it.path.replaceFirst("lib/", "")
+//      }
+//    }
+//  }
+//}

@@ -3,12 +3,16 @@ import 'dart:io' show Platform;
 import 'package:firebase_admob/firebase_admob.dart';
 
 class AdInitializer {
+  String unitId;
+
   AdInitializer() {
     var appId;
     if (Platform.isAndroid) {
       appId = "ca-app-pub-4052504652952123~2220516610";
+      unitId = "ca-app-pub-4052504652952123/5990327854";
     } else if (Platform.isIOS) {
       appId = "ca-app-pub-4052504652952123~3134729769";
+      unitId = "ca-app-pub-4052504652952123/4262313213";
     }
 
     FirebaseAdMob.instance.initialize(appId: appId);
@@ -32,8 +36,8 @@ class AdInitializer {
         // Replace the testAdUnitId with an ad unit id from the AdMob dash.
         // https://developers.google.com/admob/android/test-ads
         // https://developers.google.com/admob/ios/test-ads
-        adUnitId: BannerAd.testAdUnitId,
-        size: AdSize.fullBanner,
+        adUnitId: unitId,
+        size: AdSize.smartBanner,
         targetingInfo: targetingInfo,
       );
     }
@@ -55,6 +59,7 @@ class AdInitializer {
   }
 
   bool isAdsEnabled() {
+
     return true;
   }
 }
