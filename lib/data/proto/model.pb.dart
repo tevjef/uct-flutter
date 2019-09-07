@@ -2,7 +2,6 @@
 //  Generated code. Do not modify.
 ///
 // ignore_for_file: non_constant_identifier_names,library_prefixes
-library model;
 
 // ignore: UNUSED_SHOWN_NAME
 import 'dart:core' show int, bool, double, String, List, override;
@@ -418,7 +417,7 @@ class Meeting extends GeneratedMessage {
   void clearClassType() => clearField(7);
 
   int get index => $_get(7, 0);
-  set index(int v) { $_setUnsignedInt32(7, v); }
+  set index(int v) { $_setSignedInt32(7, v); }
   bool hasIndex() => $_has(7);
   void clearIndex() => clearField(8);
 
@@ -468,7 +467,7 @@ class Instructor extends GeneratedMessage {
   void clearName() => clearField(3);
 
   int get index => $_get(3, 0);
-  set index(int v) { $_setUnsignedInt32(3, v); }
+  set index(int v) { $_setSignedInt32(3, v); }
   bool hasIndex() => $_has(3);
   void clearIndex() => clearField(4);
 }
@@ -709,7 +708,7 @@ class Semester extends GeneratedMessage {
   }
 
   int get year => $_get(0, 0);
-  set year(int v) { $_setUnsignedInt32(0, v); }
+  set year(int v) { $_setSignedInt32(0, v); }
   bool hasYear() => $_has(0);
   void clearYear() => clearField(1);
 
@@ -829,7 +828,7 @@ class Meta extends GeneratedMessage {
   }
 
   int get code => $_get(0, 0);
-  set code(int v) { $_setUnsignedInt32(0, v); }
+  set code(int v) { $_setSignedInt32(0, v); }
   bool hasCode() => $_has(0);
   void clearCode() => clearField(1);
 
@@ -851,6 +850,7 @@ class Data extends GeneratedMessage {
     ..a<Subject>(6, 'subject', PbFieldType.OM, Subject.getDefault, Subject.create)
     ..a<Course>(7, 'course', PbFieldType.OM, Course.getDefault, Course.create)
     ..a<Section>(8, 'section', PbFieldType.OM, Section.getDefault, Section.create)
+    ..pp<SubscriptionView>(9, 'subscriptionView', PbFieldType.PM, SubscriptionView.$checkItem, SubscriptionView.create)
     ..hasRequiredFields = false
   ;
 
@@ -897,7 +897,111 @@ class Data extends GeneratedMessage {
   set section(Section v) { setField(8, v); }
   bool hasSection() => $_has(7);
   void clearSection() => clearField(8);
+
+  List<SubscriptionView> get subscriptionView => $_getList(8);
 }
 
 class _ReadonlyData extends Data with ReadonlyMessageMixin {}
+
+class Subscription extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('Subscription')
+    ..aOS(1, 'id')
+    ..aOS(2, 'os')
+    ..aOS(3, 'isSubscribed')
+    ..aOS(4, 'topicName')
+    ..aOS(5, 'fcmToken')
+    ..aOS(6, 'createdAt')
+    ..hasRequiredFields = false
+  ;
+
+  Subscription() : super();
+  Subscription.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  Subscription.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  Subscription clone() => new Subscription()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static Subscription create() => new Subscription();
+  static PbList<Subscription> createRepeated() => new PbList<Subscription>();
+  static Subscription getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlySubscription();
+    return _defaultInstance;
+  }
+  static Subscription _defaultInstance;
+  static void $checkItem(Subscription v) {
+    if (v is! Subscription) checkItemFailed(v, 'Subscription');
+  }
+
+  String get id => $_getS(0, '');
+  set id(String v) { $_setString(0, v); }
+  bool hasId() => $_has(0);
+  void clearId() => clearField(1);
+
+  String get os => $_getS(1, '');
+  set os(String v) { $_setString(1, v); }
+  bool hasOs() => $_has(1);
+  void clearOs() => clearField(2);
+
+  String get isSubscribed => $_getS(2, '');
+  set isSubscribed(String v) { $_setString(2, v); }
+  bool hasIsSubscribed() => $_has(2);
+  void clearIsSubscribed() => clearField(3);
+
+  String get topicName => $_getS(3, '');
+  set topicName(String v) { $_setString(3, v); }
+  bool hasTopicName() => $_has(3);
+  void clearTopicName() => clearField(4);
+
+  String get fcmToken => $_getS(4, '');
+  set fcmToken(String v) { $_setString(4, v); }
+  bool hasFcmToken() => $_has(4);
+  void clearFcmToken() => clearField(5);
+
+  String get createdAt => $_getS(5, '');
+  set createdAt(String v) { $_setString(5, v); }
+  bool hasCreatedAt() => $_has(5);
+  void clearCreatedAt() => clearField(6);
+}
+
+class _ReadonlySubscription extends Subscription with ReadonlyMessageMixin {}
+
+class SubscriptionView extends GeneratedMessage {
+  static final BuilderInfo _i = new BuilderInfo('SubscriptionView')
+    ..aOS(1, 'topicName')
+    ..aInt64(2, 'subscribers')
+    ..aOB(3, 'isHot')
+    ..hasRequiredFields = false
+  ;
+
+  SubscriptionView() : super();
+  SubscriptionView.fromBuffer(List<int> i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  SubscriptionView.fromJson(String i, [ExtensionRegistry r = ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  SubscriptionView clone() => new SubscriptionView()..mergeFromMessage(this);
+  BuilderInfo get info_ => _i;
+  static SubscriptionView create() => new SubscriptionView();
+  static PbList<SubscriptionView> createRepeated() => new PbList<SubscriptionView>();
+  static SubscriptionView getDefault() {
+    if (_defaultInstance == null) _defaultInstance = new _ReadonlySubscriptionView();
+    return _defaultInstance;
+  }
+  static SubscriptionView _defaultInstance;
+  static void $checkItem(SubscriptionView v) {
+    if (v is! SubscriptionView) checkItemFailed(v, 'SubscriptionView');
+  }
+
+  String get topicName => $_getS(0, '');
+  set topicName(String v) { $_setString(0, v); }
+  bool hasTopicName() => $_has(0);
+  void clearTopicName() => clearField(1);
+
+  Int64 get subscribers => $_getI64(1);
+  set subscribers(Int64 v) { $_setInt64(1, v); }
+  bool hasSubscribers() => $_has(1);
+  void clearSubscribers() => clearField(2);
+
+  bool get isHot => $_get(2, false);
+  set isHot(bool v) { $_setBool(2, v); }
+  bool hasIsHot() => $_has(2);
+  void clearIsHot() => clearField(3);
+}
+
+class _ReadonlySubscriptionView extends SubscriptionView with ReadonlyMessageMixin {}
 

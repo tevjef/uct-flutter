@@ -59,7 +59,6 @@ class AdInitializer {
   }
 
   bool isAdsEnabled() {
-
     return true;
   }
 }

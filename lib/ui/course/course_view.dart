@@ -101,17 +101,18 @@ class _CourseListState extends State<_CourseList>
   @override
   void initState() {
     super.initState();
-    presenter.loadCourse(_all);
+    presenter.setMode(_all);
+    presenter.loadCourse();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AdSafeArea(child: makeListView());
+    return AdSafeArea(child: makeRefreshingList());
   }
 
   @override
   void onRefreshData() {
-    presenter.loadCourse(_all);
+    presenter.loadCourse();
   }
 
   @override
@@ -122,7 +123,7 @@ class _CourseListState extends State<_CourseList>
   @override
   void navigateToSection() {
     Navigator.of(context).pushNamed(UCTRoutes.section).then((changed) {
-      // handleRefresh();
+      showLoading(true);
     });
   }
 }

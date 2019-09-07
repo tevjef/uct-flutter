@@ -13,6 +13,13 @@ if (flutterRoot == null) {
 
 apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply plugin: 'io.fabric'
+
+crashlytics {
+    enableNdk true
+    androidNdkOut "../../debugSymbols"
+    androidNdkLibsOut "../../build/app/intermediates/transforms/stripDebugSymbol/release/0/lib"
+}
 
 android {
   compileSdkVersion 28
@@ -52,7 +59,7 @@ android {
     minSdkVersion 16
     targetSdkVersion 28
     versionCode rootProject.ext.buildVersion
-    versionName "2.0.0"
+    versionName "2.1.0"
     signingConfig signingConfigs.debug
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 

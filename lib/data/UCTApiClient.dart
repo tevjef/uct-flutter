@@ -40,6 +40,13 @@ class UCTApiClient implements UCTApi {
   }
 
   @override
+  Future<List<SubscriptionView>> courseHotness(String courseTopicName) {
+    return getResponse("/course/$courseTopicName/hotness/view").then((Response response) {
+      return response.data.subscriptionView;
+    });
+  }
+
+  @override
   Future<List<Course>> courses(String subjectTopicName) {
     return getResponse("/courses/$subjectTopicName").then((Response response) {
       return response.data.courses;

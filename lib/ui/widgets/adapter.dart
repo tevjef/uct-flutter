@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -7,6 +8,7 @@ import 'rv.dart';
 import 'shared.dart';
 import 'styles.dart';
 import 'tracked_status_provider.dart';
+import 'dart:io' show Platform;
 
 class HeaderItem extends Item {
   String title;
@@ -82,6 +84,7 @@ class MetadataItem extends Item {
 class SectionItem extends Item {
   SearchContext searchContext;
   Section section;
+  SubscriptionView subscriptionView;
 
   bool hasTitle;
   bool canSlide;
@@ -92,6 +95,7 @@ class SectionItem extends Item {
   SectionItem(this.searchContext,
       {this.hasTitle = false,
       this.canSlide = false,
+      this.subscriptionView = null,
       this.onItemDismissed,
       this.onSectionClicked})
       : super(searchContext.section.callNumber) {
@@ -145,13 +149,41 @@ class SectionItem extends Item {
       return S.of(context).professorList(acc, s);
     });
 
-    Widget instructorsWidget = Container();
+    Widget hotnessWidget = Container();
+
+    if (subscriptionView != null) {
+      String emoji;
+      if (subscriptionView.isHot) {
+        emoji = "🔥🔥🔥";
+      } else {
+        emoji = "👀";
+      }
+
+      String hotnessText = subscriptionView.subscribers.toString() + " $emoji";
+
+      hotnessWidget = Text(hotnessText,
+          textAlign: TextAlign.start,
+          style: Styles.body1Primary.copyWith(fontWeight: FontWeight.bold));
+
+      if (subscriptionView.subscribers == 0) {
+        hotnessWidget = Container();
+      }
+    }
+
+    Widget bottomStack = Container();
+
+    Widget instructorWidget = Container();
 
     if (instructors.isNotEmpty) {
-      instructorsWidget = Text(instructors,
+      instructorWidget = Text(instructors,
           textAlign: TextAlign.end,
           style: Styles.body1Primary.copyWith(fontWeight: FontWeight.bold));
     }
+
+    bottomStack = Row(
+      children: <Widget>[hotnessWidget, instructorWidget],
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    );
 
     Widget courseNameWidget = Container();
 
@@ -215,13 +247,14 @@ class SectionItem extends Item {
             padding: EdgeInsets.all(Dimens.spacingMedium),
             margin: EdgeInsets.only(left: 60.0),
             child: Column(
+              textBaseline: TextBaseline.ideographic,
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 courseNameWidget,
                 table,
                 SizedBox(height: Dimens.spacingXsmall),
-                instructorsWidget,
+                bottomStack,
               ],
             ),
           ),
@@ -290,6 +323,25 @@ class SubscribeItem extends Item {
   @override
   Widget create(BuildContext context, int position, int adapterPosition,
       [Animation<double> animation]) {
+    Widget subscribeSwitch;
+
+    if (Platform.isIOS) {
+      subscribeSwitch = Padding(
+              child: CupertinoSwitch(
+            value: statusProvider.trackedStatus(),
+            onChanged: (value) {
+              callback(statusProvider.trackedStatus());
+            }),
+            padding: EdgeInsets.only(right: Dimens.spacingSmall),
+      );
+    } else {
+      subscribeSwitch = Switch(
+          value: statusProvider.trackedStatus(),
+          onChanged: (value) {
+            callback(statusProvider.trackedStatus());
+          });
+    }
+
     return Material(
         type: MaterialType.transparency,
         color: Colors.transparent,
@@ -313,11 +365,7 @@ class SubscribeItem extends Item {
                   textAlign: TextAlign.start,
                   style: Styles.caption.copyWith(color: Colors.black),
                 ),
-                Switch(
-                    value: statusProvider.trackedStatus(),
-                    onChanged: (value) {
-                      callback(statusProvider.trackedStatus());
-                    })
+                subscribeSwitch
               ],
             ),
           ),

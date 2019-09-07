@@ -2,7 +2,6 @@
 //  Generated code. Do not modify.
 ///
 // ignore_for_file: non_constant_identifier_names,library_prefixes
-library model_pbjson;
 
 const University$json = const {
   '1': 'University',
@@ -188,6 +187,28 @@ const Data$json = const {
     const {'1': 'subject', '3': 6, '4': 1, '5': 11, '6': '.Subject', '10': 'subject'},
     const {'1': 'course', '3': 7, '4': 1, '5': 11, '6': '.Course', '10': 'course'},
     const {'1': 'section', '3': 8, '4': 1, '5': 11, '6': '.Section', '10': 'section'},
+    const {'1': 'subscription_view', '3': 9, '4': 3, '5': 11, '6': '.SubscriptionView', '10': 'subscriptionView'},
+  ],
+};
+
+const Subscription$json = const {
+  '1': 'Subscription',
+  '2': const [
+    const {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+    const {'1': 'os', '3': 2, '4': 1, '5': 9, '10': 'os'},
+    const {'1': 'is_subscribed', '3': 3, '4': 1, '5': 9, '10': 'isSubscribed'},
+    const {'1': 'topic_name', '3': 4, '4': 1, '5': 9, '10': 'topicName'},
+    const {'1': 'fcm_token', '3': 5, '4': 1, '5': 9, '10': 'fcmToken'},
+    const {'1': 'created_at', '3': 6, '4': 1, '5': 9, '10': 'createdAt'},
+  ],
+};
+
+const SubscriptionView$json = const {
+  '1': 'SubscriptionView',
+  '2': const [
+    const {'1': 'topic_name', '3': 1, '4': 1, '5': 9, '10': 'topicName'},
+    const {'1': 'subscribers', '3': 2, '4': 1, '5': 3, '10': 'subscribers'},
+    const {'1': 'is_hot', '3': 3, '4': 1, '5': 8, '10': 'isHot'},
   ],
 };
 

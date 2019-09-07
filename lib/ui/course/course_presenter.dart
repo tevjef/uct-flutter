@@ -4,17 +4,28 @@ import '../widgets/lib.dart';
 
 class CoursePresenter extends BasePresenter<CourseView> {
   SearchContext searchContext;
+  UCTApiClient apiClient;
   Course course;
   AnalyticsLogger analyticsLogger;
 
+  bool all;
+
   CoursePresenter(CourseView view) : super(view) {
     final injector = Injector.getInjector();
+    apiClient = injector.get();
     analyticsLogger = injector.get();
     searchContext = injector.get();
     course = searchContext.course;
   }
 
-  void loadCourse(bool all) {
+  void loadCourse() async {
+    List<SubscriptionView> subscriptionViews = [];
+    try {
+      subscriptionViews = await apiClient.courseHotness(course.topicName);
+    } catch (e) {
+      view.showErrorMessage(e, loadCourse);
+    }
+
     List<Item> adapterItems = List();
 
     List<MetadataItem> metaItems = new List();
@@ -27,11 +38,17 @@ class CoursePresenter extends BasePresenter<CourseView> {
     List<SectionItem> sectionItem = new List();
     if (course.sections.isNotEmpty) {
       course.sections.forEach((section) {
+        var subscriptionView = subscriptionViews.firstWhere(
+            (subscrptionView) => subscrptionView.topicName == section.topicName,
+            orElse: () => null);
+
         if (all == false && section.status == "Closed") {
           sectionItem.add(SectionItem(searchContext.copyWith(section: section),
+              subscriptionView: subscriptionView,
               onSectionClicked: onSectionClicked, canSlide: false));
         } else if (all) {
           sectionItem.add(SectionItem(searchContext.copyWith(section: section),
+              subscriptionView: subscriptionView,
               onSectionClicked: onSectionClicked, canSlide: false));
         }
       });
@@ -53,6 +70,10 @@ class CoursePresenter extends BasePresenter<CourseView> {
         parameters: parameters);
 
     view.navigateToSection();
+  }
+
+  void setMode(bool all) {
+    this.all = all;
   }
 }
 

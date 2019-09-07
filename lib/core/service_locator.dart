@@ -6,7 +6,7 @@ class Locator {
   static void init() {
     final injector = Injector.getInjector();
 
-    injector.map<String>((i) => "https://api.staging.coursetrakr.io/v2",
+    injector.map<String>((i) => "https://api.coursetrakr.io/v2",
         key: "apiUrl");
     injector.map<UCTApiClient>(
         (i) => new UCTApiClient(i.get<String>(key: "apiUrl")),

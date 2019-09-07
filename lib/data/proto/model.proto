@@ -140,4 +140,20 @@ message Data {
     optional Subject subject = 6;
     optional Course course = 7;
     optional Section section = 8;
+    repeated SubscriptionView subscription_view = 9;
+}
+
+message Subscription {
+    optional string id = 1;
+    optional string os = 2;
+    optional string is_subscribed = 3;
+    optional string topic_name = 4;
+    optional string fcm_token = 5;
+    optional string created_at = 6;
+}
+
+message SubscriptionView {
+    optional string topic_name = 1;
+    optional int64 subscribers = 2;
+    optional bool is_hot = 3;
 }
