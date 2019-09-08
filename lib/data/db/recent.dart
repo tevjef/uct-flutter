@@ -45,7 +45,6 @@ class RecentSelectionDao {
   Database db;
 
   RecentSelectionDao() {
-    open();
   }
 
   Future<Database> open() async {

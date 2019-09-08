@@ -24,6 +24,17 @@ class UCTRepo {
   UCTRepo(this.searchContext, this.apiClient, this.trackedSectionDatabase,
       this.recentSelectionDatabase, this.adInitializer) {}
 
+  void unsubscribe(String topicName) async {
+    var token = await _firebaseMessaging.getToken();
+
+    var numDeleted = await trackedSectionDatabase
+        .deleteTrackedSection(topicName);
+
+    _firebaseMessaging.unsubscribeFromTopic(topicName);
+
+    apiClient.subscription(false, topicName, token);
+  }
+
   Future<bool> toggleSection(SearchContext searchContext) async {
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(sound: true, badge: true, alert: true));
@@ -35,12 +46,7 @@ class UCTRepo {
     print("Push Messaging token: $token");
 
     if (isTracked) {
-      var numDeleted = await trackedSectionDatabase
-          .deleteTrackedSection(searchContext.sectionTopicName);
-
-      _firebaseMessaging.unsubscribeFromTopic(searchContext.sectionTopicName);
-
-      apiClient.subscription(false, searchContext.sectionTopicName, token);
+      await unsubscribe(searchContext.sectionTopicName);
 
       return !isTracked;
     } else {

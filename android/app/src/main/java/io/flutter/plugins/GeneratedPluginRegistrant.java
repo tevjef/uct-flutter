@@ -3,6 +3,7 @@ package io.flutter.plugins;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugins.firebaseadmob.FirebaseAdMobPlugin;
 import io.flutter.plugins.firebaseanalytics.FirebaseAnalyticsPlugin;
+import io.flutter.plugins.firebase.crashlytics.firebasecrashlytics.FirebaseCrashlyticsPlugin;
 import io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin;
 import io.flutter.plugins.firebaseperformance.FirebasePerformancePlugin;
 import com.dexterous.flutterlocalnotifications.FlutterLocalNotificationsPlugin;
@@ -20,6 +21,7 @@ public final class GeneratedPluginRegistrant {
     }
     FirebaseAdMobPlugin.registerWith(registry.registrarFor("io.flutter.plugins.firebaseadmob.FirebaseAdMobPlugin"));
     FirebaseAnalyticsPlugin.registerWith(registry.registrarFor("io.flutter.plugins.firebaseanalytics.FirebaseAnalyticsPlugin"));
+    FirebaseCrashlyticsPlugin.registerWith(registry.registrarFor("io.flutter.plugins.firebase.crashlytics.firebasecrashlytics.FirebaseCrashlyticsPlugin"));
     FirebaseMessagingPlugin.registerWith(registry.registrarFor("io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin"));
     FirebasePerformancePlugin.registerWith(registry.registrarFor("io.flutter.plugins.firebaseperformance.FirebasePerformancePlugin"));
     FlutterLocalNotificationsPlugin.registerWith(registry.registrarFor("com.dexterous.flutterlocalnotifications.FlutterLocalNotificationsPlugin"));

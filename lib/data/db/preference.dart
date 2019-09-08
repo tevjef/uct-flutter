@@ -64,7 +64,6 @@ class PreferenceDao {
   Database db;
 
   PreferenceDao() {
-    open();
   }
 
   Future<Database> open() async {

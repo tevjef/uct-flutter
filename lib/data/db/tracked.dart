@@ -86,7 +86,6 @@ class TrackedSectionDao {
   Database db;
 
   TrackedSectionDao() {
-    open();
   }
 
   Future<Database> open() async {

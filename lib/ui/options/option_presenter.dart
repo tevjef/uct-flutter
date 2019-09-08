@@ -21,7 +21,7 @@ class OptionPresenter extends BasePresenter<OptionView> {
     preferenceDao = injector.get();
     adInitializer = injector.get();
 
-    adInitializer.showBanner(true);
+    adInitializer.showBanner(false);
   }
 
   @override

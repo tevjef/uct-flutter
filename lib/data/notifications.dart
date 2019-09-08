@@ -20,16 +20,10 @@ class NotificationRepo {
 
   BuildContext _buildContext;
 
+  bool didInitializeLocalNotifications = false;
+
   NotificationRepo(AnalyticsLogger analyticsLogger) {
     this.analyticsLogger = analyticsLogger;
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('ic_notification');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -80,6 +74,23 @@ class NotificationRepo {
 
   void registerContext(BuildContext context) {
     _buildContext = context;
+  }
+
+  void initializeLocalNotifications() {
+    if (didInitializeLocalNotifications) {
+      return;
+    }
+
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('ic_notification');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+
+    didInitializeLocalNotifications = true;
   }
 
   AndroidNotificationDetails createClosedChannel() {

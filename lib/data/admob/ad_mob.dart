@@ -7,7 +7,7 @@ class AdInitializer {
 
   AdInitializer() {
     var appId;
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid) { 
       appId = "ca-app-pub-4052504652952123~2220516610";
       unitId = "ca-app-pub-4052504652952123/5990327854";
     } else if (Platform.isIOS) {

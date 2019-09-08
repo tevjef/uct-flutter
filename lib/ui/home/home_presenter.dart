@@ -127,8 +127,7 @@ class HomePresenter extends BasePresenter<HomeView> {
       view.showMessage(S.of(context).unsubscribeMessage(
           searchContext.section.number, searchContext.course.name));
 
-      trackedSectionDatabase
-          .deleteTrackedSection(searchContext.section.topicName);
+      uctRepo.unsubscribe(searchContext.sectionTopicName);
 
       var parameters = {AKeys.STATUS: searchContext.section.status};
       analyticsLogger.logEvent(AKeys.EVENT_SECTION_REMOVED,

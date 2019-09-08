@@ -1,5 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
@@ -8,16 +9,22 @@ import 'core/lib.dart';
 import 'ui/screens.dart';
 import 'ui/widgets/lib.dart';
 
-void main() {
+void main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 
+  Crashlytics.instance.enableInDevMode = true;
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+      Crashlytics.instance.recordFlutterError(details);
+  };
+
   Locator.init();
   FirebaseAnalytics analytics = new FirebaseAnalytics();
 
-  runApp(MaterialApp(
+  var app = MaterialApp(
     title: 'Course Tracker',
     debugShowCheckedModeBanner: false,
     navigatorObservers: [
@@ -46,7 +53,11 @@ void main() {
       UCTRoutes.section: (BuildContext context) => new SectionDetailsPage(),
     },
     home: RootPage(),
-  ));
+  );
+
+  runZoned<Future<Null>>(() async {
+      runApp(app);
+    }, onError: Crashlytics.instance.recordError);
 }
 
 TextTheme _buildTextTheme(TextTheme base) {
