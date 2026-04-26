@@ -1,61 +1,59 @@
 import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-
-import '../data/UCTApiClient.dart';
-import '../data/admob/ad_mob.dart';
-import '../data/db/recent.dart';
-import '../data/db/tracked.dart';
-import '../data/proto/model.pb.dart';
-import '../data/search_context.dart';
+import 'package:uctflutter/data/lib.dart';
 
 class UCTRepo {
   SearchContext searchContext;
   UCTApiClient apiClient;
   TrackedSectionDao trackedSectionDatabase;
   RecentSelectionDao recentSelectionDatabase;
-  AdInitializer adInitializer;
+  NotificationRepo notificationRepo;
 
-  DateTime lastRefresh;
+  DateTime? lastRefresh;
   Duration minTimeBetweenRefresh = Duration(seconds: 5);
 
-  final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   UCTRepo(this.searchContext, this.apiClient, this.trackedSectionDatabase,
-      this.recentSelectionDatabase, this.adInitializer) {}
+      this.recentSelectionDatabase, this.notificationRepo) {}
 
-  void unsubscribe(String topicName) async {
+  Future<bool> unsubscribe(String topicName) async {
     var token = await _firebaseMessaging.getToken();
 
-    var numDeleted = await trackedSectionDatabase
+    if (token == null) {
+      return Future.value(false);
+    }
+
+    var _ = await trackedSectionDatabase
         .deleteTrackedSection(topicName);
 
     _firebaseMessaging.unsubscribeFromTopic(topicName);
 
-    apiClient.subscription(false, topicName, token);
+    return await apiClient.subscription(false, topicName, token);
   }
 
   Future<bool> toggleSection(SearchContext searchContext) async {
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
+    await notificationRepo.setupFlutterNotifications();
 
     var isTracked = await trackedSectionDatabase
         .isSectionTracked(searchContext.sectionTopicName);
 
     var token = await _firebaseMessaging.getToken();
+
     print("Push Messaging token: $token");
 
     if (isTracked) {
-      await unsubscribe(searchContext.sectionTopicName);
+      unsubscribe(searchContext.sectionTopicName);
 
       return !isTracked;
     } else {
       var trackedSection =
           await trackedSectionDatabase.insertSearchContext(searchContext);
 
-      _firebaseMessaging.subscribeToTopic(trackedSection.topicName);
+      _firebaseMessaging.subscribeToTopic(trackedSection.topicName!);
 
-      apiClient.subscription(true, trackedSection.topicName, token);
+      await apiClient.subscription(true, trackedSection.topicName!, token!);
 
       return !isTracked;
     }
@@ -72,7 +70,7 @@ class UCTRepo {
     List<Future<TrackedSection>> allCalls =
         allTrackedSections.map((trackedSection) {
       return Future(() async {
-        var section = await apiClient.section(trackedSection.section.topicName);
+        var section = await apiClient.section(trackedSection.section!.topicName);
 
         if (section != trackedSection.section) {
           var newTrackedSection = trackedSection;
@@ -100,7 +98,7 @@ class UCTRepo {
     }
 
     var shouldRefresh = currentTime.millisecondsSinceEpoch -
-            lastRefresh.millisecondsSinceEpoch >
+            lastRefresh!.millisecondsSinceEpoch >
         minTimeBetweenRefresh.inMilliseconds;
 
     if (shouldRefresh) {

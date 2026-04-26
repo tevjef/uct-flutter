@@ -11,13 +11,13 @@ abstract class HomeView implements BaseView, ListOps {
 }
 
 class HomePresenter extends BasePresenter<HomeView> {
-  UCTRepo uctRepo;
-  TrackedSectionDao trackedSectionDatabase;
-  AnalyticsLogger analyticsLogger;
-  AdInitializer adInitializer;
+  late UCTRepo uctRepo;
+  late TrackedSectionDao trackedSectionDatabase;
+  late AnalyticsLogger analyticsLogger;
+  late AdInitializer adInitializer;
 
   HomePresenter(HomeView view) : super(view) {
-    final injector = Injector.getInjector();
+    final injector = Injector();
     analyticsLogger = injector.get();
     uctRepo = injector.get();
     trackedSectionDatabase = injector.get();
@@ -26,18 +26,18 @@ class HomePresenter extends BasePresenter<HomeView> {
 
   void onInitState() {
     super.onInitState();
-    adInitializer.showBanner(false);
+    adInitializer.showBanner(context, false);
     loadTrackedSections();
   }
 
   void loadTrackedSections() async {
-    List<Item> adapterItems = List();
+    List<Item> adapterItems = [];
 
     // Try refreshing all tracked sections.
     List<TrackedSection> trackedSections;
     try {
       trackedSections = await uctRepo.refreshTrackedSections();
-    } catch (e) {
+    } on Exception catch (e) {
       view.showErrorMessage(e, loadTrackedSections);
       return;
     }
@@ -49,13 +49,13 @@ class HomePresenter extends BasePresenter<HomeView> {
 
     // Sort the data
     mergeSort(searchContexts, compare: (SearchContext a, SearchContext b) {
-      return a.subject.name.compareTo(b.subject.name);
+      return a.subject!.name.compareTo(b.subject!.name);
     });
 
     // Create groups of data
     Map<String, List<SearchContext>> subjectGroups =
         groupBy(searchContexts, (SearchContext context) {
-      return context.subject.name;
+      return context.subject!.name;
     });
 
     // For each one of the groups
@@ -63,12 +63,12 @@ class HomePresenter extends BasePresenter<HomeView> {
       var subject = subjectGroup[0].subject;
 
       // Create the group
-      var group = GroupItem(subject.topicName);
+      var group = GroupItem(subject!.topicName);
 
       // Add a header to the group.
       group.addHeader(HeaderItem(
-          S
-              .of(context)
+          AppLocalizations
+              .of(context)!
               .headerMessage(subject.name, subject.number)
               .toUpperCase(),
           insets: const EdgeInsets.only(
@@ -110,13 +110,13 @@ class HomePresenter extends BasePresenter<HomeView> {
     return (SearchContext searchContext, SectionItem item, int position,
         int adapterPosition) {
       // Remove the item from the list.
-      var removedItem = view.removeItem(item);
+      view.removeItem(item);
 
       // Create an undo action.
       // var action = SnackBarAction(
       // TODO renable undo some other time.
       // There's an issue with headers not showing up.
-      // label: S.of(context).undo,
+      // label: AppLocalizations.of(context)!.undo,
       // onPressed: () {
       // group.insert(position, removedItem);
       // view.updateItem(group);
@@ -124,12 +124,12 @@ class HomePresenter extends BasePresenter<HomeView> {
       // );
 
       // Show a message when an item is removed.
-      view.showMessage(S.of(context).unsubscribeMessage(
-          searchContext.section.number, searchContext.course.name));
+      view.showMessage(AppLocalizations.of(context)!.unsubscribeMessage(
+          searchContext.section!.number, searchContext.course!.name));
 
       uctRepo.unsubscribe(searchContext.sectionTopicName);
 
-      var parameters = {AKeys.STATUS: searchContext.section.status};
+      var parameters = {AKeys.STATUS: searchContext.section!.status};
       analyticsLogger.logEvent(AKeys.EVENT_SECTION_REMOVED,
           parameters: parameters);
     };

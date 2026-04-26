@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 class GroupItem extends Item with ListMixin<Item> {
-  Item header;
+  late Item header;
 
-  List<Item> _items = new List();
+  List<Item> _items = [];
 
-  GlobalKey<AnimatedListState> _listKey;
+  late GlobalKey<AnimatedListState> _listKey;
 
   GlobalKey<AnimatedListState> get listKey => _listKey;
 
@@ -29,26 +29,23 @@ class GroupItem extends Item with ListMixin<Item> {
 
   void addItem(Item item) => _items.add(item);
 
-  @override
   Widget create(BuildContext context, int position, int adapterPosition,
-      [Animation<double> animation]) {}
+      [Animation<double>? animation]) {
+        return Text("");
+      }
 
   Item getItem(int index) => index == 0 ? header : _items[index - 1];
 
   int getItemPositionInGroup(Item item) {
     var index = _items.indexOf(item);
     if (index == -1) {
-      return null;
+      return 0;
     }
     return index;
   }
 
   int getItemPositionInAdapter(Item item) {
     var index = getItemPositionInGroup(item);
-
-    if (index == null) {
-      return null;
-    }
 
     return index + getHeaderCount();
   }
@@ -70,10 +67,10 @@ class GroupItem extends Item with ListMixin<Item> {
   }
 
   bool _hasHeader() {
-    return length != 0 && header != null;
+    return length != 0;
   }
 
-  Tuple2<int, Item> removeItem(Item item, int adapterPosition) {
+  Tuple2<int, Item>? removeItem(Item item, int adapterPosition) {
     var index = _items.indexOf(item);
     if (index == -1) {
       return null;
@@ -90,7 +87,7 @@ class GroupItem extends Item with ListMixin<Item> {
 
   void _updateHeaderItem(int headerPosition) {
     if (header.shouldAnimateRemove()) {
-      listKey.currentState.removeItem(headerPosition,
+      listKey.currentState?.removeItem(headerPosition,
           (BuildContext context, Animation<double> animation) {
         return header.create(context, 0, headerPosition, animation);
       });
@@ -113,18 +110,18 @@ class GroupItem extends Item with ListMixin<Item> {
 }
 
 abstract class Item {
-  final String _id;
+  late String _id;
 
-  const Item(this._id);
+  Item(this._id);
 
   String getId() => _id;
 
   Widget create(BuildContext context, int position, int adapterPosition,
-      [Animation<double> animation]);
+      [Animation<double>? animation]);
 
   @override
   bool operator ==(other) =>
-      this.runtimeType == other.runtimeType && other._id == _id;
+      this.runtimeType == other.runtimeType && (other as Item)._id == _id;
 
   int get hashCode => _id.hashCode;
 
@@ -132,23 +129,23 @@ abstract class Item {
 
   bool shouldAnimateAddition() => false;
 
-  String getFastScrollLabel() {}
+  String getFastScrollLabel() { return ""; }
 }
 
 class Adapter {
-  List<Item> _items = new List();
+  List<Item> _items = List.empty(growable: true);
 
-  GlobalKey<AnimatedListState> listKey;
+  late GlobalKey<AnimatedListState> listKey;
 
-  bool notNull(Object o) => o != null;
+  AnimatedListState? get _animatedList => listKey.currentState;
 
-  AnimatedListState get _animatedList => listKey.currentState;
-
-  Widget onCreateWidget(BuildContext context, int adapterPosition) {
-    return onCreateWidgetWithAnimation(context, adapterPosition, null);
+  Widget? onCreateWidget(BuildContext context, int adapterPosition) {
+    return onCreateWidgetWithAnimation(context, adapterPosition, Animation<double>.fromValueListenable(
+        AlwaysStoppedAnimation<double>(1.0))
+    );
   }
 
-  Tuple2<Item, int> getItemAtPosition(int adapterPosition) {
+  Tuple2<Item, int>? getItemAtPosition(int adapterPosition) {
     int count = 0;
     for (var index = 0; index < _items.length; index++) {
       var item = _items[index];
@@ -161,7 +158,7 @@ class Adapter {
         if (adapterPosition < count + groupCount) {
           var groupItem = item.getItem(adapterPosition - count);
           var idx = item.getItemPositionInGroup(groupItem);
-          return Tuple2(groupItem, idx);
+          return Tuple2(groupItem, idx!);
         } else {
           count += groupCount;
         }
@@ -177,7 +174,7 @@ class Adapter {
     return null;
   }
 
-  int getItemPositionInAdapter(Item itemToFind) {
+  int? getItemPositionInAdapter(Item itemToFind) {
     int count = 0;
     for (var index = 0; index < _items.length; index++) {
       var item = _items[index];
@@ -205,19 +202,15 @@ class Adapter {
 
   Widget onCreateWidgetWithAnimation(
       BuildContext context, int adapterPosition, Animation<double> animation) {
-    Tuple2<Item, int> itemIndexTuple = getItemAtPosition(adapterPosition);
-
-    var count = getItemCount();
+    Tuple2<Item, int>? itemIndexTuple = getItemAtPosition(adapterPosition);
 
     if (itemIndexTuple != null) {
       var item = itemIndexTuple.item1;
       var index = itemIndexTuple.item2;
-      if (item != null) {
-        return item.create(context, index, adapterPosition, animation);
-      }
-    }
+      return item.create(context, index, adapterPosition, animation);
+        }
 
-    return null;
+    return Text("Error");
   }
 
   int getItemCount() => countItems(_items);
@@ -246,7 +239,7 @@ class Adapter {
           _items[index] = item;
           return true;
         } else if (i is GroupItem) {
-          updated = i.updateAll(item);
+          updated = i.update(item);
         } else {
           return Utils.replace(_items, item).item1;
         }
@@ -261,7 +254,7 @@ class Adapter {
   }
 
   Item removeItem(Item item) {
-    Item removed;
+    late Item removed;
 
     for (var index = 0; index < _items.length; ++index) {
       var i = _items[index];
@@ -270,7 +263,7 @@ class Adapter {
 
       // Could not find item
       if (adapterPosition == null) {
-        return null;
+        return throw Exception("Item not found");
       }
 
       var position = index;
@@ -289,29 +282,25 @@ class Adapter {
         }
       }
 
-      if (removed != null) {
-        if (removed.shouldAnimateRemove()) {
-          _animatedList.removeItem(adapterPosition,
-              (BuildContext context, Animation<double> animation) {
-            return item.create(context, position, adapterPosition, animation);
-          });
-        }
-        return removed;
+      if (removed.shouldAnimateRemove()) {
+        _animatedList?.removeItem(adapterPosition,
+            (BuildContext context, Animation<double> animation) {
+          return item.create(context, position, adapterPosition, animation);
+        });
       }
-    }
+      return removed;
+        }
 
     return removed;
   }
 
-  String _getFastScrollLabel(int position) {
-    Tuple2<Item, int> itemIndexTuple = getItemAtPosition(position);
+  String? _getFastScrollLabel(int position) {
+    Tuple2<Item, int>? itemIndexTuple = getItemAtPosition(position);
 
     if (itemIndexTuple != null) {
       var item = itemIndexTuple.item1;
-      if (item != null) {
-        return item.getFastScrollLabel();
-      }
-    }
+      return item.getFastScrollLabel();
+        }
 
     return null;
   }
@@ -343,10 +332,8 @@ class Adapter {
   Item getItemAt(int position) => _items[position];
 
   void swapData(List<Item> items) {
-    if (items != null) {
-      this._items = items.where(notNull).toList();
+    this._items = items.toList();
     }
-  }
 
   void setListKey(GlobalKey<AnimatedListState> listKey) {
     this.listKey = listKey;
@@ -370,8 +357,8 @@ class Utils {
       List<Item> items, List<Item> itemsToReplace) {
     var replacedItem = false;
     for (var i in itemsToReplace) {
-      var tupe = replace(items, i);
-      if (tupe.item1) {
+      var tuple = replace(items, i);
+      if (tuple.item1) {
         replacedItem = true;
       }
     }

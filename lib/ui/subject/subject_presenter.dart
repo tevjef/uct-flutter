@@ -4,22 +4,21 @@ import '../widgets/lib.dart';
 import 'subject_adapter.dart';
 
 class SubjectPresenter extends BasePresenter<SubjectView> {
-  UCTApiClient apiClient;
-  RecentSelectionDao recentSelectionDatabase;
-  SearchContext searchContext;
-  PreferenceDao preferenceDao;
-  AnalyticsLogger analyticsLogger;
-  AdInitializer adInitializer;
+  late UCTApiClient apiClient;
+  late RecentSelectionDao recentSelectionDatabase;
+  late SearchContext searchContext;
+  late PreferenceDao preferenceDao;
+  late AnalyticsLogger analyticsLogger;
+  late AdInitializer adInitializer;
 
   SubjectPresenter(SubjectView view) : super(view) {
-    final injector = Injector.getInjector();
+    final injector = Injector();
     apiClient = injector.get();
     analyticsLogger = injector.get();
     searchContext = injector.get();
     searchContext.reset();
     adInitializer = injector.get();
 
-    adInitializer.showBanner(true);
 
     recentSelectionDatabase = injector.get();
     preferenceDao = injector.get();
@@ -39,18 +38,18 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
 
     try {
       var subjects = await apiClient.subjects(
-          defaultUniversity.university.topicName,
-          defaultSemester.semester.season.toString(),
-          defaultSemester.semester.year.toString());
+          defaultUniversity.university!.topicName,
+          defaultSemester.semester!.season.toString(),
+          defaultSemester.semester!.year.toString());
 
       updateSubjectList(subjects);
 
-      view.setTitle(S.of(context).subjectTitle(
-          defaultUniversity.university.abbr,
+      view.setTitle(AppLocalizations.of(context)!.subjectTitle(
+          defaultUniversity.university!.abbr,
           TextUtils.upperCaseFirstLetter(
-              defaultSemester.semester.season.toString()),
-          defaultSemester.semester.year.toString()));
-    } catch (e) {
+              defaultSemester.semester!.season.toString()),
+          defaultSemester.semester!.year.toString()));
+    } on Exception catch (e) {
       view.showErrorMessage(e, loadSubjects);
       return;
     }
@@ -60,7 +59,7 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
     var recentSubjectSelections = await recentSelectionDatabase
         .getRecentSubjectSelection(searchContext.searchTopicName);
 
-    List<Item> adapterItems = List();
+    List<Item> adapterItems = [];
 
     // Find all the subjects in the list that are have matching entries in the
     // database for the this subject's particular topic name.
@@ -75,7 +74,7 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
       searchContext.updateWith(subject: subject);
       addToRecent(subject.topicName);
 
-      var parameters = {AKeys.IS_RECENT: recentSubjects.contains(subject)};
+      var parameters = {AKeys.IS_RECENT: recentSubjects.contains(subject).toString()};
       analyticsLogger.logEvent(AKeys.EVENT_SUBJECT_CLICKED,
           parameters: parameters);
 
@@ -89,13 +88,13 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
 
     // Add header and all the recent items to the adapter.
     if (recentSubjectItems.isNotEmpty) {
-      adapterItems.add(HeaderItem(S.of(context).recents));
+      adapterItems.add(HeaderItem(AppLocalizations.of(context)!.recents));
       adapterItems.addAll(recentSubjectItems);
     }
 
     // Add header for all the items in the subject list.
     adapterItems
-        .add(HeaderItem(S.of(context).allMeta(subjects.length.toString())));
+        .add(HeaderItem(AppLocalizations.of(context)!.allMeta(subjects.length.toString())));
 
     // Add all the items for the subject list
     adapterItems.addAll(subjects.map((subject) {
@@ -117,6 +116,7 @@ class SubjectPresenter extends BasePresenter<SubjectView> {
   @override
   void onInitState() {
     super.onInitState();
+    adInitializer.showBanner(context, true);
     loadSubjects();
   }
 

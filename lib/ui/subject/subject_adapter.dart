@@ -13,7 +13,7 @@ class SubjectTitleItem extends Item {
 
   @override
   Widget create(BuildContext context, int position, int adapterPosition,
-      [Animation<double> animation]) {
+      [Animation<double>? animation]) {
     final insets = new EdgeInsets.symmetric(
         horizontal: 32.0, vertical: Dimens.spacingStandard);
 
@@ -24,8 +24,8 @@ class SubjectTitleItem extends Item {
       child: new Container(
           padding: insets,
           child: new Text(
-            S.of(context).headerMessage(subject.name, subject.number),
-            style: Styles.caption,
+            AppLocalizations.of(context)!.headerMessage(subject.name, subject.number),
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.bold),
           )),
     );
   }

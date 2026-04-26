@@ -1,61 +1,101 @@
 import 'dart:io' show Platform;
 
-import 'package:firebase_admob/firebase_admob.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:uctflutter/ui/widgets/lib.dart';
 
 class AdInitializer {
-  String unitId;
+  late String unitId;
 
   AdInitializer() {
-    var appId;
-    if (Platform.isAndroid) { 
-      appId = "ca-app-pub-4052504652952123~2220516610";
+    if (Platform.isAndroid) {
       unitId = "ca-app-pub-4052504652952123/5990327854";
     } else if (Platform.isIOS) {
-      appId = "ca-app-pub-4052504652952123~3134729769";
       unitId = "ca-app-pub-4052504652952123/4262313213";
     }
 
-    FirebaseAdMob.instance.initialize(appId: appId);
+    MobileAds.instance.initialize();
   }
 
-  BannerAd btmBanner;
+  BannerAd? btmBanner;
+  bool _isLoaded = false;
+  Widget? adWidget;
+  late Orientation _currentOrientation;
 
-  void showBanner(bool show) {
+  void showBanner(BuildContext context, bool show) {
     if (!isAdsEnabled()) {
       return null;
     }
 
     if (btmBanner == null && show) {
-      MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-        childDirected: false,
-        testDevices: <
-            String>[], // Android emulators are considered test devices
-      );
-
-      btmBanner = BannerAd(
-        // Replace the testAdUnitId with an ad unit id from the AdMob dash.
-        // https://developers.google.com/admob/android/test-ads
-        // https://developers.google.com/admob/ios/test-ads
-        adUnitId: unitId,
-        size: AdSize.smartBanner,
-        targetingInfo: targetingInfo,
-      );
+      _loadAd(context);
     }
 
-    if (show) {
-      btmBanner.load().then((loaded) {
-        btmBanner.show();
+    if (!show) {
+      btmBanner?.load().then((loaded) {
+        btmBanner?.dispose();
+        btmBanner = null;
       });
     }
+  }
 
-    if (!show && btmBanner != null) {
-      btmBanner.load().then((loaded) {
-        if (btmBanner != null) {
-          btmBanner.dispose();
-          btmBanner = null;
+  /// Load another ad, disposing of the current ad if there is one.
+  Future<void> _loadAd(BuildContext context) async {
+    await btmBanner?.dispose();
+    btmBanner = null;
+    _isLoaded = false;
+
+    final AnchoredAdaptiveBannerAdSize? size =
+        await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(MediaQuery.of(context).size.width.truncate());
+
+    if (size == null) {
+      print('Unable to get height of anchored banner.');
+      return;
+    }
+
+    btmBanner = BannerAd(
+      adUnitId: unitId,
+      size: size,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (Ad ad) {
+          print('$ad loaded: ${ad.responseInfo}');
+          // When the ad is loaded, get the ad size and use it to set
+          // the height of the ad container.
+          btmBanner = ad as BannerAd;
+          _isLoaded = true;
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          print('Anchored adaptive banner failedToLoad: $error');
+          ad.dispose();
+        },
+      ),
+    );
+    return btmBanner!.load();
+  }
+
+  /// Gets a widget containing the ad, if one is loaded.
+  ///
+  /// Returns an empty container if no ad is loaded, or the orientation
+  /// has changed. Also loads a new ad if the orientation changes.
+  Widget getAdWidget(BuildContext context) {
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        if (_currentOrientation == orientation && btmBanner != null && _isLoaded) {
+          return Container(
+            color: Colors.green,
+            width: btmBanner!.size.width.toDouble(),
+            height: btmBanner!.size.height.toDouble(),
+            child: AdWidget(ad: btmBanner!),
+          );
         }
-      });
-    }
+        // Reload the ad if the orientation changes.
+        if (_currentOrientation != orientation) {
+          _currentOrientation = orientation;
+          _loadAd(context);
+        }
+        return Container();
+      },
+    );
   }
 
   bool isAdsEnabled() {

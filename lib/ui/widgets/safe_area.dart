@@ -5,17 +5,14 @@ import '../../data/lib.dart';
 
 class AdSafeArea extends StatelessWidget {
   const AdSafeArea({
-    Key key,
+    Key? key,
     this.left = false,
     this.top = false,
     this.right = false,
     this.bottom = true,
     this.minimum = const EdgeInsets.only(bottom: 80),
-    @required this.child,
-  })  : assert(left != null),
-        assert(top != null),
-        assert(right != null),
-        assert(bottom != null);
+    required this.child,
+  });
 
   final bool left;
   final bool top;
@@ -26,7 +23,7 @@ class AdSafeArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final injector = Injector.getInjector();
+    final injector = Injector();
     AdInitializer adInitializer = injector.get();
 
     if (adInitializer.isAdsEnabled()) {
@@ -35,7 +32,13 @@ class AdSafeArea extends StatelessWidget {
           top: top,
           right: right,
           bottom: bottom,
-          child: child,
+          child: Stack(
+            alignment: AlignmentDirectional.bottomCenter,
+            children: <Widget>[
+              child,
+              adInitializer.getAdWidget(context),
+            ],
+          ),
           minimum: minimum);
     } else {
       return child;

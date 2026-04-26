@@ -3,16 +3,14 @@ import '../widgets/lib.dart';
 import 'subject_presenter.dart';
 
 class SubjectPage extends StatefulWidget {
-  SubjectPage({Key key}) : super(key: key);
+  SubjectPage({Key? key}) : super(key: key);
 
   @override
   SubjectListState createState() => new SubjectListState();
 }
 
-class SubjectListState extends State<SubjectPage>
-    with LDEViewMixin
-    implements SubjectView {
-  SubjectPresenter presenter;
+class SubjectListState extends State<SubjectPage> with LDEViewMixin implements SubjectView {
+  late SubjectPresenter presenter;
 
   String title = "";
 
@@ -29,19 +27,31 @@ class SubjectListState extends State<SubjectPage>
       child: Scaffold(
           key: scaffoldKey,
           appBar: new AppBar(
-            title: new Text(title),
+            leading: new IconButton(
+                icon: new Icon(
+                  Icons.arrow_back,
+                  color: Theme.of(context).colorScheme.onBackground,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+            title: Text(title,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onBackground)),
             actions: <Widget>[
               IconButton(
                   icon: new Icon(
                     Icons.settings,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onBackground,
                   ),
                   onPressed: () {
                     presenter.onSettingsClick();
                   }),
             ],
           ),
-          body: AdSafeArea(child: makeRefreshingList())),
+          body: AdSafeArea(child: makeRefreshingList(context))),
     );
   }
 

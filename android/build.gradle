@@ -1,25 +1,19 @@
 ext {
-  compileSdkVersion = 29
-  targetSdkVersion = 29
+  compileSdkVersion = 33
+  targetSdkVersion = 33
 
   if (System.getenv("BITRISE_BUILD_NUMBER") != null) {
     buildVersion = System.getenv("BITRISE_BUILD_NUMBER").toInteger()
   } else {
-    buildVersion = 137
+    buildVersion = 139
   }
 }
 
 buildscript {
   repositories {
     google()
-    jcenter()
-    maven { url 'https://maven.fabric.io/public' }
-  }
-
-  dependencies {
-    classpath 'com.android.tools.build:gradle:3.5.0'
-    classpath 'com.google.gms:google-services:4.3.1'
-    classpath 'io.fabric.tools:gradle:1.+'
+    mavenCentral()
+    gradlePluginPortal()
   }
 }
 
@@ -27,19 +21,6 @@ allprojects {
   repositories {
     google()
     jcenter()
-  }
-}
-
-allprojects {
-  subprojects {
-    project.configurations.all {
-      resolutionStrategy {
-        force 'com.google.firebase:firebase-auth:19.0.0'
-        force 'com.google.firebase:firebase-core:17.2.0'    
-        force 'com.google.firebase:firebase-messaging:20.0.0'
-        force 'com.google.firebase:firebase-ads:18.2.0'
-      }
-    }
   }
 }
 

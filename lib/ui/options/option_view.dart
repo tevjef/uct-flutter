@@ -4,22 +4,20 @@ import '../widgets/lib.dart';
 import 'option_presenter.dart';
 
 class OptionPage extends StatefulWidget {
-  OptionPage({Key key}) : super(key: key);
+  OptionPage({Key? key}) : super(key: key);
 
   @override
   OptionListState createState() => OptionListState();
 }
 
-class OptionListState extends State<OptionPage>
-    with LDEViewMixin
-    implements OptionView {
-  OptionPresenter presenter;
+class OptionListState extends State<OptionPage> with LDEViewMixin implements OptionView {
+  late OptionPresenter presenter;
 
-  List<University> universities = List();
-  List<Semester> semesters = List();
+  List<University> universities = [];
+  List<Semester> semesters = [];
 
-  University selectedUniversity;
-  Semester selectedSemester;
+  University? selectedUniversity;
+  Semester? selectedSemester;
 
   OptionListState() {
     presenter = OptionPresenter(this);
@@ -29,8 +27,8 @@ class OptionListState extends State<OptionPage>
   Widget build(BuildContext context) {
     Widget universityButton = DropdownButton<University>(
       value: selectedUniversity,
-      onChanged: (University newValue) {
-        presenter.updateDefaultUniversity(newValue);
+      onChanged: (University? newValue) {
+        presenter.updateDefaultUniversity(newValue!);
       },
       isDense: true,
       items: universities.map((University value) {
@@ -45,21 +43,20 @@ class OptionListState extends State<OptionPage>
       }).toList(),
     );
 
-    Widget semesterButton;
+    Widget? semesterButton = null;
     if (selectedSemester != null && semesters.contains(selectedSemester)) {
       semesterButton = DropdownButton<Semester>(
         value: selectedSemester,
-        onChanged: (Semester newValue) {
-          presenter.updateDefaultSemester(newValue);
+        onChanged: (Semester? newValue) {
+          presenter.updateDefaultSemester(newValue!);
         },
         isDense: true,
         items: semesters.map((Semester value) {
           return DropdownMenuItem<Semester>(
             value: value,
             child: Text(
-              S.of(context).semesterFull(
-                  TextUtils.upperCaseFirstLetter(value.season),
-                  value.year.toString()),
+              AppLocalizations.of(context)!
+                  .semesterFull(TextUtils.upperCaseFirstLetter(value.season), value.year.toString()),
               softWrap: true,
             ),
           );
@@ -73,44 +70,53 @@ class OptionListState extends State<OptionPage>
         DropdownButtonHideUnderline(
           child: InputDecorator(
               decoration: InputDecoration(
-                labelText: S.of(context).university,
-                hintText: S.of(context).selectUniversity,
-                helperText: S.of(context).selectUniversity,
+                labelText: AppLocalizations.of(context)!.university,
+                hintText: AppLocalizations.of(context)!.selectUniversity,
+                helperText: AppLocalizations.of(context)!.selectUniversity,
               ),
-              isEmpty: selectedUniversity == null ||
-                  !universities.contains(selectedUniversity),
+              isEmpty: selectedUniversity == null || !universities.contains(selectedUniversity),
               child: universityButton),
         ),
         DropdownButtonHideUnderline(
           child: InputDecorator(
               decoration: InputDecoration(
-                  labelText: S.of(context).semester,
-                  hintText: S.of(context).selectSemester,
-                  helperText: S.of(context).selectSemester),
-              isEmpty: selectedSemester == null ||
-                  !semesters.contains(selectedSemester),
+                  labelText: AppLocalizations.of(context)!.semester,
+                  hintText: AppLocalizations.of(context)!.selectSemester,
+                  helperText: AppLocalizations.of(context)!.selectSemester),
+              isEmpty: selectedSemester == null || !semesters.contains(selectedSemester),
               child: semesterButton),
         )
       ],
     );
 
-    Widget ldeWidget = makeRefreshingWidget(widget);
+    Widget ldeWidget = makeRefreshingWidget(context, widget);
 
     return WillPopScope(
       onWillPop: () {
-        showMessage(S.of(context).please_select_a_university);
-        return Future<bool>.value(
-            selectedUniversity != null && selectedSemester != null);
+        showMessage(AppLocalizations.of(context)!.please_select_a_university);
+        return Future<bool>.value(selectedUniversity != null && selectedSemester != null);
       },
       child: Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
-          title: Text(S.of(context).options),
+          leading: new IconButton(
+              icon: new Icon(
+                Icons.arrow_back,
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+          title: Text(AppLocalizations.of(context)!.options,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge!
+                  .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onBackground)),
           actions: <Widget>[
             IconButton(
                 icon: Icon(
                   Icons.check,
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
                 onPressed: () {
                   Navigator.of(context).pop(true);
@@ -139,11 +145,7 @@ class OptionListState extends State<OptionPage>
   }
 
   @override
-  void setSelectedUniversity(University university, Semester semester) {
-    if (university == null) {
-      return;
-    }
-
+  void setSelectedUniversity(University university, Semester? semester) {
     setState(() {
       this.selectedUniversity = university;
       this.semesters = university.availableSemesters;
