@@ -16,16 +16,14 @@ final String _columnSemester = "default_semester";
 
 class DefaultUniversity {
   String id = "default_university_key";
-  University university;
+  University? university;
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      _columnUniversity: university.writeToJson(),
+      _columnUniversity: university?.writeToJson(),
     };
 
-    if (id != null) {
-      map[_columnId] = id;
-    }
+    map[_columnId] = id;
     return map;
   }
 
@@ -39,16 +37,14 @@ class DefaultUniversity {
 
 class DefaultSemester {
   String id = "default_semester_key";
-  Semester semester;
+  Semester? semester;
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      _columnSemester: semester.writeToJson(),
+      _columnSemester: semester?.writeToJson(),
     };
 
-    if (id != null) {
-      map[_columnId] = id;
-    }
+    map[_columnId] = id;
     return map;
   }
 
@@ -61,14 +57,13 @@ class DefaultSemester {
 }
 
 class PreferenceDao {
-  Database db;
+  Database? db;
 
-  PreferenceDao() {
-  }
+  PreferenceDao() {}
 
   Future<Database> open() async {
     if (db != null) {
-      return db;
+      return db!;
     }
 
     Directory path = await getApplicationDocumentsDirectory();
@@ -76,7 +71,7 @@ class PreferenceDao {
 
     db = await openDatabase(dbPath, version: 1, onCreate: this._create);
 
-    return db;
+    return db!;
   }
 
   Future _create(Database db, int version) async {
@@ -98,8 +93,7 @@ CREATE TABLE $_tableDefaultSemester (
 
     DefaultUniversity defaultUniversity = DefaultUniversity();
     defaultUniversity.university = university;
-    await db.insert(_tableDefaultUniversity, defaultUniversity.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert(_tableDefaultUniversity, defaultUniversity.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
     return defaultUniversity;
   }
 
@@ -108,15 +102,14 @@ CREATE TABLE $_tableDefaultSemester (
 
     DefaultSemester defaultSemester = DefaultSemester();
     defaultSemester.semester = semester;
-    await db.insert(_tableDefaultSemester, defaultSemester.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert(_tableDefaultSemester, defaultSemester.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
     return defaultSemester;
   }
 
-  Future<DefaultUniversity> getDefaultUniversity() async {
+  Future<DefaultUniversity?> getDefaultUniversity() async {
     var db = await open();
 
-    List<DefaultUniversity> universities = new List();
+    List<DefaultUniversity> universities = [];
 
     List<Map<String, dynamic>> maps = await db.query(_tableDefaultUniversity,
         columns: [
@@ -125,8 +118,7 @@ CREATE TABLE $_tableDefaultSemester (
         ],
         limit: 1);
     if (maps.length > 0) {
-      maps.forEach((Map<String, dynamic> m) =>
-          universities.add(DefaultUniversity.fromMap(m)));
+      maps.forEach((Map<String, dynamic> m) => universities.add(DefaultUniversity.fromMap(m)));
     }
 
     if (universities.isEmpty) {
@@ -136,10 +128,10 @@ CREATE TABLE $_tableDefaultSemester (
     return universities[0];
   }
 
-  Future<DefaultSemester> getDefaultSemester() async {
+  Future<DefaultSemester?> getDefaultSemester() async {
     var db = await open();
 
-    List<DefaultSemester> semesters = new List();
+    List<DefaultSemester> semesters = [];
 
     List<Map<String, dynamic>> maps = await db.query(_tableDefaultSemester,
         columns: [
@@ -148,8 +140,7 @@ CREATE TABLE $_tableDefaultSemester (
         ],
         limit: 1);
     if (maps.length > 0) {
-      maps.forEach((Map<String, dynamic> m) =>
-          semesters.add(DefaultSemester.fromMap(m)));
+      maps.forEach((Map<String, dynamic> m) => semesters.add(DefaultSemester.fromMap(m)));
     }
 
     if (semesters.isEmpty) {
@@ -159,5 +150,5 @@ CREATE TABLE $_tableDefaultSemester (
     return semesters[0];
   }
 
-  Future close() async => db.close();
+  Future close() async => db?.close();
 }

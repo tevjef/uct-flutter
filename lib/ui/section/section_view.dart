@@ -4,40 +4,39 @@ import '../widgets/lib.dart';
 import 'section_presenter.dart';
 
 class SectionDetailsPage extends StatefulWidget {
-  SectionDetailsPage({Key key}) : super(key: key);
+  SectionDetailsPage({Key? key}) : super(key: key);
 
   @override
   SectionDetailState createState() => SectionDetailState();
 }
 
-class SectionDetailState extends State<SectionDetailsPage>
-    with LDEViewMixin
-    implements SectionView {
-  SearchContext searchContext;
+class SectionDetailState extends State<SectionDetailsPage> with LDEViewMixin implements SectionView {
+  late SearchContext searchContext;
 
   // Used to determine if the Home screen should be undated.
-  bool initialTrackedStatus;
-  bool isTracked = false;
-  int numTrackedSections;
+  bool? initialTrackedStatus = null;
+  bool? isTracked = null;
+  int numTrackedSections = 0;
 
-  SectionPresenter presenter;
+  late SectionPresenter presenter;
 
   SectionDetailState() {
-    searchContext = Injector.getInjector().get();
+    searchContext = Injector().get();
     presenter = SectionPresenter(this);
   }
 
   @override
   void initState() {
     super.initState();
-    presenter.loadSection();
   }
 
   @override
   Widget build(BuildContext context) {
-    final title = S
-        .of(context)
-        .headerMessage(searchContext.course.name, searchContext.course.number);
+    if (isTracked == null) {
+      isTracked = ModalRoute.of(context)!.settings.arguments as bool?;
+    }
+
+    final title = AppLocalizations.of(context)!.headerMessage(searchContext.course!.name, searchContext.course!.number);
 
     final section = searchContext.section;
 
@@ -50,27 +49,26 @@ class SectionDetailState extends State<SectionDetailsPage>
                   leading: IconButton(
                       icon: Icon(
                         Icons.arrow_back,
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.onBackground,
                       ),
                       onPressed: () {
-                        Navigator.of(context)
-                            .pop(initialTrackedStatus != isTracked);
+                        Navigator.of(context).pop(initialTrackedStatus != isTracked);
                       }),
                   actions: <Widget>[
-                    Widgets.makeIconWithBadge(numTrackedSections.toString(),
-                        () {
+                    Widgets.makeIconWithBadge(context, numTrackedSections.toString(), () {
                       presenter.onTrackedSectionsClicked();
                     }),
                   ],
                   title: Container(
-                    child: Text(title),
+                    child: Text(title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onBackground)),
                   ),
                   bottom: PreferredSize(
                       child: Container(
-                        padding: EdgeInsets.only(
-                            left: 72.0,
-                            right: 72.0,
-                            bottom: Dimens.spacingStandard),
+                        padding: EdgeInsets.only(left: 72.0, right: 72.0, bottom: Dimens.spacingStandard),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -78,13 +76,18 @@ class SectionDetailState extends State<SectionDetailsPage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  section.number,
-                                  style: Styles.sectionLargeHeader,
+                                  section!.number,
+                                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context).colorScheme.onSurface,
+                                      ),
                                 ),
                                 SizedBox(height: 6.0),
                                 Text(
-                                  S.of(context).section,
-                                  style: Styles.sectionHeaderLight,
+                                  AppLocalizations.of(context)!.section,
+                                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                                        color: Theme.of(context).colorScheme.onSurface,
+                                      ),
                                 ),
                               ],
                             ),
@@ -93,12 +96,17 @@ class SectionDetailState extends State<SectionDetailsPage>
                               children: <Widget>[
                                 Text(
                                   section.callNumber,
-                                  style: Styles.sectionLargeHeader,
+                                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context).colorScheme.onSurface,
+                                      ),
                                 ),
                                 SizedBox(height: 6.0),
                                 Text(
-                                  S.of(context).index,
-                                  style: Styles.sectionHeaderLight,
+                                  AppLocalizations.of(context)!.index,
+                                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                                        color: Theme.of(context).colorScheme.onSurface,
+                                      ),
                                 ),
                               ],
                             ),
@@ -116,7 +124,7 @@ class SectionDetailState extends State<SectionDetailsPage>
 
   Widget buildCredits(Section section) {
     var defaultCredits = 0.toDouble();
-    var credits = double.parse(section.credits) ?? defaultCredits;
+    var credits = double.parse(section.credits);
     if (credits == defaultCredits || credits == -1.0) {
       return Container();
     }
@@ -126,12 +134,17 @@ class SectionDetailState extends State<SectionDetailsPage>
       children: <Widget>[
         Text(
           credits.round().toString(),
-          style: Styles.sectionLargeHeader,
+          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
         ),
         SizedBox(height: 6.0),
         Text(
-          S.of(context).credits,
-          style: Styles.sectionHeaderLight,
+          AppLocalizations.of(context)!.credits,
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
         ),
       ],
     );
@@ -149,7 +162,7 @@ class SectionDetailState extends State<SectionDetailsPage>
   }
 
   @override
-  bool trackedStatus() => isTracked;
+  bool trackedStatus() => isTracked ?? false;
 
   @override
   void onRefreshData() {
@@ -158,8 +171,7 @@ class SectionDetailState extends State<SectionDetailsPage>
 
   @override
   void onPopToTrackedSections() {
-    Navigator.of(context).pushNamedAndRemoveUntil(
-        UCTRoutes.home, (Route<dynamic> route) => false);
+    Navigator.of(context).pushNamedAndRemoveUntil(UCTRoutes.home, (Route<dynamic> route) => false);
   }
 
   @override
@@ -167,5 +179,27 @@ class SectionDetailState extends State<SectionDetailsPage>
     setState(() {
       this.numTrackedSections = numTrackedSections;
     });
+  }
+
+  @override
+  void showPastSemesterDialog(Subject subject) {
+    showDialog(
+        context: context,
+        builder: (_) => new AlertDialog(
+              title: new Text("Are you sure?"),
+              content: new Text("You're subscribing to a section from ${subject.season} ${subject.year}"),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    'Change semester',
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pushNamedAndRemoveUntil(UCTRoutes.subjects, (Route<dynamic> route) => false);
+                    Navigator.of(context).pushNamed(UCTRoutes.options);
+                  },
+                )
+              ],
+            ));
   }
 }

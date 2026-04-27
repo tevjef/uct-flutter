@@ -1,253 +1,302 @@
 PODS:
-  - Crashlytics (3.13.4):
-    - Fabric (~> 1.10.2)
-  - Fabric (1.10.2)
-  - Firebase/AdMob (6.8.0):
+  - Firebase/Analytics (10.20.0):
+    - Firebase/Core
+  - Firebase/Core (10.20.0):
     - Firebase/CoreOnly
-    - Google-Mobile-Ads-SDK (~> 7.49)
-  - Firebase/Analytics (6.8.0):
-    - Firebase/Core
-  - Firebase/Core (6.8.0):
+    - FirebaseAnalytics (~> 10.20.0)
+  - Firebase/CoreOnly (10.20.0):
+    - FirebaseCore (= 10.20.0)
+  - Firebase/Crashlytics (10.20.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (= 6.1.1)
-  - Firebase/CoreOnly (6.8.0):
-    - FirebaseCore (= 6.2.2)
-  - Firebase/Messaging (6.8.0):
+    - FirebaseCrashlytics (~> 10.20.0)
+  - Firebase/Messaging (10.20.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 4.1.4)
-  - Firebase/Performance (6.8.0):
+    - FirebaseMessaging (~> 10.20.0)
+  - Firebase/Performance (10.20.0):
     - Firebase/CoreOnly
-    - FirebasePerformance (~> 3.1.3)
-  - firebase_admob (0.0.1):
-    - Firebase/AdMob
-    - Firebase/Core
+    - FirebasePerformance (~> 10.20.0)
+  - firebase_analytics (10.8.5):
+    - Firebase/Analytics (= 10.20.0)
+    - firebase_core
     - Flutter
-  - firebase_analytics (0.0.1):
-    - Firebase/Analytics (~> 6.0)
-    - Firebase/Core
+  - firebase_core (2.25.4):
+    - Firebase/CoreOnly (= 10.20.0)
     - Flutter
-  - firebase_crashlytics (0.0.1):
-    - Crashlytics
-    - Fabric
-    - Firebase/Core
+  - firebase_crashlytics (3.4.14):
+    - Firebase/Crashlytics (= 10.20.0)
+    - firebase_core
     - Flutter
-  - firebase_messaging (0.0.1):
-    - Firebase/Core
-    - Firebase/Messaging
+  - firebase_messaging (14.7.15):
+    - Firebase/Messaging (= 10.20.0)
+    - firebase_core
     - Flutter
-  - firebase_performance (0.0.1):
-    - Firebase/Core
-    - Firebase/Performance
+  - firebase_performance (0.9.3-13):
+    - Firebase/Performance (= 10.20.0)
+    - firebase_core
     - Flutter
-  - FirebaseABTesting (3.1.1):
-    - FirebaseAnalyticsInterop (~> 1.3)
-    - FirebaseCore (~> 6.1)
-    - Protobuf (~> 3.8)
-  - FirebaseAnalytics (6.1.1):
-    - FirebaseCore (~> 6.2)
-    - FirebaseInstanceID (~> 4.2)
-    - GoogleAppMeasurement (= 6.1.1)
-    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
-    - GoogleUtilities/MethodSwizzler (~> 6.0)
-    - GoogleUtilities/Network (~> 6.0)
-    - "GoogleUtilities/NSData+zlib (~> 6.0)"
-    - nanopb (~> 0.3)
-  - FirebaseAnalyticsInterop (1.4.0)
-  - FirebaseCore (6.2.2):
-    - FirebaseCoreDiagnostics (~> 1.0)
-    - FirebaseCoreDiagnosticsInterop (~> 1.0)
-    - GoogleUtilities/Environment (~> 6.2)
-    - GoogleUtilities/Logger (~> 6.2)
-  - FirebaseCoreDiagnostics (1.0.1):
-    - FirebaseCoreDiagnosticsInterop (~> 1.0)
-    - GoogleDataTransportCCTSupport (~> 1.0)
-    - GoogleUtilities/Environment (~> 6.2)
-    - GoogleUtilities/Logger (~> 6.2)
-  - FirebaseCoreDiagnosticsInterop (1.0.0)
-  - FirebaseInstanceID (4.2.4):
-    - FirebaseCore (~> 6.0)
-    - GoogleUtilities/Environment (~> 6.0)
-    - GoogleUtilities/UserDefaults (~> 6.0)
-  - FirebaseMessaging (4.1.4):
-    - FirebaseAnalyticsInterop (~> 1.3)
-    - FirebaseCore (~> 6.2)
-    - FirebaseInstanceID (~> 4.1)
-    - GoogleUtilities/AppDelegateSwizzler (~> 6.2)
-    - GoogleUtilities/Environment (~> 6.2)
-    - GoogleUtilities/Reachability (~> 6.2)
-    - GoogleUtilities/UserDefaults (~> 6.2)
-    - Protobuf (~> 3.1)
-  - FirebasePerformance (3.1.3):
-    - FirebaseCore (~> 6.2)
-    - FirebaseInstanceID (~> 4.2)
-    - FirebaseRemoteConfig (~> 4.4)
-    - GoogleToolboxForMac/Logger (~> 2.1)
-    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
-    - GoogleUtilities/Environment (~> 6.2)
-    - GoogleUtilities/ISASwizzler (~> 6.2)
-    - GoogleUtilities/MethodSwizzler (~> 6.2)
-    - GTMSessionFetcher/Core (~> 1.1)
-    - Protobuf (~> 3.9)
-  - FirebaseRemoteConfig (4.4.0):
-    - FirebaseABTesting (~> 3.1)
-    - FirebaseAnalyticsInterop (~> 1.4)
-    - FirebaseCore (~> 6.2)
-    - FirebaseInstanceID (~> 4.2)
-    - GoogleUtilities/Environment (~> 6.2)
-    - "GoogleUtilities/NSData+zlib (~> 6.2)"
-    - Protobuf (~> 3.9)
+  - FirebaseABTesting (10.21.0):
+    - FirebaseCore (~> 10.0)
+  - FirebaseAnalytics (10.20.0):
+    - FirebaseAnalytics/AdIdSupport (= 10.20.0)
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseAnalytics/AdIdSupport (10.20.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleAppMeasurement (= 10.20.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseCore (10.20.0):
+    - FirebaseCoreInternal (~> 10.0)
+    - GoogleUtilities/Environment (~> 7.12)
+    - GoogleUtilities/Logger (~> 7.12)
+  - FirebaseCoreExtension (10.21.0):
+    - FirebaseCore (~> 10.0)
+  - FirebaseCoreInternal (10.21.0):
+    - "GoogleUtilities/NSData+zlib (~> 7.8)"
+  - FirebaseCrashlytics (10.20.0):
+    - FirebaseCore (~> 10.5)
+    - FirebaseInstallations (~> 10.0)
+    - FirebaseSessions (~> 10.5)
+    - GoogleDataTransport (~> 9.2)
+    - GoogleUtilities/Environment (~> 7.8)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - PromisesObjC (~> 2.1)
+  - FirebaseInstallations (10.21.0):
+    - FirebaseCore (~> 10.0)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - PromisesObjC (~> 2.1)
+  - FirebaseMessaging (10.20.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleDataTransport (~> 9.3)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/Reachability (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebasePerformance (10.20.0):
+    - FirebaseCore (~> 10.5)
+    - FirebaseInstallations (~> 10.0)
+    - FirebaseRemoteConfig (~> 10.0)
+    - FirebaseSessions (~> 10.5)
+    - GoogleDataTransport (~> 9.2)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/ISASwizzler (~> 7.8)
+    - GoogleUtilities/MethodSwizzler (~> 7.8)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseRemoteConfig (10.21.0):
+    - FirebaseABTesting (~> 10.0)
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - FirebaseSharedSwift (~> 10.0)
+    - GoogleUtilities/Environment (~> 7.8)
+    - "GoogleUtilities/NSData+zlib (~> 7.8)"
+  - FirebaseSessions (10.21.0):
+    - FirebaseCore (~> 10.5)
+    - FirebaseCoreExtension (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleDataTransport (~> 9.2)
+    - GoogleUtilities/Environment (~> 7.10)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - PromisesSwift (~> 2.1)
+  - FirebaseSharedSwift (10.21.0)
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
-  - FMDB (2.7.5):
-    - FMDB/standard (= 2.7.5)
-  - FMDB/standard (2.7.5)
-  - Google-Mobile-Ads-SDK (7.49.0):
-    - GoogleAppMeasurement (~> 6.0)
-  - GoogleAppMeasurement (6.1.1):
-    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
-    - GoogleUtilities/MethodSwizzler (~> 6.0)
-    - GoogleUtilities/Network (~> 6.0)
-    - "GoogleUtilities/NSData+zlib (~> 6.0)"
-    - nanopb (~> 0.3)
-  - GoogleDataTransport (1.2.0)
-  - GoogleDataTransportCCTSupport (1.0.3):
-    - GoogleDataTransport (~> 1.2)
-    - nanopb
-  - GoogleToolboxForMac/Defines (2.2.1)
-  - GoogleToolboxForMac/Logger (2.2.1):
-    - GoogleToolboxForMac/Defines (= 2.2.1)
-  - "GoogleToolboxForMac/NSData+zlib (2.2.1)":
-    - GoogleToolboxForMac/Defines (= 2.2.1)
-  - GoogleUtilities/AppDelegateSwizzler (6.2.5):
+  - Google-Mobile-Ads-SDK (10.11.0):
+    - GoogleAppMeasurement (< 11.0, >= 7.0)
+    - GoogleUserMessagingPlatform (>= 1.1)
+  - google_mobile_ads (1.0.0):
+    - Flutter
+    - Google-Mobile-Ads-SDK (~> 10.11.0)
+    - webview_flutter_wkwebview
+  - GoogleAppMeasurement (10.20.0):
+    - GoogleAppMeasurement/AdIdSupport (= 10.20.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - GoogleAppMeasurement/AdIdSupport (10.20.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.20.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - GoogleAppMeasurement/WithoutAdIdSupport (10.20.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - GoogleDataTransport (9.3.0):
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUserMessagingPlatform (2.1.0)
+  - GoogleUtilities/AppDelegateSwizzler (7.12.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (6.2.5)
-  - GoogleUtilities/ISASwizzler (6.2.5)
-  - GoogleUtilities/Logger (6.2.5):
+  - GoogleUtilities/Environment (7.12.0):
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/ISASwizzler (7.12.0)
+  - GoogleUtilities/Logger (7.12.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (6.2.5):
+  - GoogleUtilities/MethodSwizzler (7.12.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/Network (6.2.5):
+  - GoogleUtilities/Network (7.12.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (6.2.5)"
-  - GoogleUtilities/Reachability (6.2.5):
+  - "GoogleUtilities/NSData+zlib (7.12.0)"
+  - GoogleUtilities/Reachability (7.12.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (6.2.5):
+  - GoogleUtilities/UserDefaults (7.12.0):
     - GoogleUtilities/Logger
-  - GTMSessionFetcher/Core (1.2.2)
-  - nanopb (0.3.901):
-    - nanopb/decode (= 0.3.901)
-    - nanopb/encode (= 0.3.901)
-  - nanopb/decode (0.3.901)
-  - nanopb/encode (0.3.901)
+  - nanopb (2.30909.1):
+    - nanopb/decode (= 2.30909.1)
+    - nanopb/encode (= 2.30909.1)
+  - nanopb/decode (2.30909.1)
+  - nanopb/encode (2.30909.1)
   - package_info (0.0.1):
     - Flutter
-  - path_provider (0.0.1):
+  - path_provider_foundation (0.0.1):
     - Flutter
-  - Protobuf (3.9.0)
-  - sqflite (0.0.1):
+    - FlutterMacOS
+  - PromisesObjC (2.3.1)
+  - PromisesSwift (2.3.1):
+    - PromisesObjC (= 2.3.1)
+  - purchases_flutter (6.21.0):
     - Flutter
-    - FMDB (~> 2.7.2)
+    - PurchasesHybridCommon (= 9.7.1)
+  - PurchasesHybridCommon (9.7.1):
+    - RevenueCat (= 4.36.2)
+  - RevenueCat (4.36.2)
+  - sqflite (0.0.3):
+    - Flutter
+    - FlutterMacOS
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
-  - firebase_admob (from `Pods/.symlinks/plugins/firebase_admob/ios`)
-  - firebase_analytics (from `Pods/.symlinks/plugins/firebase_analytics/ios`)
-  - firebase_crashlytics (from `Pods/.symlinks/plugins/firebase_crashlytics/ios`)
-  - firebase_messaging (from `Pods/.symlinks/plugins/firebase_messaging/ios`)
-  - firebase_performance (from `Pods/.symlinks/plugins/firebase_performance/ios`)
-  - Flutter (from `Pods/.symlinks/flutter/ios`)
-  - flutter_local_notifications (from `Pods/.symlinks/plugins/flutter_local_notifications/ios`)
-  - package_info (from `Pods/.symlinks/plugins/package_info/ios`)
-  - path_provider (from `Pods/.symlinks/plugins/path_provider/ios`)
-  - sqflite (from `Pods/.symlinks/plugins/sqflite/ios`)
+  - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
+  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
+  - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
+  - firebase_performance (from `.symlinks/plugins/firebase_performance/ios`)
+  - Flutter (from `Flutter`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
+  - package_info (from `.symlinks/plugins/package_info/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/darwin`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - Crashlytics
-    - Fabric
+  trunk:
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
-    - FirebaseAnalyticsInterop
     - FirebaseCore
-    - FirebaseCoreDiagnostics
-    - FirebaseCoreDiagnosticsInterop
-    - FirebaseInstanceID
+    - FirebaseCoreExtension
+    - FirebaseCoreInternal
+    - FirebaseCrashlytics
+    - FirebaseInstallations
     - FirebaseMessaging
     - FirebasePerformance
     - FirebaseRemoteConfig
-    - FMDB
+    - FirebaseSessions
+    - FirebaseSharedSwift
     - Google-Mobile-Ads-SDK
     - GoogleAppMeasurement
     - GoogleDataTransport
-    - GoogleDataTransportCCTSupport
-    - GoogleToolboxForMac
+    - GoogleUserMessagingPlatform
     - GoogleUtilities
-    - GTMSessionFetcher
     - nanopb
-    - Protobuf
+    - PromisesObjC
+    - PromisesSwift
+    - PurchasesHybridCommon
+    - RevenueCat
 
 EXTERNAL SOURCES:
-  firebase_admob:
-    :path: Pods/.symlinks/plugins/firebase_admob/ios
   firebase_analytics:
-    :path: Pods/.symlinks/plugins/firebase_analytics/ios
+    :path: ".symlinks/plugins/firebase_analytics/ios"
+  firebase_core:
+    :path: ".symlinks/plugins/firebase_core/ios"
   firebase_crashlytics:
-    :path: Pods/.symlinks/plugins/firebase_crashlytics/ios
+    :path: ".symlinks/plugins/firebase_crashlytics/ios"
   firebase_messaging:
-    :path: Pods/.symlinks/plugins/firebase_messaging/ios
+    :path: ".symlinks/plugins/firebase_messaging/ios"
   firebase_performance:
-    :path: Pods/.symlinks/plugins/firebase_performance/ios
+    :path: ".symlinks/plugins/firebase_performance/ios"
   Flutter:
-    :path: Pods/.symlinks/flutter/ios
+    :path: Flutter
   flutter_local_notifications:
-    :path: Pods/.symlinks/plugins/flutter_local_notifications/ios
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  google_mobile_ads:
+    :path: ".symlinks/plugins/google_mobile_ads/ios"
   package_info:
-    :path: Pods/.symlinks/plugins/package_info/ios
-  path_provider:
-    :path: Pods/.symlinks/plugins/path_provider/ios
+    :path: ".symlinks/plugins/package_info/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  purchases_flutter:
+    :path: ".symlinks/plugins/purchases_flutter/ios"
   sqflite:
-    :path: Pods/.symlinks/plugins/sqflite/ios
+    :path: ".symlinks/plugins/sqflite/darwin"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
-  Crashlytics: 2dfd686bcb918dc10ee0e76f7f853fe42c7bd552
-  Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
-  Firebase: c35912a5c160193dc423f260dac3f167a1a795ab
-  firebase_admob: d8c2bc95b5e0069406280ce6adb816cdee6aa595
-  firebase_analytics: 32e04b548ece5c04c9798cbf393a7884f0b21951
-  firebase_crashlytics: 6b8e7358dbac1359c1e29e0796adf48eddef99c9
-  firebase_messaging: acdcd2edbe7270bae6c3a93cf6c60e86538b3064
-  firebase_performance: f7b5c78075a37ae9c5e6f44822e377d57d4da6d8
-  FirebaseABTesting: 662e8de812ceb5d57ad66381f6402f4d28dc5c91
-  FirebaseAnalytics: 843c7f64a8f9c79f0d03281197ebe7bb1d58d477
-  FirebaseAnalyticsInterop: d48b6ab67bcf016a05e55b71fc39c61c0cb6b7f3
-  FirebaseCore: 12422a2a2b79ed161b06ccad1edfe650de7a4b34
-  FirebaseCoreDiagnostics: 4c04ae09d0ab027c30179828c6bb47764df1bd13
-  FirebaseCoreDiagnosticsInterop: 6829da2b8d1fc795ff1bd99df751d3788035d2cb
-  FirebaseInstanceID: 88932a31aba5a56cfd3a7541706436c71f7f4598
-  FirebaseMessaging: 9483ac438b7b223c09dad8712310e9ee7d562c99
-  FirebasePerformance: 7cdfd244a182db0b925ab3e1fb9dda676c108600
-  FirebaseRemoteConfig: a1b49ebfddeaccda10d76fd8dc2cc1aa215f9c43
-  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
-  flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
-  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  Google-Mobile-Ads-SDK: df315e371b29cf935f7ea872e7bdec39462a100e
-  GoogleAppMeasurement: 86a82f0e1f20b8eedf8e20326530138fd71409de
-  GoogleDataTransport: 8f9897b8e073687f24ca8d3c3a8013dec7d2d1cc
-  GoogleDataTransportCCTSupport: 51134d81fca795c60cc247d1cb6af63c3d67b8d8
-  GoogleToolboxForMac: b3553629623a3b1bff17f555e736cd5a6d95ad55
-  GoogleUtilities: e7dc37039b19df7fe543479d3e4a02ac8d11bb69
-  GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
-  nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
-  package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
-  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
-  Protobuf: 1097ca58584c8d9be81bfbf2c5ff5975648dd87a
-  sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
+  Firebase: 10c8cb12fb7ad2ae0c09ffc86cd9c1ab392a0031
+  firebase_analytics: 2e82fd84ce13f8321aa7b99336d6ee0e6cc7b984
+  firebase_core: a46c312d8bae4defa3d009b2aa7b5b413aeb394e
+  firebase_crashlytics: 3d12285fcbd865d576b9965bd4090cd8b68e11fd
+  firebase_messaging: 40d7dd2f3e88a6367c7326cf601f84633d477582
+  firebase_performance: f090bad21e0318995827cbab40992952a8850fcb
+  FirebaseABTesting: 40774deef367dcc7b736b6c26dd59ce0fab42f41
+  FirebaseAnalytics: a2731bf3670747ce8f65368b118d18aa8e368246
+  FirebaseCore: 28045c1560a2600d284b9c45a904fe322dc890b6
+  FirebaseCoreExtension: 1c044fd46e95036cccb29134757c499613f3f564
+  FirebaseCoreInternal: 43c1788eaeee9d1b97caaa751af567ce11010d00
+  FirebaseCrashlytics: 81530595edb6d99f1918f723a6c33766a24a4c86
+  FirebaseInstallations: 390ea1d10a4d02b20c965cbfd527ee9b3b412acb
+  FirebaseMessaging: 06c414a21b122396a26847c523d5c370f8325df5
+  FirebasePerformance: 085f0123064068c43f14fcf3536b57e30449e7cc
+  FirebaseRemoteConfig: 1dd5164b2183aff07c7726df6b0212ad5154c1fe
+  FirebaseSessions: 80c2bbdd28166267b3d132debe5f7531efdb00bc
+  FirebaseSharedSwift: 19b3f709993d6fa1d84941d41c01e3c4c11eab93
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
+  Google-Mobile-Ads-SDK: 58b4fda3f9758fc1ed210aa5cf7777b5eb55d47e
+  google_mobile_ads: 511febb4768edc860ee455a9e201ff52de385908
+  GoogleAppMeasurement: bb3c564c3efb933136af0e94899e0a46167466a8
+  GoogleDataTransport: 57c22343ab29bc686febbf7cbb13bad167c2d8fe
+  GoogleUserMessagingPlatform: dce302b8f1b84d6e945812ee7a15c3f65a102cbf
+  GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
+  nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
+  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
+  PromisesSwift: 28dca69a9c40779916ac2d6985a0192a5cb4a265
+  purchases_flutter: becb61c2ca37cd944aeaae688119e1f485158fee
+  PurchasesHybridCommon: 76ea82671cfb30f921c5697362b56d86b341da04
+  RevenueCat: 991b09e19835c2e7344f3cdda6921c2a5f2da47a
+  sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
+  webview_flutter_wkwebview: be0f0d33777f1bfd0c9fdcb594786704dbf65f36
 
-PODFILE CHECKSUM: e3b71f0a96b89e9ba38a96b490cfb1130c1589af
+PODFILE CHECKSUM: 0805b11bfb13bd44fc55fe52946ce14f22a2998e
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.15.2

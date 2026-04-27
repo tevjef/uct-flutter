@@ -3,30 +3,27 @@ import '../../data/lib.dart';
 import '../widgets/lib.dart';
 
 class OptionPresenter extends BasePresenter<OptionView> {
-  UCTApiClient apiClient;
-  RecentSelectionDao recentSelectionDatabase;
-  PreferenceDao preferenceDao;
-  SearchContext searchContext;
-  AnalyticsLogger analyticsLogger;
-  AdInitializer adInitializer;
-
-  Function optionClickCallback;
+  late UCTApiClient apiClient;
+  late RecentSelectionDao recentSelectionDatabase;
+  late PreferenceDao preferenceDao;
+  late SearchContext searchContext;
+  late AnalyticsLogger analyticsLogger;
+  late AdInitializer adInitializer;
 
   OptionPresenter(OptionView view) : super(view) {
-    final injector = Injector.getInjector();
+    final injector = Injector();
     analyticsLogger = injector.get();
     apiClient = injector.get();
     searchContext = injector.get();
     recentSelectionDatabase = injector.get();
     preferenceDao = injector.get();
     adInitializer = injector.get();
-
-    adInitializer.showBanner(false);
   }
 
   @override
   void onInitState() {
     super.onInitState();
+    adInitializer.showBanner(context, false);
     loadUniversities();
   }
 
@@ -37,7 +34,7 @@ class OptionPresenter extends BasePresenter<OptionView> {
 
     view.onOptionSuccess(universities);
     view.setSelectedUniversity(
-        defaultUniversity.university, defaultSemester?.semester);
+        defaultUniversity.university!, defaultSemester.semester);
 
     view.showLoading(false);
   }
@@ -47,22 +44,22 @@ class OptionPresenter extends BasePresenter<OptionView> {
     var defaultSemester = await preferenceDao.getDefaultSemester();
     if (defaultSemester == null && defaultUniversity.university != null) {
       DefaultSemester ds = DefaultSemester();
-      ds.semester = defaultUniversity.university.availableSemesters[0];
+      ds.semester = defaultUniversity.university?.availableSemesters[0];
       defaultSemester = ds;
-      await preferenceDao.insertSemester(ds.semester);
+      await preferenceDao.insertSemester(ds.semester!);
     }
 
     // There is a semester and university
     if (defaultSemester != null &&
         defaultUniversity.university != null &&
-        !defaultUniversity.university.availableSemesters
+        !defaultUniversity.university!.availableSemesters
             .contains(defaultSemester.semester)) {
       DefaultSemester ds = DefaultSemester();
-      ds.semester = defaultUniversity.university.availableSemesters[0];
+      ds.semester = defaultUniversity.university!.availableSemesters[0];
       defaultSemester = ds;
-      await preferenceDao.insertSemester(ds.semester);
+      await preferenceDao.insertSemester(ds.semester!);
     }
-    return defaultSemester;
+    return defaultSemester!;
   }
 
   Future<DefaultUniversity> _getDefaultUniversity(
@@ -75,7 +72,7 @@ class OptionPresenter extends BasePresenter<OptionView> {
     if (defaultUniversity != null) {
       var updatedUniversity = universities
           .where((university) =>
-              university.topicName == defaultUniversity.university.topicName)
+              university.topicName == defaultUniversity!.university!.topicName)
           .elementAt(0);
       defaultUniversity =
           await preferenceDao.insertUniversity(updatedUniversity);
@@ -84,6 +81,7 @@ class OptionPresenter extends BasePresenter<OptionView> {
     if (defaultUniversity == null) {
       DefaultUniversity du = DefaultUniversity();
       defaultUniversity = du;
+      defaultUniversity.university = universities[0];
     }
     return defaultUniversity;
   }
@@ -94,19 +92,19 @@ class OptionPresenter extends BasePresenter<OptionView> {
     var du = await preferenceDao.insertUniversity(university);
     var ds = await _getDefaultSemester(du);
 
-    view.setSelectedUniversity(du.university, ds.semester);
+    view.setSelectedUniversity(du.university!, ds.semester);
   }
 
   void updateDefaultSemester(Semester semester) async {
     analyticsLogger.logEvent(AKeys.EVENT_SEMESTER_CHANGED);
 
     var ds = await preferenceDao.insertSemester(semester);
-    view.setSelectedSemester(ds.semester);
+    view.setSelectedSemester(ds.semester!);
   }
 }
 
 abstract class OptionView extends BaseView {
-  void setSelectedUniversity(University university, Semester semester);
+  void setSelectedUniversity(University university, Semester? semester);
 
   void setSelectedSemester(Semester semester);
 

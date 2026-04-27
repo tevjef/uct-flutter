@@ -4,7 +4,7 @@ import '../widgets/lib.dart';
 import 'courses_presenter.dart';
 
 class CoursesPage extends StatefulWidget {
-  CoursesPage({Key key}) : super(key: key);
+  CoursesPage({Key? key}) : super(key: key);
 
   @override
   CoursesListState createState() => new CoursesListState();
@@ -13,7 +13,7 @@ class CoursesPage extends StatefulWidget {
 class CoursesListState extends State<CoursesPage>
     with LDEViewMixin
     implements CoursesView {
-  CoursesPresenter presenter;
+  late CoursesPresenter presenter;
 
   CoursesListState() {
     presenter = new CoursesPresenter(this);
@@ -21,10 +21,10 @@ class CoursesListState extends State<CoursesPage>
 
   @override
   Widget build(BuildContext context) {
-    final SearchContext searchContext = Injector.getInjector().get();
+    final SearchContext searchContext = Injector().get();
 
-    var title = S.of(context).headerMessage(
-        searchContext.subject.name, searchContext.subject.number);
+    var title = AppLocalizations.of(context)!.headerMessage(
+        searchContext.subject!.name, searchContext.subject!.number);
 
     return WillPopScope(
       onWillPop: () {
@@ -36,13 +36,15 @@ class CoursesListState extends State<CoursesPage>
             leading: new IconButton(
                 icon: new Icon(
                   Icons.arrow_back,
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 }),
-            title: new Text(title)),
-        body: AdSafeArea(child: makeRefreshingList()),
+            title: Text(title, style: Theme.of(context).textTheme.titleLarge!
+                  .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onBackground)),
+            ),
+        body: AdSafeArea(child: makeRefreshingList(context)),
       ),
     );
   }

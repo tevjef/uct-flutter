@@ -1,23 +1,23 @@
+import 'dart:ui';
+
 import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
 import 'course_presenter.dart';
 
 class CoursePage extends StatelessWidget {
-  final SearchContext searchContext = Injector.getInjector().get();
+  final SearchContext searchContext = Injector().get();
 
-  CoursePage({Key key}) : super(key: key);
+  CoursePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final title = S
-        .of(context)
-        .headerMessage(searchContext.course.name, searchContext.course.number);
+    final title = AppLocalizations.of(context)!.headerMessage(searchContext.course!.name, searchContext.course!.number);
 
     var allSections = 0;
     var closedSections = 0;
-    searchContext.course.sections.forEach((Section section) {
-      if (section.status == S.of(context).closedStatus) {
+    searchContext.course!.sections.forEach((Section section) {
+      if (section.status == AppLocalizations.of(context)!.closedStatus) {
         closedSections++;
       }
       allSections++;
@@ -25,7 +25,7 @@ class CoursePage extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () {
-        Future<bool>.value(true);
+        return Future<bool>.value(true);
       },
       child: new DefaultTabController(
         length: 2,
@@ -34,7 +34,7 @@ class CoursePage extends StatelessWidget {
             leading: new IconButton(
                 icon: new Icon(
                   Icons.arrow_back,
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -51,18 +51,24 @@ class CoursePage extends StatelessWidget {
               //     }),
             ],
             title: new Container(
-              child: new Text(title),
+              child: Text(title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onBackground)),
             ),
             bottom: new TabBar(
-              labelStyle: Styles.sectionHeader,
-              unselectedLabelStyle: Styles.sectionHeader,
+              labelStyle: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground,
+                    fontWeight: FontWeight.bold,
+                  ),
+              unselectedLabelStyle: Theme.of(context)
+                  .textTheme
+                  .labelMedium!
+                  .copyWith(color: Theme.of(context).colorScheme.onBackground, fontWeight: FontWeight.bold),
               tabs: [
-                new Tab(
-                    text: S.of(context).allSections(allSections.toString())),
-                new Tab(
-                    text: S
-                        .of(context)
-                        .closedSections(closedSections.toString())),
+                new Tab(text: AppLocalizations.of(context)!.allSections(allSections.toString())),
+                new Tab(text: AppLocalizations.of(context)!.closedSections(closedSections.toString())),
               ],
             ),
           ),
@@ -81,33 +87,30 @@ class CoursePage extends StatelessWidget {
 class _CourseList extends StatefulWidget {
   final bool all;
 
-  _CourseList({Key key, @required this.all}) : super(key: key);
+  _CourseList({Key? key, required this.all}) : super(key: key);
 
   @override
   _CourseListState createState() => new _CourseListState(all);
 }
 
-class _CourseListState extends State<_CourseList>
-    with LDEViewMixin<_CourseList>
-    implements CourseView {
-  CoursePresenter presenter;
-  bool _all;
+class _CourseListState extends State<_CourseList> with LDEViewMixin<_CourseList> implements CourseView {
+  late CoursePresenter presenter;
+  bool all;
 
-  _CourseListState(bool all) {
-    _all = all;
+  _CourseListState(this.all) {
     presenter = new CoursePresenter(this);
   }
 
   @override
   void initState() {
     super.initState();
-    presenter.setMode(_all);
+    presenter.setMode(all);
     presenter.loadCourse();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AdSafeArea(child: makeRefreshingList());
+    return AdSafeArea(child: makeRefreshingList(context));
   }
 
   @override
@@ -116,7 +119,7 @@ class _CourseListState extends State<_CourseList>
   }
 
   @override
-  Widget makeEmptyStateWidget() {
+  Widget makeEmptyStateWidget(BuildContext context) {
     return Container();
   }
 

@@ -14,9 +14,9 @@ final String _columnTopicName = "topic_name";
 final String _columnUpdatedAt = "updated_at";
 
 class RecentSelection {
-  int id;
-  String parentTopicName;
-  String topicName;
+  int? id;
+  String? parentTopicName;
+  String? topicName;
   String updatedAt = DateTime.now().millisecondsSinceEpoch.toString();
 
   Map<String, dynamic> toMap() {
@@ -42,14 +42,13 @@ class RecentSelection {
 }
 
 class RecentSelectionDao {
-  Database db;
+  Database? db;
 
-  RecentSelectionDao() {
-  }
+  RecentSelectionDao();
 
   Future<Database> open() async {
     if (db != null) {
-      return db;
+      return db!;
     }
 
     Directory path = await getApplicationDocumentsDirectory();
@@ -57,7 +56,7 @@ class RecentSelectionDao {
 
     db = await openDatabase(dbPath, version: 1, onCreate: this._create);
 
-    return db;
+    return db!;
   }
 
   Future _create(Database db, int version) async {
@@ -115,7 +114,7 @@ CREATE TABLE $_tableRecentCourse (
       String table, String topicName) async {
     var db = await open();
 
-    List<RecentSelection> recentSelections = List();
+    List<RecentSelection> recentSelections = [];
 
     List<Map<String, dynamic>> maps = await db.query(table,
         columns: [
@@ -150,5 +149,5 @@ CREATE TABLE $_tableRecentCourse (
     return await db.delete(table, where: "$_columnParentTopicName IS NOT NULL");
   }
 
-  Future close() async => db.close();
+  Future close() async => db?.close();
 }

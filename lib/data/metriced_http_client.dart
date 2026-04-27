@@ -36,7 +36,7 @@ class MetricHttpClient extends BaseClient {
   }
 
   HttpMethod getRequestMethod(BaseRequest request) {
-    HttpMethod method;
+    HttpMethod method = HttpMethod.Get;
     if (request.method == "GET") {
       method = HttpMethod.Get;
     } else if (request.method == "POST") {

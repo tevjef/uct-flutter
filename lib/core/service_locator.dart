@@ -4,9 +4,9 @@ import '../data/lib.dart';
 
 class Locator {
   static void init() {
-    final injector = Injector.getInjector();
+    final injector = Injector();
 
-    injector.map<String>((i) => "https://api.coursetrakr.io/v2",
+    injector.map<String>((i) => "https://universitycoursetracker.firebaseapp.com/v2",
         key: "apiUrl");
     injector.map<UCTApiClient>(
         (i) => new UCTApiClient(i.get<String>(key: "apiUrl")),

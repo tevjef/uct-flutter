@@ -12,11 +12,11 @@ class CourseTitleItem extends Item {
 
   @override
   Widget create(BuildContext context, int position, int adapterPosition,
-      [Animation<double> animation]) {
+      [Animation<double>? animation]) {
     int total = course.sections.length;
     int open = 0;
     course.sections.forEach((section) {
-      if (section.status == S.of(context).openStatus) {
+      if (section.status == AppLocalizations.of(context)!.openStatus) {
         open++;
       }
     });
@@ -41,12 +41,12 @@ class CourseTitleItem extends Item {
           top: 6.0,
           bottom: 6.0),
       decoration: new BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surfaceVariant,
         shape: BoxShape.rectangle,
         borderRadius: new BorderRadius.circular(8.0),
         boxShadow: <BoxShadow>[
           new BoxShadow(
-            color: Colors.black12,
+            color: Theme.of(context).colorScheme.shadow,
             blurRadius: 6.0,
             offset: new Offset(0.0, 2.0),
           ),
@@ -60,15 +60,17 @@ class CourseTitleItem extends Item {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(
-                      S.of(context).headerMessage(course.name, course.number),
-                      style: Styles.caption,
+                      AppLocalizations.of(context)!.headerMessage(course.name, course.number),
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                        fontWeight: FontWeight.bold
+                      ),
                       overflow: TextOverflow.fade,
                     ),
                     new Text(
-                      S
-                          .of(context)
+                      AppLocalizations
+                          .of(context)!
                           .numOfOpen(open.toString(), total.toString()),
-                      style: Styles.body1Secondary,
+                      style: Theme.of(context).textTheme.bodySmall,
                     )
                   ])),
           //https://github.com/flutter/flutter/issues/3782#issuecomment-309079424

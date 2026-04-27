@@ -4,22 +4,19 @@ import '../widgets/lib.dart';
 import 'home_presenter.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   @override
   HomeListState createState() => new HomeListState();
 }
 
-class HomeListState extends State<HomePage>
-    with LDEViewMixin
-    implements HomeView {
-  HomePresenter presenter;
-  AdInitializer adInitializer;
+class HomeListState extends State<HomePage> with LDEViewMixin implements HomeView {
+  late HomePresenter presenter;
+  late AdInitializer adInitializer;
 
   HomeListState() {
-    final injector = Injector.getInjector();
+    final injector = Injector();
     adInitializer = injector.get();
-    adInitializer.showBanner(false);
 
     presenter = new HomePresenter(this);
   }
@@ -33,15 +30,19 @@ class HomeListState extends State<HomePage>
       child: Scaffold(
         key: scaffoldKey,
         appBar: new AppBar(
-          title: new Text(S.of(context).homeTitle),
+          title: Text(AppLocalizations.of(context)!.homeTitle,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge!
+                  .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onBackground)),
         ),
-        body: makeRefreshingList(),
+        body: makeRefreshingList(context),
         floatingActionButton: FloatingActionButton(
             child: new Icon(
               Icons.add,
-              color: Colors.black,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
-            backgroundColor: AppColors.white,
+            backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
             onPressed: () {
               presenter.onFabClicked();
             }),
@@ -51,11 +52,11 @@ class HomeListState extends State<HomePage>
 
   @override
   void onRefreshData() {
-    adInitializer.showBanner(false);
+    adInitializer.showBanner(context, false);
     presenter.loadTrackedSections();
   }
 
-  Widget makeEmptyStateWidget() {
+  Widget makeEmptyStateWidget(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -70,8 +71,8 @@ class HomeListState extends State<HomePage>
               top: Dimens.spacingXlarge,
               bottom: Dimens.spacingXxxlarge),
           child: Text(
-            S.of(context).homeEmpty,
-            style: Styles.sectionLargeHeader.copyWith(fontSize: 18.0),
+            AppLocalizations.of(context)!.homeEmpty,
+            style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),
         ),
@@ -88,7 +89,7 @@ class HomeListState extends State<HomePage>
 
   @override
   void navigateToSection() {
-    Navigator.of(context).pushNamed(UCTRoutes.section).then((changed) {
+    Navigator.of(context).pushNamed(UCTRoutes.section, arguments: true).then((changed) {
       refreshData();
     });
   }

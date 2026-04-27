@@ -19,36 +19,36 @@ final String _columnSectionJson = "section_json";
 final String _columnTopicName = "topic_name";
 
 class TrackedSection {
-  int id;
+  int? id;
 
-  University university;
-  Semester semester;
-  Subject subject;
-  Course course;
-  Section section;
-  String topicName;
+  University? university;
+  Semester? semester;
+  Subject? subject;
+  Course? course;
+  Section? section;
+  String? topicName;
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {_columnTopicName: topicName};
 
     if (university != null) {
-      map[_columnUniversityJson] = university.writeToJson();
+      map[_columnUniversityJson] = university!.writeToJson();
     }
 
     if (semester != null) {
-      map[_columnSemesterJson] = semester.writeToJson();
+      map[_columnSemesterJson] = semester!.writeToJson();
     }
 
     if (subject != null) {
-      map[_columnSubjectJson] = subject.writeToJson();
+      map[_columnSubjectJson] = subject!.writeToJson();
     }
 
     if (course != null) {
-      map[_columnCourseJson] = course.writeToJson();
+      map[_columnCourseJson] = course!.writeToJson();
     }
 
     if (section != null) {
-      map[_columnSectionJson] = section.writeToJson();
+      map[_columnSectionJson] = section!.writeToJson();
     }
 
     if (id != null) {
@@ -83,14 +83,13 @@ class TrackedSection {
 }
 
 class TrackedSectionDao {
-  Database db;
+  Database? db;
 
-  TrackedSectionDao() {
-  }
+  TrackedSectionDao();
 
   Future<Database> open() async {
     if (db != null) {
-      return db;
+      return db!;
     }
 
     Directory path = await getApplicationDocumentsDirectory();
@@ -98,7 +97,7 @@ class TrackedSectionDao {
 
     db = await openDatabase(dbPath, version: 1, onCreate: this._create);
 
-    return db;
+    return db!;
   }
 
   Future _create(Database db, int version) async {
@@ -178,8 +177,8 @@ CREATE TABLE $_tableTrackedSections (
           .toList();
     }
 
-    return List();
+    return [];
   }
 
-  Future close() async => db.close();
+  Future close() async => db?.close();
 }

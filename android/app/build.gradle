@@ -1,3 +1,8 @@
+plugins {
+    id "com.android.application"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -11,15 +16,6 @@ if (flutterRoot == null) {
       "Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
-apply plugin: 'com.android.application'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-apply plugin: 'io.fabric'
-
-crashlytics {
-    enableNdk true
-    androidNdkOut "../../debugSymbols"
-    androidNdkLibsOut "../../build/app/intermediates/transforms/stripDebugSymbol/release/0/lib"
-}
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
@@ -54,12 +50,14 @@ android {
     }
   }
 
+  namespace = 'com.tevinjeffrey.rutgersct'
+
   defaultConfig {
     applicationId "com.tevinjeffrey.rutgersct"
-    minSdkVersion 16
+    minSdkVersion flutter.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
     versionCode rootProject.ext.buildVersion
-    versionName "2.1.0"
+    versionName "3.0.0"
     signingConfig signingConfigs.debug
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -94,5 +92,3 @@ dependencies {
   androidTestImplementation 'androidx.test:runner:1.1.1'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
-
-apply plugin: 'com.google.gms.google-services'

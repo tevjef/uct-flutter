@@ -4,23 +4,21 @@ import '../widgets/lib.dart';
 import 'courses_adapter.dart';
 
 class CoursesPresenter extends BasePresenter<CoursesView> {
-  UCTApiClient apiClient;
-  SearchContext searchContext;
-  RecentSelectionDao recentSelectionDatabase;
-  AnalyticsLogger analyticsLogger;
-  AdInitializer adInitializer;
+  late UCTApiClient apiClient;
+  late SearchContext searchContext;
+  late RecentSelectionDao recentSelectionDatabase;
+  late AnalyticsLogger analyticsLogger;
+  late AdInitializer adInitializer;
 
-  List<Course> courses;
+  late List<Course> courses;
 
   CoursesPresenter(CoursesView view) : super(view) {
-    final injector = Injector.getInjector();
+    final injector = Injector();
     analyticsLogger = injector.get();
     apiClient = injector.get();
     searchContext = injector.get();
     recentSelectionDatabase = injector.get();
     adInitializer = injector.get();
-
-    adInitializer.showBanner(true);
   }
 
   @override
@@ -29,20 +27,24 @@ class CoursesPresenter extends BasePresenter<CoursesView> {
     loadCourses();
   }
 
+  void showAd(BuildContext context) {
+    adInitializer.showBanner(context, true);
+  }
+
   void loadCourses() async {
     try {
-      var courses = await apiClient.courses(searchContext.subject.topicName);
+      var courses = await apiClient.courses(searchContext.subject!.topicName);
       _updateCourseList(courses);
-    } catch (e) {
+    } on Exception catch (e) {
       view.showErrorMessage(e, loadCourses);
     }
   }
 
   void _updateCourseList(List<Course> courses) async {
     var recent = await recentSelectionDatabase
-        .getRecentCourseSelection(searchContext.subject.topicName);
+        .getRecentCourseSelection(searchContext.subject!.topicName);
 
-    List<Item> adapterItems = List();
+    List<Item> adapterItems = [];
 
     var recentCourses = courses.where((it) {
       return recent.any((recentSelection) {
@@ -54,7 +56,7 @@ class CoursesPresenter extends BasePresenter<CoursesView> {
       searchContext.updateWith(course: course);
       addToRecent(course.topicName);
 
-      var parameters = {AKeys.IS_RECENT: recentCourses.contains(course)};
+      var parameters = {AKeys.IS_RECENT: recentCourses.contains(course).toString()};
       analyticsLogger.logEvent(AKeys.EVENT_COURSE_CLICKED,
           parameters: parameters);
 
@@ -66,12 +68,12 @@ class CoursesPresenter extends BasePresenter<CoursesView> {
     });
 
     if (recentCourseItems.isNotEmpty && courses.length > 5) {
-      adapterItems.add(HeaderItem(S.of(context).recents));
+      adapterItems.add(HeaderItem(AppLocalizations.of(context)!.recents));
       adapterItems.addAll(recentCourseItems);
     }
 
     adapterItems
-        .add(HeaderItem(S.of(context).allMeta(courses.length.toString())));
+        .add(HeaderItem(AppLocalizations.of(context)!.allMeta(courses.length.toString())));
 
     final addItems = courses.map((course) {
       return CourseTitleItem(course, courseClickCallback);
@@ -85,7 +87,7 @@ class CoursesPresenter extends BasePresenter<CoursesView> {
   void addToRecent(String courseTopicName) async {
     var recentSelection = RecentSelection();
     recentSelection.topicName = courseTopicName;
-    recentSelection.parentTopicName = searchContext.subject.topicName;
+    recentSelection.parentTopicName = searchContext.subject!.topicName;
     recentSelection =
         await recentSelectionDatabase.insertCourseSelection(recentSelection);
   }

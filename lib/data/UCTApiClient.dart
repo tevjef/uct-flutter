@@ -16,6 +16,8 @@ abstract class UCTApi {
   Future<List<Subject>> subjects(
       String universityTopicName, String season, String year);
 
+Future<List<SubscriptionView>> courseHotness(String courseTopicName);
+
   Future<bool> acknowledgeNotification(String receiveAt, String topicName,
       String fcmToken, String notificationId);
 
@@ -71,7 +73,7 @@ class UCTApiClient implements UCTApi {
 
   Future<Response> getResponse(String url) {
     return ErrorTransformer.transform(
-        httpClient.get("$baseUrl" + "$url").then((http.Response response) {
+        httpClient.get(Uri.parse("$baseUrl" + "$url")).then((http.Response response) {
       logHttp(response);
       final statusCode = response.statusCode;
       if (statusCode < 200 || statusCode >= 300) {
@@ -91,7 +93,7 @@ class UCTApiClient implements UCTApi {
   Future<bool> acknowledgeNotification(String receiveAt, String topicName,
       String fcmToken, String notificationId) {
     return httpClient.post(
-      "$baseUrl" + "/notification",
+      Uri.parse("$baseUrl" + "/notification"),
       body: {
         'receiveAt': receiveAt,
         'topicName': topicName,
@@ -120,7 +122,7 @@ class UCTApiClient implements UCTApi {
     };
 
     return httpClient.post(
-      "$baseUrl" + "/subscription",
+      Uri.parse("$baseUrl" + "/subscription"),
       body: body,
       headers: {"Content-Type": "application/x-www-form-urlencoded"},
     ).then((response) {
