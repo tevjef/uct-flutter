@@ -5,13 +5,13 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-final String _tableRecentSubject = "recent_subject";
-final String _tableRecentCourse = "recent_course";
+const String _tableRecentSubject = "recent_subject";
+const String _tableRecentCourse = "recent_course";
 
-final String _columnId = "_id";
-final String _columnParentTopicName = "parent_topic_name";
-final String _columnTopicName = "topic_name";
-final String _columnUpdatedAt = "updated_at";
+const String _columnId = "_id";
+const String _columnParentTopicName = "parent_topic_name";
+const String _columnTopicName = "topic_name";
+const String _columnUpdatedAt = "updated_at";
 
 class RecentSelection {
   int? id;
@@ -54,7 +54,7 @@ class RecentSelectionDao {
     Directory path = await getApplicationDocumentsDirectory();
     String dbPath = join(path.path, "recents.db");
 
-    db = await openDatabase(dbPath, version: 1, onCreate: this._create);
+    db = await openDatabase(dbPath, version: 1, onCreate: _create);
 
     return db!;
   }
@@ -127,9 +127,10 @@ CREATE TABLE $_tableRecentCourse (
         whereArgs: [topicName],
         limit: 3,
         orderBy: "$_columnUpdatedAt DESC");
-    if (maps.length > 0) {
-      maps.forEach((Map<String, dynamic> m) =>
-          recentSelections.add(RecentSelection.fromMap(m)));
+    if (maps.isNotEmpty) {
+      for (var m in maps) {
+        recentSelections.add(RecentSelection.fromMap(m));
+      }
     }
 
     return recentSelections.reversed.toList();

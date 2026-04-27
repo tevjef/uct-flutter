@@ -1,5 +1,5 @@
 ext {
-  compileSdkVersion = 33
+  compileSdkVersion = 36
   targetSdkVersion = 33
 
   if (System.getenv("BITRISE_BUILD_NUMBER") != null) {

@@ -11,12 +11,12 @@ class UCTRepo {
   NotificationRepo notificationRepo;
 
   DateTime? lastRefresh;
-  Duration minTimeBetweenRefresh = Duration(seconds: 5);
+  Duration minTimeBetweenRefresh = const Duration(seconds: 5);
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   UCTRepo(this.searchContext, this.apiClient, this.trackedSectionDatabase,
-      this.recentSelectionDatabase, this.notificationRepo) {}
+      this.recentSelectionDatabase, this.notificationRepo);
 
   Future<bool> unsubscribe(String topicName) async {
     var token = await _firebaseMessaging.getToken();
@@ -25,8 +25,7 @@ class UCTRepo {
       return Future.value(false);
     }
 
-    var _ = await trackedSectionDatabase
-        .deleteTrackedSection(topicName);
+    var _ = await trackedSectionDatabase.deleteTrackedSection(topicName);
 
     _firebaseMessaging.unsubscribeFromTopic(topicName);
 
@@ -70,7 +69,8 @@ class UCTRepo {
     List<Future<TrackedSection>> allCalls =
         allTrackedSections.map((trackedSection) {
       return Future(() async {
-        var section = await apiClient.section(trackedSection.section!.topicName);
+        var section =
+            await apiClient.section(trackedSection.section!.topicName);
 
         if (section != trackedSection.section) {
           var newTrackedSection = trackedSection;

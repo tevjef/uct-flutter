@@ -65,8 +65,10 @@ class DefaultFirebaseOptions {
     projectId: 'universitycoursetracker',
     databaseURL: 'https://universitycoursetracker.firebaseio.com',
     storageBucket: 'universitycoursetracker.appspot.com',
-    androidClientId: '469097761050-7ojket0dlshlt5u20jqqctl6sfjv76cv.apps.googleusercontent.com',
-    iosClientId: '469097761050-qes89pl57cuje47spp0use25bcv2hf4t.apps.googleusercontent.com',
+    androidClientId:
+        '469097761050-7ojket0dlshlt5u20jqqctl6sfjv76cv.apps.googleusercontent.com',
+    iosClientId:
+        '469097761050-qes89pl57cuje47spp0use25bcv2hf4t.apps.googleusercontent.com',
     iosBundleId: 'com.tevinjeffrey.uctios',
   );
 }

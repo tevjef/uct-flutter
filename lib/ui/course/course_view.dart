@@ -1,83 +1,71 @@
-import 'dart:ui';
-
 import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
-import 'course_presenter.dart';
+import 'bloc/course_bloc.dart';
 
 class CoursePage extends StatelessWidget {
-  final SearchContext searchContext = Injector().get();
+  final SearchContext searchContext = getIt<SearchContext>();
 
-  CoursePage({Key? key}) : super(key: key);
+  CoursePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final title = AppLocalizations.of(context)!.headerMessage(searchContext.course!.name, searchContext.course!.number);
+    final title = AppLocalizations.of(context)!.headerMessage(
+        searchContext.course!.name, searchContext.course!.number);
 
     var allSections = 0;
     var closedSections = 0;
-    searchContext.course!.sections.forEach((Section section) {
+    for (var section in searchContext.course!.sections) {
       if (section.status == AppLocalizations.of(context)!.closedStatus) {
         closedSections++;
       }
       allSections++;
-    });
+    }
 
-    return WillPopScope(
-      onWillPop: () {
-        return Future<bool>.value(true);
-      },
-      child: new DefaultTabController(
-        length: 2,
-        child: new Scaffold(
-          appBar: AppBar(
-            leading: new IconButton(
-                icon: new Icon(
-                  Icons.arrow_back,
-                  color: Theme.of(context).colorScheme.onBackground,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                }),
-            actions: <Widget>[
-              // TODO implemnet add all courses.
-              // new IconButton(
-              //     icon: new Icon(
-              //       Icons.playlist_add,
-              //       color: Colors.black,
-              //     ),
-              //     onPressed: () {
-              //       Navigator.of(context).pop();
-              //     }),
-            ],
-            title: new Container(
-              child: Text(title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onBackground)),
-            ),
-            bottom: new TabBar(
-              labelStyle: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+          title: Container(
+            child: Text(title,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     fontWeight: FontWeight.bold,
-                  ),
-              unselectedLabelStyle: Theme.of(context)
-                  .textTheme
-                  .labelMedium!
-                  .copyWith(color: Theme.of(context).colorScheme.onBackground, fontWeight: FontWeight.bold),
-              tabs: [
-                new Tab(text: AppLocalizations.of(context)!.allSections(allSections.toString())),
-                new Tab(text: AppLocalizations.of(context)!.closedSections(closedSections.toString())),
-              ],
-            ),
+                    color: Theme.of(context).colorScheme.onSurface)),
           ),
-          body: new TabBarView(
-            children: [
-              new _CourseList(all: true),
-              new _CourseList(all: false),
+          bottom: TabBar(
+            labelStyle: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
+            unselectedLabelStyle: Theme.of(context)
+                .textTheme
+                .labelMedium!
+                .copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.bold),
+            tabs: [
+              Tab(
+                  text: AppLocalizations.of(context)!
+                      .allSections(allSections.toString())),
+              Tab(
+                  text: AppLocalizations.of(context)!
+                      .closedSections(closedSections.toString())),
             ],
           ),
+        ),
+        body: const TabBarView(
+          children: [
+            _CourseList(showAll: true),
+            _CourseList(showAll: false),
+          ],
         ),
       ),
     );
@@ -85,37 +73,77 @@ class CoursePage extends StatelessWidget {
 }
 
 class _CourseList extends StatefulWidget {
-  final bool all;
+  final bool showAll;
 
-  _CourseList({Key? key, required this.all}) : super(key: key);
+  const _CourseList({required this.showAll});
 
   @override
-  _CourseListState createState() => new _CourseListState(all);
+  _CourseListState createState() => _CourseListState();
 }
 
-class _CourseListState extends State<_CourseList> with LDEViewMixin<_CourseList> implements CourseView {
-  late CoursePresenter presenter;
-  bool all;
-
-  _CourseListState(this.all) {
-    presenter = new CoursePresenter(this);
-  }
-
+class _CourseListState extends State<_CourseList>
+    with LDEViewMixin<_CourseList>
+    implements BaseView, ListOps {
   @override
-  void initState() {
-    super.initState();
-    presenter.setMode(all);
-    presenter.loadCourse();
-  }
+  BasePresenter get presenter => throw UnimplementedError('Using BLoC instead');
 
   @override
   Widget build(BuildContext context) {
-    return AdSafeArea(child: makeRefreshingList(context));
+    return BlocProvider(
+      create: (_) => CourseBloc(
+        searchContext: getIt<SearchContext>(),
+        apiClient: getIt<UCTApiClient>(),
+        analyticsLogger: getIt<AnalyticsLogger>(),
+      )..add(CourseLoadRequested(showAll: widget.showAll)),
+      child: BlocConsumer<CourseBloc, CourseState>(
+        listener: (context, state) {
+          final bloc = context.read<CourseBloc>();
+          final nav = bloc.consumeNavigation();
+          if (nav != null) {
+            if (nav is CourseNavigateToSection) {
+              Navigator.of(context)
+                  .pushNamed(UCTRoutes.section)
+                  .then((changed) {
+                if (mounted) {
+                  bloc.add(CourseLoadRequested(showAll: widget.showAll));
+                }
+              });
+            }
+          }
+        },
+        builder: (context, state) {
+          return AdSafeArea(child: _buildBody(context, state));
+        },
+      ),
+    );
   }
 
-  @override
-  void onRefreshData() {
-    presenter.loadCourse();
+  Widget _buildBody(BuildContext context, CourseState state) {
+    if (state is CourseLoading || state is CourseInitial) {
+      return Widgets.makeLoading(context);
+    }
+
+    if (state is CourseError) {
+      return Center(child: Text(state.message));
+    }
+
+    if (state is CourseLoaded) {
+      if (state.items.isEmpty) {
+        return makeEmptyStateWidget(context);
+      }
+      adapter.swapData(state.items);
+      return RefreshIndicator(
+        key: refreshIndicatorKey,
+        onRefresh: () async {
+          context
+              .read<CourseBloc>()
+              .add(CourseLoadRequested(showAll: widget.showAll));
+        },
+        child: makeAnimatedListView(context),
+      );
+    }
+
+    return Container();
   }
 
   @override
@@ -124,9 +152,9 @@ class _CourseListState extends State<_CourseList> with LDEViewMixin<_CourseList>
   }
 
   @override
-  void navigateToSection() {
-    Navigator.of(context).pushNamed(UCTRoutes.section).then((changed) {
-      showLoading(true);
-    });
+  void onRefreshData() {
+    context
+        .read<CourseBloc>()
+        .add(CourseLoadRequested(showAll: widget.showAll));
   }
 }

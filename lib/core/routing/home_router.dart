@@ -1,8 +1,8 @@
 class UCTRoutes {
-  static final home = "/home";
-  static final subjects = "/home/subjects";
-  static final options = "/home/options";
-  static final courses = "/home/subjects/courses";
-  static final course = "/home/subjects/courses/course";
-  static final section = "/home/subjects/courses/course/section";
+  static const home = "/home";
+  static const subjects = "/home/subjects";
+  static const options = "/home/options";
+  static const courses = "/home/subjects/courses";
+  static const course = "/home/subjects/courses/course";
+  static const section = "/home/subjects/courses/course/section";
 }

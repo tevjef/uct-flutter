@@ -1,43 +1,39 @@
-import 'package:flutter_simple_dependency_injection/injector.dart';
+import 'package:get_it/get_it.dart';
 
 import '../data/lib.dart';
 
+final getIt = GetIt.instance;
+
 class Locator {
   static void init() {
-    final injector = Injector();
+    getIt.registerLazySingleton<String>(
+        () => "https://universitycoursetracker.firebaseapp.com/v2",
+        instanceName: "apiUrl");
 
-    injector.map<String>((i) => "https://universitycoursetracker.firebaseapp.com/v2",
-        key: "apiUrl");
-    injector.map<UCTApiClient>(
-        (i) => new UCTApiClient(i.get<String>(key: "apiUrl")),
-        isSingleton: true);
+    getIt.registerLazySingleton<UCTApiClient>(
+        () => UCTApiClient(getIt<String>(instanceName: "apiUrl")));
 
-    injector.map<RecentSelectionDao>((i) => new RecentSelectionDao(),
-        isSingleton: true);
+    getIt.registerLazySingleton<RecentSelectionDao>(() => RecentSelectionDao());
 
-    injector.map<TrackedSectionDao>((i) => new TrackedSectionDao(),
-        isSingleton: true);
+    getIt.registerLazySingleton<TrackedSectionDao>(() => TrackedSectionDao());
 
-    injector.map<PreferenceDao>((i) => new PreferenceDao(), isSingleton: true);
+    getIt.registerLazySingleton<PreferenceDao>(() => PreferenceDao());
 
-    injector.map<SearchContext>((i) => new SearchContext(), isSingleton: true);
+    getIt.registerLazySingleton<SearchContext>(() => SearchContext());
 
-    injector.map<AnalyticsLogger>((i) => new AnalyticsLogger(),
-        isSingleton: true);
+    getIt.registerLazySingleton<AnalyticsLogger>(() => AnalyticsLogger());
 
-    injector.map<NotificationRepo>((i) => new NotificationRepo(i.get()),
-        isSingleton: true);
+    getIt.registerLazySingleton<NotificationRepo>(
+        () => NotificationRepo(getIt<AnalyticsLogger>()));
 
-    injector.map<AdInitializer>((i) => new AdInitializer(), isSingleton: true);
+    getIt.registerLazySingleton<AdInitializer>(() => AdInitializer());
 
-    injector.map<UCTRepo>(
-        (i) => new UCTRepo(
-              i.get(),
-              i.get(),
-              i.get(),
-              i.get(),
-              i.get(),
-            ),
-        isSingleton: true);
+    getIt.registerLazySingleton<UCTRepo>(() => UCTRepo(
+          getIt<SearchContext>(),
+          getIt<UCTApiClient>(),
+          getIt<TrackedSectionDao>(),
+          getIt<RecentSelectionDao>(),
+          getIt<NotificationRepo>(),
+        ));
   }
 }

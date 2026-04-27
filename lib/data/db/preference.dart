@@ -7,12 +7,12 @@ import 'package:sqflite/sqflite.dart';
 
 import '../proto/model.pb.dart';
 
-final String _tableDefaultUniversity = "default_university";
-final String _tableDefaultSemester = "default_semester";
+const String _tableDefaultUniversity = "default_university";
+const String _tableDefaultSemester = "default_semester";
 
-final String _columnId = "_id";
-final String _columnUniversity = "default_university";
-final String _columnSemester = "default_semester";
+const String _columnId = "_id";
+const String _columnUniversity = "default_university";
+const String _columnSemester = "default_semester";
 
 class DefaultUniversity {
   String id = "default_university_key";
@@ -59,7 +59,7 @@ class DefaultSemester {
 class PreferenceDao {
   Database? db;
 
-  PreferenceDao() {}
+  PreferenceDao();
 
   Future<Database> open() async {
     if (db != null) {
@@ -69,7 +69,7 @@ class PreferenceDao {
     Directory path = await getApplicationDocumentsDirectory();
     String dbPath = join(path.path, "preference.db");
 
-    db = await openDatabase(dbPath, version: 1, onCreate: this._create);
+    db = await openDatabase(dbPath, version: 1, onCreate: _create);
 
     return db!;
   }
@@ -93,7 +93,8 @@ CREATE TABLE $_tableDefaultSemester (
 
     DefaultUniversity defaultUniversity = DefaultUniversity();
     defaultUniversity.university = university;
-    await db.insert(_tableDefaultUniversity, defaultUniversity.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert(_tableDefaultUniversity, defaultUniversity.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     return defaultUniversity;
   }
 
@@ -102,7 +103,8 @@ CREATE TABLE $_tableDefaultSemester (
 
     DefaultSemester defaultSemester = DefaultSemester();
     defaultSemester.semester = semester;
-    await db.insert(_tableDefaultSemester, defaultSemester.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert(_tableDefaultSemester, defaultSemester.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     return defaultSemester;
   }
 
@@ -117,8 +119,10 @@ CREATE TABLE $_tableDefaultSemester (
           _columnUniversity,
         ],
         limit: 1);
-    if (maps.length > 0) {
-      maps.forEach((Map<String, dynamic> m) => universities.add(DefaultUniversity.fromMap(m)));
+    if (maps.isNotEmpty) {
+      for (var m in maps) {
+        universities.add(DefaultUniversity.fromMap(m));
+      }
     }
 
     if (universities.isEmpty) {
@@ -139,8 +143,10 @@ CREATE TABLE $_tableDefaultSemester (
           _columnSemester,
         ],
         limit: 1);
-    if (maps.length > 0) {
-      maps.forEach((Map<String, dynamic> m) => semesters.add(DefaultSemester.fromMap(m)));
+    if (maps.isNotEmpty) {
+      for (var m in maps) {
+        semesters.add(DefaultSemester.fromMap(m));
+      }
     }
 
     if (semesters.isEmpty) {

@@ -8,15 +8,15 @@ import 'package:sqflite/sqflite.dart';
 import '../../data/proto/model.pb.dart';
 import '../search_context.dart';
 
-final String _tableTrackedSections = "tracked_sections";
+const String _tableTrackedSections = "tracked_sections";
 
-final String _columnId = "_id";
-final String _columnUniversityJson = "university_json";
-final String _columnSemesterJson = "semester_json";
-final String _columnSubjectJson = "subject_json";
-final String _columnCourseJson = "course_json";
-final String _columnSectionJson = "section_json";
-final String _columnTopicName = "topic_name";
+const String _columnId = "_id";
+const String _columnUniversityJson = "university_json";
+const String _columnSemesterJson = "semester_json";
+const String _columnSubjectJson = "subject_json";
+const String _columnCourseJson = "course_json";
+const String _columnSectionJson = "section_json";
+const String _columnTopicName = "topic_name";
 
 class TrackedSection {
   int? id;
@@ -60,11 +60,11 @@ class TrackedSection {
   SearchContext toSearchContext() {
     var searchContext = SearchContext();
 
-    searchContext.university = this.university;
-    searchContext.semester = this.semester;
-    searchContext.subject = this.subject;
-    searchContext.course = this.course;
-    searchContext.section = this.section;
+    searchContext.university = university;
+    searchContext.semester = semester;
+    searchContext.subject = subject;
+    searchContext.course = course;
+    searchContext.section = section;
 
     return searchContext;
   }
@@ -95,7 +95,7 @@ class TrackedSectionDao {
     Directory path = await getApplicationDocumentsDirectory();
     String dbPath = join(path.path, "tracked.db");
 
-    db = await openDatabase(dbPath, version: 1, onCreate: this._create);
+    db = await openDatabase(dbPath, version: 1, onCreate: _create);
 
     return db!;
   }
@@ -171,7 +171,7 @@ CREATE TABLE $_tableTrackedSections (
         ],
         orderBy: "rowid");
 
-    if (maps.length > 0) {
+    if (maps.isNotEmpty) {
       return maps
           .map((Map<String, dynamic> m) => TrackedSection.fromMap(m))
           .toList();

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../../core/lib.dart';
 import '../../data/lib.dart';
 
-class AdSafeArea extends StatelessWidget {
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+class AdSafeArea extends StatefulWidget {
   const AdSafeArea({
-    Key? key,
+    super.key,
     this.left = false,
     this.top = false,
     this.right = false,
@@ -22,26 +24,103 @@ class AdSafeArea extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    final injector = Injector();
-    AdInitializer adInitializer = injector.get();
+  State<AdSafeArea> createState() => _AdSafeAreaState();
+}
 
-    if (adInitializer.isAdsEnabled()) {
-      return SafeArea(
-          left: left,
-          top: top,
-          right: right,
-          bottom: bottom,
-          child: Stack(
-            alignment: AlignmentDirectional.bottomCenter,
-            children: <Widget>[
-              child,
-              adInitializer.getAdWidget(context),
-            ],
+class _AdSafeAreaState extends State<AdSafeArea> {
+  BannerAd? _bannerAd;
+  bool _isLoaded = false;
+  late AdInitializer _adInitializer;
+  Orientation? _currentOrientation;
+
+  @override
+  void initState() {
+    super.initState();
+    _adInitializer = getIt<AdInitializer>();
+  }
+
+  Future<void> _loadAd() async {
+    await _bannerAd?.dispose();
+    _bannerAd = null;
+    if (mounted) {
+      setState(() {
+        _isLoaded = false;
+      });
+    }
+
+    if (!mounted) return;
+    final size = await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
+        MediaQuery.of(context).size.width.truncate());
+
+    if (size == null) return;
+
+    _bannerAd = BannerAd(
+      adUnitId: _adInitializer.unitId,
+      size: size,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (Ad ad) {
+          if (mounted) {
+            setState(() {
+              _isLoaded = true;
+            });
+          }
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          debugPrint('Anchored adaptive banner failedToLoad: $error');
+          ad.dispose();
+        },
+      ),
+    );
+    _bannerAd!.load();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_adInitializer.isAdsEnabled()) {
+      return Stack(
+        alignment: AlignmentDirectional.bottomCenter,
+        children: <Widget>[
+          SafeArea(
+            left: widget.left,
+            top: widget.top,
+            right: widget.right,
+            bottom: widget.bottom,
+            minimum: widget.minimum,
+            child: widget.child,
           ),
-          minimum: minimum);
+          OrientationBuilder(
+            builder: (context, orientation) {
+              if (_currentOrientation != orientation) {
+                _currentOrientation = orientation;
+                // Run load after build phase
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _loadAd();
+                });
+              }
+
+              if (_isLoaded && _bannerAd != null) {
+                return SafeArea(
+                  child: SizedBox(
+                    width: _bannerAd!.size.width.toDouble(),
+                    height: _bannerAd!.size.height.toDouble(),
+                    child: AdWidget(ad: _bannerAd!),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          )
+        ],
+      );
     } else {
-      return child;
+      return widget.child;
     }
   }
 }

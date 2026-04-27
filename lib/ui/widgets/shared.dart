@@ -43,9 +43,11 @@ abstract class ListOps {
   void swapItems(List<Item> items);
 }
 
-mixin LDEViewMixin<T extends StatefulWidget> on State<T> implements BaseView, ListOps {
+mixin LDEViewMixin<T extends StatefulWidget> on State<T>
+    implements BaseView, ListOps {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
 
   final ScrollController _scrollController = ScrollController();
@@ -64,14 +66,13 @@ mixin LDEViewMixin<T extends StatefulWidget> on State<T> implements BaseView, Li
   @override
   void initState() {
     super.initState();
-    presenter.onInitState();
   }
 
   @override
   void showLoading(bool isLoading) {
     setState(() {
-      this.isFullLoading = isLoading && (!isList || adapter.getItemCount() == 0);
-      this.isRefreshing = isLoading;
+      isFullLoading = isLoading && (!isList || adapter.getItemCount() == 0);
+      isRefreshing = isLoading;
 
       if (isRefreshing) {
         refreshIndicatorKey.currentState?.show();
@@ -114,6 +115,7 @@ mixin LDEViewMixin<T extends StatefulWidget> on State<T> implements BaseView, Li
     return completer.future;
   }
 
+  @override
   void updateItem(Item item) {
     setState(() {
       adapter.updateItem(item);
@@ -127,6 +129,7 @@ mixin LDEViewMixin<T extends StatefulWidget> on State<T> implements BaseView, Li
     });
   }
 
+  @override
   Item removeItem(Item item) {
     Item oldItem = adapter.removeItem(item);
 
@@ -141,7 +144,7 @@ mixin LDEViewMixin<T extends StatefulWidget> on State<T> implements BaseView, Li
     var list = AnimatedList(
         key: listKey,
         initialItemCount: adapter.getItemCount(),
-        padding: EdgeInsets.symmetric(vertical: Dimens.spacingMedium),
+        padding: const EdgeInsets.symmetric(vertical: Dimens.spacingMedium),
         itemBuilder: adapter.onCreateWidgetWithAnimation);
 
     return Scrollbar(child: list);
@@ -170,12 +173,12 @@ mixin LDEViewMixin<T extends StatefulWidget> on State<T> implements BaseView, Li
 
   Widget makeListView() {
     return DraggableScrollbar.semicircle(
+        controller: _scrollController,
         child: ListView.builder(
             controller: _scrollController,
-            padding: EdgeInsets.only(top: Dimens.spacingMedium),
+            padding: const EdgeInsets.only(top: Dimens.spacingMedium),
             itemCount: adapter.getItemCount(),
-            itemBuilder: adapter.onCreateWidget),
-        controller: _scrollController);
+            itemBuilder: adapter.onCreateWidget));
   }
 
   Widget makeLDEWidget(BuildContext context, Widget widget) {
@@ -200,16 +203,20 @@ mixin LDEViewMixin<T extends StatefulWidget> on State<T> implements BaseView, Li
   }
 
   Widget makeRefreshingWidget(BuildContext context, Widget widget) {
-    this.isList = false;
-    return RefreshIndicator(key: refreshIndicatorKey, onRefresh: handleRefresh, child: makeLDEWidget(context, widget));
+    isList = false;
+    return RefreshIndicator(
+        key: refreshIndicatorKey,
+        onRefresh: handleRefresh,
+        child: makeLDEWidget(context, widget));
   }
 
+  @override
   BuildContext getContext() {
     return context;
   }
 
   Widget makeEmptyStateWidget(BuildContext context) {
-    return Text("");
+    return const Text("");
   }
 
   void onRefreshData();
@@ -222,10 +229,11 @@ mixin LDEViewMixin<T extends StatefulWidget> on State<T> implements BaseView, Li
 enum SnackBarType { error, neutral, success }
 
 class Widgets {
-  static SnackBar makeErrorSnackBar(BuildContext context, Exception error, VoidCallback action) {
+  static SnackBar makeErrorSnackBar(
+      BuildContext context, Exception error, VoidCallback action) {
     if (error is Retryable) {
-      return makeSnackBar(
-          context, error.toString(), SnackBarType.error, SnackBarAction(label: "Retry", onPressed: action));
+      return makeSnackBar(context, error.toString(), SnackBarType.error,
+          SnackBarAction(label: "Retry", onPressed: action));
     } else {
       return makeSnackBar(context, error.toString(), SnackBarType.error);
     }
@@ -240,16 +248,25 @@ class Widgets {
 
     switch (type) {
       case SnackBarType.error:
-        style = Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.white, fontWeight: FontWeight.bold);
+        style = Theme.of(context)
+            .textTheme
+            .titleSmall!
+            .copyWith(color: Colors.white, fontWeight: FontWeight.bold);
         color = Colors.red;
-        duration = Duration(seconds: 30);
+        duration = const Duration(seconds: 30);
         break;
       case SnackBarType.neutral:
-        style = Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.white, fontWeight: FontWeight.bold);
+        style = Theme.of(context)
+            .textTheme
+            .titleSmall!
+            .copyWith(color: Colors.white, fontWeight: FontWeight.bold);
         color = AppColors.white.shade900;
         break;
       case SnackBarType.success:
-        style = Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.white, fontWeight: FontWeight.bold);
+        style = Theme.of(context)
+            .textTheme
+            .titleSmall!
+            .copyWith(color: Colors.white, fontWeight: FontWeight.bold);
         color = Colors.green;
         break;
     }
@@ -262,40 +279,48 @@ class Widgets {
   }
 
   static Widget makeLoading(BuildContext context) {
-    return Center(
+    return const Center(
       child: Padding(
-        padding: const EdgeInsets.only(left: Dimens.spacingStandard, right: Dimens.spacingStandard),
+        padding: EdgeInsets.only(
+            left: Dimens.spacingStandard, right: Dimens.spacingStandard),
         child: CircularProgressIndicator(),
       ),
     );
   }
 
-  static Widget makeIconWithBadge(BuildContext context, String badgeText, GestureTapCallback onTap) {
+  static Widget makeIconWithBadge(
+      BuildContext context, String badgeText, GestureTapCallback onTap) {
     return Container(
       width: Dimens.spacingXxlarge,
       height: Dimens.spacingXxlarge,
-      margin: EdgeInsets.only(right: Dimens.spacingStandard),
-      child: new Stack(
+      margin: const EdgeInsets.only(right: Dimens.spacingStandard),
+      child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          Icon(Icons.inbox, color: Theme.of(context).colorScheme.onBackground),
-          new Positioned(
+          Icon(Icons.inbox, color: Theme.of(context).colorScheme.onSurface),
+          Positioned(
             top: -2.0,
             right: -2.0,
             child: Container(
-              padding: EdgeInsets.all(2.0),
-              decoration: new BoxDecoration(
-                borderRadius: new BorderRadius.circular(99.0),
-                color: Theme.of(context).colorScheme.background,
+              padding: const EdgeInsets.all(2.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(99.0),
+                color: Theme.of(context).colorScheme.surface,
               ),
-              child: new Container(
-                padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
-                decoration: new BoxDecoration(borderRadius: new BorderRadius.circular(99.0), color: Colors.red),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(99.0),
+                    color: Colors.red),
                 child: Center(
-                  child: new Text(
+                  child: Text(
                     badgeText,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.white),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium!
+                        .copyWith(color: Colors.white),
                   ),
                 ),
               ),

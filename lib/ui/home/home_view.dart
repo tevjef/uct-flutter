@@ -1,71 +1,155 @@
 import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
-import 'home_presenter.dart';
+import 'bloc/home_bloc.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
-  HomeListState createState() => new HomeListState();
+  HomeListState createState() => HomeListState();
 }
 
-class HomeListState extends State<HomePage> with LDEViewMixin implements HomeView {
-  late HomePresenter presenter;
+class HomeListState extends State<HomePage>
+    with LDEViewMixin
+    implements BaseView, ListOps {
   late AdInitializer adInitializer;
 
   HomeListState() {
-    final injector = Injector();
-    adInitializer = injector.get();
-
-    presenter = new HomePresenter(this);
+    adInitializer = getIt<AdInitializer>();
   }
 
   @override
+  BasePresenter get presenter => throw UnimplementedError('Using BLoC instead');
+
+  @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        return Future<bool>.value(true);
-      },
-      child: Scaffold(
-        key: scaffoldKey,
-        appBar: new AppBar(
-          title: Text(AppLocalizations.of(context)!.homeTitle,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onBackground)),
-        ),
-        body: makeRefreshingList(context),
-        floatingActionButton: FloatingActionButton(
-            child: new Icon(
-              Icons.add,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return BlocProvider(
+      create: (_) => HomeBloc(
+        uctRepo: getIt<UCTRepo>(),
+        trackedSectionDatabase: getIt<TrackedSectionDao>(),
+        analyticsLogger: getIt<AnalyticsLogger>(),
+        adInitializer: getIt<AdInitializer>(),
+      )..add(const HomeLoadTrackedSections()),
+      child: BlocConsumer<HomeBloc, HomeState>(
+        listener: (context, state) {
+          final bloc = context.read<HomeBloc>();
+          final nav = bloc.consumeNavigation();
+          if (nav != null) {
+            _handleNavigation(bloc, nav);
+          }
+        },
+        builder: (context, state) {
+          // Update the LDEViewMixin state based on BLoC state
+          _syncBlocState(state);
+
+          return Scaffold(
+            key: scaffoldKey,
+            appBar: AppBar(
+              title: Text(AppLocalizations.of(context)!.homeTitle,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface)),
             ),
-            backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-            onPressed: () {
-              presenter.onFabClicked();
-            }),
+            body: _buildBody(context, state),
+            floatingActionButton: FloatingActionButton(
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
+                onPressed: () {
+                  context.read<HomeBloc>().add(const HomeFabClicked());
+                },
+                child: Icon(
+                  Icons.add,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                )),
+          );
+        },
       ),
     );
   }
 
-  @override
-  void onRefreshData() {
-    adInitializer.showBanner(context, false);
-    presenter.loadTrackedSections();
+  Widget _buildBody(BuildContext context, HomeState state) {
+    if (state is HomeLoading || state is HomeInitial) {
+      return Widgets.makeLoading(context);
+    }
+
+    if (state is HomeError) {
+      return Center(
+        child: Text(state.message),
+      );
+    }
+
+    if (state is HomeLoaded) {
+      if (state.items.isEmpty) {
+        return RefreshIndicator(
+          key: refreshIndicatorKey,
+          onRefresh: () async {
+            context.read<HomeBloc>().add(const HomeLoadTrackedSections());
+          },
+          child: ListView(
+            children: [makeEmptyStateWidget(context)],
+          ),
+        );
+      }
+
+      // Sync adapter data
+      adapter.swapData(state.items);
+
+      return RefreshIndicator(
+        key: refreshIndicatorKey,
+        onRefresh: () async {
+          context.read<HomeBloc>().add(const HomeLoadTrackedSections());
+        },
+        child: makeAnimatedListView(context),
+      );
+    }
+
+    return Container();
   }
 
+  void _syncBlocState(HomeState state) {
+    if (state is HomeLoaded) {
+      adapter.swapData(state.items);
+    }
+  }
+
+  void _handleNavigation(HomeBloc bloc, HomeNavigation nav) {
+    if (nav is HomeNavigateToSubjects) {
+      Navigator.of(context).pushNamed(UCTRoutes.subjects).then((changed) {
+        if (mounted) {
+          bloc.add(const HomeLoadTrackedSections());
+        }
+      });
+    } else if (nav is HomeNavigateToSection) {
+      Navigator.of(context)
+          .pushNamed(UCTRoutes.section, arguments: true)
+          .then((changed) {
+        if (mounted) {
+          bloc.add(const HomeLoadTrackedSections());
+        }
+      });
+    } else if (nav is HomeSectionRemoved) {
+      showMessage(nav.message);
+    }
+  }
+
+  @override
+  void onRefreshData() {
+    context.read<HomeBloc>().add(const HomeLoadTrackedSections());
+  }
+
+  @override
   Widget makeEmptyStateWidget(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          padding: EdgeInsets.symmetric(horizontal: Dimens.spacingXxxlarge),
+          padding:
+              const EdgeInsets.symmetric(horizontal: Dimens.spacingXxxlarge),
           child: Image.asset("res/images/board.webp"),
         ),
         Container(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
               left: Dimens.spacingXlarge,
               right: Dimens.spacingXlarge,
               top: Dimens.spacingXlarge,
@@ -78,19 +162,5 @@ class HomeListState extends State<HomePage> with LDEViewMixin implements HomeVie
         ),
       ],
     );
-  }
-
-  @override
-  void navigateToSubjects() {
-    Navigator.of(context).pushNamed(UCTRoutes.subjects).then((changed) {
-      refreshData();
-    });
-  }
-
-  @override
-  void navigateToSection() {
-    Navigator.of(context).pushNamed(UCTRoutes.section, arguments: true).then((changed) {
-      refreshData();
-    });
   }
 }

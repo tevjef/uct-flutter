@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -21,13 +19,13 @@ class NotificationRepo {
 
   final String groupKey = "io.coursetrakr.section";
 
-
   NotificationRepo(this.analyticsLogger) {
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 
   void onMessage(Map<String, dynamic> message) {
-    analyticsLogger.logEvent(AKeys.EVENT_FOREGROUND_NOTIFICATION, parameters: message);
+    analyticsLogger.logEvent(AKeys.EVENT_FOREGROUND_NOTIFICATION,
+        parameters: message);
 
     var title = message['notification']['title'];
     var body = message['notification']['body'];
@@ -41,9 +39,11 @@ class NotificationRepo {
 
   Future onSelectNotification(NotificationResponse response) async {
     var parameters = {AKeys.IS_FOREGROUND: true};
-    analyticsLogger.logEvent(AKeys.EVENT_FOREGROUND_NOTIFICATION, parameters: parameters);
+    analyticsLogger.logEvent(AKeys.EVENT_FOREGROUND_NOTIFICATION,
+        parameters: parameters);
 
-    Navigator.of(_buildContext!).pushNamedAndRemoveUntil(UCTRoutes.home, (Route<dynamic> route) => false);
+    Navigator.of(_buildContext!).pushNamedAndRemoveUntil(
+        UCTRoutes.home, (Route<dynamic> route) => false);
   }
 
   void register(GlobalKey<ScaffoldState> key) {
@@ -55,64 +55,76 @@ class NotificationRepo {
   }
 
   AndroidNotificationDetails createClosedChannelDetail() {
-    return new AndroidNotificationDetails('channel_section_closed', AppLocalizations.of(_buildContext!)!.closedChannelTitle,
-        channelDescription: AppLocalizations.of(_buildContext!)!.closedChannelTitleDesc,
+    return AndroidNotificationDetails('channel_section_closed',
+        AppLocalizations.of(_buildContext!)!.closedChannelTitle,
+        channelDescription:
+            AppLocalizations.of(_buildContext!)!.closedChannelTitleDesc,
         groupKey: groupKey,
         enableVibration: true,
-        color: Color(0xF44336),
+        color: const Color(0x00f44336),
         importance: Importance.defaultImportance,
         priority: Priority.high);
   }
 
   AndroidNotificationChannel createClosedChannel() {
-    return new AndroidNotificationChannel('channel_section_closed', AppLocalizations.of(_buildContext!)!.closedChannelTitle,
-        description: AppLocalizations.of(_buildContext!)!.closedChannelTitleDesc,
+    return AndroidNotificationChannel('channel_section_closed',
+        AppLocalizations.of(_buildContext!)!.closedChannelTitle,
+        description:
+            AppLocalizations.of(_buildContext!)!.closedChannelTitleDesc,
         groupId: groupKey,
         enableVibration: true,
-        ledColor: Color(0xF44336),
+        ledColor: const Color(0x00f44336),
         importance: Importance.defaultImportance);
   }
 
   AndroidNotificationDetails createOpenChannelDetail() {
-    return new AndroidNotificationDetails('channel_section_open', AppLocalizations.of(_buildContext!)!.openChannelTitle,
-        channelDescription: AppLocalizations.of(_buildContext!)!.openChannelTitleDesc,
+    return AndroidNotificationDetails('channel_section_open',
+        AppLocalizations.of(_buildContext!)!.openChannelTitle,
+        channelDescription:
+            AppLocalizations.of(_buildContext!)!.openChannelTitleDesc,
         groupKey: groupKey,
         enableVibration: true,
-        color: Color(0x4CAF50),
+        color: const Color(0x004caf50),
         importance: Importance.defaultImportance,
         priority: Priority.high);
   }
 
   AndroidNotificationChannel createOpenChannel() {
-    return new AndroidNotificationChannel('channel_section_open', AppLocalizations.of(_buildContext!)!.openChannelTitle,
+    return AndroidNotificationChannel('channel_section_open',
+        AppLocalizations.of(_buildContext!)!.openChannelTitle,
         description: AppLocalizations.of(_buildContext!)!.openChannelTitleDesc,
         groupId: groupKey,
         enableVibration: true,
-        ledColor: Color(0x4CAF50),
+        ledColor: const Color(0x004caf50),
         importance: Importance.defaultImportance);
   }
 
   AndroidNotificationDetails createGenericChannelDetail() {
-    return new AndroidNotificationDetails('channel_generic', AppLocalizations.of(_buildContext!)!.genericChannelTitle,
-        channelDescription: AppLocalizations.of(_buildContext!)!.genericChannelTitleDesc,
+    return AndroidNotificationDetails('channel_generic',
+        AppLocalizations.of(_buildContext!)!.genericChannelTitle,
+        channelDescription:
+            AppLocalizations.of(_buildContext!)!.genericChannelTitleDesc,
         groupKey: groupKey,
         enableVibration: false,
-        color: Color(0x607D8B),
+        color: const Color(0x00607d8b),
         importance: Importance.defaultImportance,
         priority: Priority.high);
   }
 
   AndroidNotificationChannel createGenericChannel() {
-    return new AndroidNotificationChannel('channel_generic', AppLocalizations.of(_buildContext!)!.genericChannelTitle,
-        description: AppLocalizations.of(_buildContext!)!.genericChannelTitleDesc,
+    return AndroidNotificationChannel('channel_generic',
+        AppLocalizations.of(_buildContext!)!.genericChannelTitle,
+        description:
+            AppLocalizations.of(_buildContext!)!.genericChannelTitleDesc,
         groupId: groupKey,
         enableVibration: false,
-        ledColor: Color(0x607D8B),
+        ledColor: const Color(0x00607d8b),
         importance: Importance.defaultImportance);
   }
 
-  Future createSectionNotification(bool? isOpen, String title, String body) async {
-    var androidPlatformChannelSpecifics;
+  Future createSectionNotification(
+      bool? isOpen, String title, String body) async {
+    AndroidNotificationDetails androidPlatformChannelSpecifics;
 
     if (isOpen == null) {
       androidPlatformChannelSpecifics = createGenericChannelDetail();
@@ -124,9 +136,11 @@ class NotificationRepo {
       androidPlatformChannelSpecifics = createClosedChannelDetail();
     }
 
-    var platformChannelSpecifics = new NotificationDetails(android: androidPlatformChannelSpecifics);
+    var platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
 
-    await flutterLocalNotificationsPlugin.show(body.hashCode, title, body, platformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        body.hashCode, title, body, platformChannelSpecifics);
   }
 
   /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -142,16 +156,19 @@ class NotificationRepo {
     }
 
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    var initializationSettingsAndroid = new AndroidInitializationSettings('ic_notification');
-    var isinitializationSettingsIOS = new DarwinInitializationSettings();
-    var initializationSettings =
-        new InitializationSettings(android: initializationSettingsAndroid, iOS: isinitializationSettingsIOS);
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    var initializationSettingsAndroid =
+        const AndroidInitializationSettings('ic_notification');
+    var isinitializationSettingsIOS = const DarwinInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: isinitializationSettingsIOS);
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse: onSelectNotification);
 
-    var androidPlugin = await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    var androidPlugin =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
 
     androidPlugin!.createNotificationChannel(createClosedChannel());
     androidPlugin.createNotificationChannel(createOpenChannel());
@@ -159,7 +176,8 @@ class NotificationRepo {
 
     /// Update the iOS foreground notification presentation options to allow
     /// heads up notifications.
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -183,6 +201,6 @@ class NotificationRepo {
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   Locator.init();
-  NotificationRepo repo = Injector().get();
+  NotificationRepo repo = getIt<NotificationRepo>();
   repo.onMessage(message.data);
 }

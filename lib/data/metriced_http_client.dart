@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:firebase_performance/firebase_performance.dart';
 
@@ -62,7 +62,7 @@ class MetricHttpClient extends BaseClient {
     String buildNumber = packageInfo.buildNumber;
 
     var userAgent =
-        '${appName}/${version} (${packageName}; build:${buildNumber}; ${Platform.operatingSystem} ${Platform.operatingSystemVersion})';
+        '$appName/$version ($packageName; build:$buildNumber; ${Platform.operatingSystem} ${Platform.operatingSystemVersion})';
 
     return userAgent;
   }
