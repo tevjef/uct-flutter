@@ -7,8 +7,10 @@ import '../ui/screens.dart';
 class RootPage extends StatefulWidget {
   static const String routeName = '/';
 
+  const RootPage({super.key});
+
   @override
-  State<StatefulWidget> createState() => new RootPageState();
+  State<StatefulWidget> createState() => RootPageState();
 }
 
 class RootPageState extends State<RootPage> {
@@ -17,23 +19,18 @@ class RootPageState extends State<RootPage> {
   int currentIndex = 0;
 
   List<Widget> pages = <Widget>[
-    new HomePage(),
-    new HomeController(),
-    new HomeController()
+    const HomePage(),
+    const HomeController(),
+    const HomeController()
   ];
 
   @override
   Widget build(BuildContext context) {
-    final injector = Injector();
-
-    NotificationRepo notificationRepo = injector.get();
+    NotificationRepo notificationRepo = getIt<NotificationRepo>();
     notificationRepo.register(scaffoldKey);
     notificationRepo.registerContext(context);
 
-
-    return new Scaffold(
-        key: scaffoldKey,
-        body: pages[currentIndex]);
+    return Scaffold(key: scaffoldKey, body: pages[currentIndex]);
   }
 
   void onTabTapped(int index) {

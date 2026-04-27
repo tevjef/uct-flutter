@@ -9,10 +9,11 @@ class SearchContext {
 
   String get sectionTopicName => section!.topicName;
 
-  String get searchTopicName => university!.topicName + semester!.season + semester!.year.toString();
+  String get searchTopicName =>
+      university!.topicName + semester!.season + semester!.year.toString();
 
   SearchContext updateWithAnother(SearchContext anotherSearchContent) {
-    return this.updateWith(
+    return updateWith(
       university: anotherSearchContent.university,
       semester: anotherSearchContent.semester,
       subject: anotherSearchContent.subject,
@@ -22,7 +23,11 @@ class SearchContext {
   }
 
   SearchContext updateWith(
-      {University? university, Semester? semester, Subject? subject, Course? course, Section? section}) {
+      {University? university,
+      Semester? semester,
+      Subject? subject,
+      Course? course,
+      Section? section}) {
     this.university = university ?? this.university;
     this.semester = semester ?? this.semester;
     this.subject = subject ?? this.subject;
@@ -32,7 +37,11 @@ class SearchContext {
   }
 
   SearchContext copyWith(
-      {University? university, Semester? semester, Subject? subject, Course? course, Section? section}) {
+      {University? university,
+      Semester? semester,
+      Subject? subject,
+      Course? course,
+      Section? section}) {
     var newSearchContext = SearchContext();
     newSearchContext.university = university ?? this.university;
     newSearchContext.semester = semester ?? this.semester;

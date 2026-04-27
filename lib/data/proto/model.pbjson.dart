@@ -21,16 +21,57 @@ const University$json = {
     {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
     {'1': 'abbr', '3': 3, '4': 1, '5': 9, '10': 'abbr'},
     {'1': 'home_page', '3': 4, '4': 1, '5': 9, '10': 'homePage'},
-    {'1': 'registration_page', '3': 5, '4': 1, '5': 9, '10': 'registrationPage'},
+    {
+      '1': 'registration_page',
+      '3': 5,
+      '4': 1,
+      '5': 9,
+      '10': 'registrationPage'
+    },
     {'1': 'main_color', '3': 6, '4': 1, '5': 9, '10': 'mainColor'},
     {'1': 'accent_color', '3': 7, '4': 1, '5': 9, '10': 'accentColor'},
     {'1': 'topic_name', '3': 8, '4': 1, '5': 9, '10': 'topicName'},
     {'1': 'topic_id', '3': 9, '4': 1, '5': 9, '10': 'topicId'},
-    {'1': 'resolved_semesters', '3': 10, '4': 1, '5': 11, '6': '.ResolvedSemester', '10': 'resolvedSemesters'},
-    {'1': 'subjects', '3': 11, '4': 3, '5': 11, '6': '.Subject', '10': 'subjects'},
-    {'1': 'available_semesters', '3': 12, '4': 3, '5': 11, '6': '.Semester', '10': 'availableSemesters'},
-    {'1': 'registrations', '3': 13, '4': 3, '5': 11, '6': '.Registration', '10': 'registrations'},
-    {'1': 'metadata', '3': 14, '4': 3, '5': 11, '6': '.Metadata', '10': 'metadata'},
+    {
+      '1': 'resolved_semesters',
+      '3': 10,
+      '4': 1,
+      '5': 11,
+      '6': '.ResolvedSemester',
+      '10': 'resolvedSemesters'
+    },
+    {
+      '1': 'subjects',
+      '3': 11,
+      '4': 3,
+      '5': 11,
+      '6': '.Subject',
+      '10': 'subjects'
+    },
+    {
+      '1': 'available_semesters',
+      '3': 12,
+      '4': 3,
+      '5': 11,
+      '6': '.Semester',
+      '10': 'availableSemesters'
+    },
+    {
+      '1': 'registrations',
+      '3': 13,
+      '4': 3,
+      '5': 11,
+      '6': '.Registration',
+      '10': 'registrations'
+    },
+    {
+      '1': 'metadata',
+      '3': 14,
+      '4': 3,
+      '5': 11,
+      '6': '.Metadata',
+      '10': 'metadata'
+    },
   ],
 };
 
@@ -60,7 +101,14 @@ const Subject$json = {
     {'1': 'topic_name', '3': 7, '4': 1, '5': 9, '10': 'topicName'},
     {'1': 'topic_id', '3': 8, '4': 1, '5': 9, '10': 'topicId'},
     {'1': 'courses', '3': 9, '4': 3, '5': 11, '6': '.Course', '10': 'courses'},
-    {'1': 'metadata', '3': 10, '4': 3, '5': 11, '6': '.Metadata', '10': 'metadata'},
+    {
+      '1': 'metadata',
+      '3': 10,
+      '4': 3,
+      '5': 11,
+      '6': '.Metadata',
+      '10': 'metadata'
+    },
   ],
 };
 
@@ -84,8 +132,22 @@ const Course$json = {
     {'1': 'synopsis', '3': 5, '4': 1, '5': 9, '10': 'synopsis'},
     {'1': 'topic_name', '3': 6, '4': 1, '5': 9, '10': 'topicName'},
     {'1': 'topic_id', '3': 7, '4': 1, '5': 9, '10': 'topicId'},
-    {'1': 'sections', '3': 8, '4': 3, '5': 11, '6': '.Section', '10': 'sections'},
-    {'1': 'metadata', '3': 9, '4': 3, '5': 11, '6': '.Metadata', '10': 'metadata'},
+    {
+      '1': 'sections',
+      '3': 8,
+      '4': 3,
+      '5': 11,
+      '6': '.Section',
+      '10': 'sections'
+    },
+    {
+      '1': 'metadata',
+      '3': 9,
+      '4': 3,
+      '5': 11,
+      '6': '.Metadata',
+      '10': 'metadata'
+    },
   ],
 };
 
@@ -111,10 +173,31 @@ const Section$json = {
     {'1': 'credits', '3': 8, '4': 1, '5': 9, '10': 'credits'},
     {'1': 'topic_name', '3': 9, '4': 1, '5': 9, '10': 'topicName'},
     {'1': 'topic_id', '3': 10, '4': 1, '5': 9, '10': 'topicId'},
-    {'1': 'meetings', '3': 11, '4': 3, '5': 11, '6': '.Meeting', '10': 'meetings'},
-    {'1': 'instructors', '3': 12, '4': 3, '5': 11, '6': '.Instructor', '10': 'instructors'},
+    {
+      '1': 'meetings',
+      '3': 11,
+      '4': 3,
+      '5': 11,
+      '6': '.Meeting',
+      '10': 'meetings'
+    },
+    {
+      '1': 'instructors',
+      '3': 12,
+      '4': 3,
+      '5': 11,
+      '6': '.Instructor',
+      '10': 'instructors'
+    },
     {'1': 'books', '3': 13, '4': 3, '5': 11, '6': '.Book', '10': 'books'},
-    {'1': 'metadata', '3': 14, '4': 3, '5': 11, '6': '.Metadata', '10': 'metadata'},
+    {
+      '1': 'metadata',
+      '3': 14,
+      '4': 3,
+      '5': 11,
+      '6': '.Metadata',
+      '10': 'metadata'
+    },
   ],
 };
 
@@ -141,7 +224,14 @@ const Meeting$json = {
     {'1': 'end_time', '3': 6, '4': 1, '5': 9, '10': 'endTime'},
     {'1': 'class_type', '3': 7, '4': 1, '5': 9, '10': 'classType'},
     {'1': 'index', '3': 8, '4': 1, '5': 5, '10': 'index'},
-    {'1': 'metadata', '3': 9, '4': 3, '5': 11, '6': '.Metadata', '10': 'metadata'},
+    {
+      '1': 'metadata',
+      '3': 9,
+      '4': 3,
+      '5': 11,
+      '6': '.Metadata',
+      '10': 'metadata'
+    },
   ],
 };
 
@@ -229,7 +319,14 @@ final $typed_data.Uint8List registrationDescriptor = $convert.base64Decode(
 const ResolvedSemester$json = {
   '1': 'ResolvedSemester',
   '2': [
-    {'1': 'current', '3': 1, '4': 1, '5': 11, '6': '.Semester', '10': 'current'},
+    {
+      '1': 'current',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.Semester',
+      '10': 'current'
+    },
     {'1': 'last', '3': 2, '4': 1, '5': 11, '6': '.Semester', '10': 'last'},
     {'1': 'next', '3': 3, '4': 1, '5': 11, '6': '.Semester', '10': 'next'},
   ],
@@ -261,7 +358,14 @@ const UCTNotification$json = {
     {'1': 'notification_id', '3': 1, '4': 1, '5': 3, '10': 'notificationId'},
     {'1': 'topic_name', '3': 2, '4': 1, '5': 9, '10': 'topicName'},
     {'1': 'status', '3': 3, '4': 1, '5': 9, '10': 'status'},
-    {'1': 'university', '3': 4, '4': 1, '5': 11, '6': '.University', '10': 'university'},
+    {
+      '1': 'university',
+      '3': 4,
+      '4': 1,
+      '5': 11,
+      '6': '.University',
+      '10': 'university'
+    },
   ],
 };
 
@@ -302,15 +406,50 @@ final $typed_data.Uint8List metaDescriptor = $convert.base64Decode(
 const Data$json = {
   '1': 'Data',
   '2': [
-    {'1': 'universities', '3': 1, '4': 3, '5': 11, '6': '.University', '10': 'universities'},
-    {'1': 'subjects', '3': 2, '4': 3, '5': 11, '6': '.Subject', '10': 'subjects'},
+    {
+      '1': 'universities',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.University',
+      '10': 'universities'
+    },
+    {
+      '1': 'subjects',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.Subject',
+      '10': 'subjects'
+    },
     {'1': 'courses', '3': 3, '4': 3, '5': 11, '6': '.Course', '10': 'courses'},
-    {'1': 'sections', '3': 4, '4': 3, '5': 11, '6': '.Section', '10': 'sections'},
-    {'1': 'university', '3': 5, '4': 1, '5': 11, '6': '.University', '10': 'university'},
+    {
+      '1': 'sections',
+      '3': 4,
+      '4': 3,
+      '5': 11,
+      '6': '.Section',
+      '10': 'sections'
+    },
+    {
+      '1': 'university',
+      '3': 5,
+      '4': 1,
+      '5': 11,
+      '6': '.University',
+      '10': 'university'
+    },
     {'1': 'subject', '3': 6, '4': 1, '5': 11, '6': '.Subject', '10': 'subject'},
     {'1': 'course', '3': 7, '4': 1, '5': 11, '6': '.Course', '10': 'course'},
     {'1': 'section', '3': 8, '4': 1, '5': 11, '6': '.Section', '10': 'section'},
-    {'1': 'subscription_view', '3': 9, '4': 3, '5': 11, '6': '.SubscriptionView', '10': 'subscriptionView'},
+    {
+      '1': 'subscription_view',
+      '3': 9,
+      '4': 3,
+      '5': 11,
+      '6': '.SubscriptionView',
+      '10': 'subscriptionView'
+    },
   ],
 };
 
@@ -358,4 +497,3 @@ const SubscriptionView$json = {
 final $typed_data.Uint8List subscriptionViewDescriptor = $convert.base64Decode(
     'ChBTdWJzY3JpcHRpb25WaWV3Eh0KCnRvcGljX25hbWUYASABKAlSCXRvcGljTmFtZRIgCgtzdW'
     'JzY3JpYmVycxgCIAEoA1ILc3Vic2NyaWJlcnMSFQoGaXNfaG90GAMgASgIUgVpc0hvdA==');
-

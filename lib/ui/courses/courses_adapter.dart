@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
@@ -15,11 +13,11 @@ class CourseTitleItem extends Item {
       [Animation<double>? animation]) {
     int total = course.sections.length;
     int open = 0;
-    course.sections.forEach((section) {
+    for (var section in course.sections) {
       if (section.status == AppLocalizations.of(context)!.openStatus) {
         open++;
       }
-    });
+    }
 
     double percent = 0.0;
     if (total != 0) {
@@ -34,90 +32,91 @@ class CourseTitleItem extends Item {
       leftBorderRadius = 0.0;
     }
 
-    return new Container(
-      margin: new EdgeInsets.only(
+    return Container(
+      margin: const EdgeInsets.only(
           left: Dimens.spacingStandard,
           right: Dimens.spacingStandard,
           top: 6.0,
           bottom: 6.0),
-      decoration: new BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         shape: BoxShape.rectangle,
-        borderRadius: new BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(8.0),
         boxShadow: <BoxShadow>[
-          new BoxShadow(
+          BoxShadow(
             color: Theme.of(context).colorScheme.shadow,
             blurRadius: 6.0,
-            offset: new Offset(0.0, 2.0),
+            offset: const Offset(0.0, 2.0),
           ),
         ],
       ),
-      child: new Stack(
+      child: Stack(
         children: <Widget>[
-          new Container(
-              padding: new EdgeInsets.all(12.0),
-              child: new Column(
+          Container(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    new Text(
-                      AppLocalizations.of(context)!.headerMessage(course.name, course.number),
-                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        fontWeight: FontWeight.bold
-                      ),
+                    Text(
+                      AppLocalizations.of(context)!
+                          .headerMessage(course.name, course.number),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge!
+                          .copyWith(fontWeight: FontWeight.bold),
                       overflow: TextOverflow.fade,
                     ),
-                    new Text(
-                      AppLocalizations
-                          .of(context)!
+                    Text(
+                      AppLocalizations.of(context)!
                           .numOfOpen(open.toString(), total.toString()),
                       style: Theme.of(context).textTheme.bodySmall,
                     )
                   ])),
           //https://github.com/flutter/flutter/issues/3782#issuecomment-309079424
-          new Positioned.fill(
-              child: new Material(
-                  borderRadius: new BorderRadius.all(new Radius.circular(6.0)),
+          Positioned.fill(
+              child: Material(
+                  borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                   color: Colors.transparent,
-                  child: new Stack(
+                  child: Stack(
                       alignment: AlignmentDirectional.bottomStart,
                       children: <Widget>[
-                        new Container(
+                        Container(
                           height: 4.0,
                           alignment: Alignment.bottomRight,
-                          child: new FractionallySizedBox(
+                          child: FractionallySizedBox(
                             alignment: Alignment.bottomRight,
                             widthFactor: 1 - percent,
-                            child: new Container(
+                            child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.red,
                                 borderRadius: BorderRadius.only(
                                     bottomLeft:
                                         Radius.circular(leftBorderRadius),
-                                    bottomRight: Radius.circular(6.0)),
+                                    bottomRight: const Radius.circular(6.0)),
                               ),
-                              padding: new EdgeInsets.all(4.0),
+                              padding: const EdgeInsets.all(4.0),
                             ),
                           ),
                         ),
-                        new Container(
+                        Container(
                           height: 4.0,
                           alignment: Alignment.bottomLeft,
-                          child: new FractionallySizedBox(
+                          child: FractionallySizedBox(
                             alignment: Alignment.bottomLeft,
                             widthFactor: percent,
-                            child: new Container(
-                              padding: new EdgeInsets.all(4.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(4.0),
                               decoration: BoxDecoration(
                                 color: Colors.green,
                                 borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(6.0),
+                                    bottomLeft: const Radius.circular(6.0),
                                     bottomRight:
                                         Radius.circular(rightBorderRadius)),
                               ),
                             ),
                           ),
                         ),
-                        new InkWell(
+                        InkWell(
                           onTap: () {
                             callback(context, course);
                           },

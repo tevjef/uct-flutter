@@ -6,13 +6,11 @@ class DoubleHolder {
 
 // https://medium.com/@boldijar.paul/flutter-keeping-list-view-index-while-changing-page-view-c260352f35f8
 class StatefulListView extends StatefulWidget {
-  final DoubleHolder offset = new DoubleHolder();
+  final DoubleHolder offset = DoubleHolder();
 
-  StatefulListView(this._itemCount, this._indexedWidgetBuilder, {
-    Key? key,
-    required EdgeInsetsGeometry padding})
-      : super(key: key) {
-    this._padding = padding;
+  StatefulListView(this._itemCount, this._indexedWidgetBuilder,
+      {super.key, required EdgeInsetsGeometry padding}) {
+    _padding = padding;
   }
 
   double getOffsetMethod() {
@@ -23,7 +21,6 @@ class StatefulListView extends StatefulWidget {
     offset.value = val;
   }
 
-
   /// The amount of space by which to inset the children.
   late EdgeInsetsGeometry _padding;
 
@@ -32,7 +29,7 @@ class StatefulListView extends StatefulWidget {
 
   @override
   _StatefulListViewState createState() =>
-      new _StatefulListViewState(_itemCount, _padding, _indexedWidgetBuilder);
+      _StatefulListViewState(_itemCount, _padding, _indexedWidgetBuilder);
 }
 
 class _StatefulListViewState extends State<StatefulListView>
@@ -48,13 +45,13 @@ class _StatefulListViewState extends State<StatefulListView>
   void initState() {
     super.initState();
     scrollController =
-        new ScrollController(initialScrollOffset: widget.getOffsetMethod());
+        ScrollController(initialScrollOffset: widget.getOffsetMethod());
   }
 
   @override
   Widget build(BuildContext context) {
-    return new NotificationListener(
-      child: new ListView.builder(
+    return NotificationListener(
+      child: ListView.builder(
           controller: scrollController,
           padding: _padding,
           itemCount: _itemCount,

@@ -1,8 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../core/lib.dart';
 import '../../data/lib.dart';
@@ -24,15 +21,15 @@ class HeaderItem extends Item {
       : super(title);
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition, [Animation<double>? animation]) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double>? animation]) {
     var widget = Padding(
       padding: insets,
       child: Text(
         title,
-        style: Theme.of(context)
-            .textTheme
-            .labelMedium!
-            .copyWith(fontWeight: FontWeight.bold, fontFeatures: [FontFeature.notationalForms(0)]),
+        style: Theme.of(context).textTheme.labelMedium!.copyWith(
+            fontWeight: FontWeight.bold,
+            fontFeatures: [const FontFeature.notationalForms(0)]),
       ),
     );
 
@@ -60,18 +57,24 @@ class MetadataItem extends Item {
   MetadataItem(this.title, this.content) : super(content);
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition, [Animation<double>? animation]) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double>? animation]) {
     return Padding(
-        padding: EdgeInsets.only(
-            bottom: Dimens.spacingStandard, left: Dimens.spacingStandard, right: Dimens.spacingStandard),
+        padding: const EdgeInsets.only(
+            bottom: Dimens.spacingStandard,
+            left: Dimens.spacingStandard,
+            right: Dimens.spacingStandard),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               title.toUpperCase(),
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium!
+                  .copyWith(fontWeight: FontWeight.bold),
             ),
-            Padding(padding: EdgeInsets.all(Dimens.spacingXsmall)),
+            const Padding(padding: EdgeInsets.all(Dimens.spacingXsmall)),
             Text(
               content,
               style: Theme.of(context).textTheme.labelMedium,
@@ -95,7 +98,7 @@ class SectionItem extends Item {
   SectionItem(this.searchContext,
       {this.hasTitle = false,
       this.canSlide = false,
-      this.subscriptionView = null,
+      this.subscriptionView,
       required this.onItemDismissed,
       required this.onSectionClicked})
       : super(searchContext.section!.callNumber) {
@@ -103,17 +106,26 @@ class SectionItem extends Item {
   }
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition, [Animation<double>? animation]) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double>? animation]) {
     var table = Table(
-      columnWidths: {0: FlexColumnWidth(0.30), 1: FlexColumnWidth(0.50), 2: FlexColumnWidth(0.25)},
+      columnWidths: const {
+        0: FlexColumnWidth(0.30),
+        1: FlexColumnWidth(0.50),
+        2: FlexColumnWidth(0.25)
+      },
       children: section.meetings.map((meeting) {
         var time = "";
         if (meeting.startTime != "") {
-          time = AppLocalizations.of(context)!.meetingTime(meeting.startTime, meeting.endTime);
+          time = AppLocalizations.of(context)!
+              .meetingTime(meeting.startTime, meeting.endTime);
         }
         return TableRow(
           children: <Widget>[
-            Text(meeting.day, maxLines: 1, overflow: TextOverflow.fade, style: Theme.of(context).textTheme.labelMedium),
+            Text(meeting.day,
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+                style: Theme.of(context).textTheme.labelMedium),
             Text(
               time,
               maxLines: 1,
@@ -151,11 +163,14 @@ class SectionItem extends Item {
         emoji = "👀";
       }
 
-      String hotnessText = subscriptionView!.subscribers.toString() + " $emoji";
+      String hotnessText = "${subscriptionView!.subscribers} $emoji";
 
       hotnessWidget = Text(hotnessText,
           textAlign: TextAlign.start,
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold));
+          style: Theme.of(context)
+              .textTheme
+              .labelMedium!
+              .copyWith(fontWeight: FontWeight.bold));
 
       if (subscriptionView!.subscribers == 0) {
         hotnessWidget = Container();
@@ -169,12 +184,15 @@ class SectionItem extends Item {
     if (instructors.isNotEmpty) {
       instructorWidget = Text(instructors,
           textAlign: TextAlign.end,
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold));
+          style: Theme.of(context)
+              .textTheme
+              .labelMedium!
+              .copyWith(fontWeight: FontWeight.bold));
     }
 
     bottomStack = Row(
-      children: <Widget>[hotnessWidget, instructorWidget],
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[hotnessWidget, instructorWidget],
     );
 
     Widget courseNameWidget = Container();
@@ -183,12 +201,17 @@ class SectionItem extends Item {
       courseNameWidget = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(AppLocalizations.of(context)!.headerMessage(searchContext.course!.name, searchContext.course!.number),
+          Text(
+              AppLocalizations.of(context)!.headerMessage(
+                  searchContext.course!.name, searchContext.course!.number),
               maxLines: 1,
               textAlign: TextAlign.start,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.bold, fontSize: 14.0)),
-          SizedBox(height: Dimens.spacingXsmall),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium!
+                  .copyWith(fontWeight: FontWeight.bold, fontSize: 14.0)),
+          const SizedBox(height: Dimens.spacingXsmall),
         ],
       );
     }
@@ -197,12 +220,12 @@ class SectionItem extends Item {
 
     navigationWidget = Positioned.fill(
       child: Material(
-        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(6.0)),
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(6.0)),
           onTap: () {
-            var searchContext = Injector().get<SearchContext>();
+            var searchContext = getIt<SearchContext>();
             searchContext.updateWithAnother(this.searchContext);
 
             onSectionClicked(section);
@@ -212,24 +235,28 @@ class SectionItem extends Item {
     );
 
     Widget widget = Container(
-      margin: EdgeInsets.only(left: Dimens.spacingStandard, right: Dimens.spacingStandard, top: 6.0, bottom: 6.0),
+      margin: const EdgeInsets.only(
+          left: Dimens.spacingStandard,
+          right: Dimens.spacingStandard,
+          top: 6.0,
+          bottom: 6.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: <BoxShadow>[
           BoxShadow(
             color: Theme.of(context).colorScheme.shadow,
             blurRadius: 6.0,
-            offset: Offset(0.0, 2.0),
+            offset: const Offset(0.0, 2.0),
           ),
         ],
       ),
       child: Stack(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.all(Dimens.spacingMedium),
-            margin: EdgeInsets.only(left: 60.0),
+            padding: const EdgeInsets.all(Dimens.spacingMedium),
+            margin: const EdgeInsets.only(left: 60.0),
             child: Column(
               textBaseline: TextBaseline.ideographic,
               mainAxisSize: MainAxisSize.min,
@@ -237,7 +264,7 @@ class SectionItem extends Item {
               children: <Widget>[
                 courseNameWidget,
                 table,
-                SizedBox(height: Dimens.spacingXsmall),
+                const SizedBox(height: Dimens.spacingXsmall),
                 bottomStack,
               ],
             ),
@@ -245,17 +272,22 @@ class SectionItem extends Item {
           Container(
               height: 48.0,
               width: 48.0,
-              margin: EdgeInsets.all(Dimens.spacingMedium),
+              margin: const EdgeInsets.all(Dimens.spacingMedium),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: section.status == AppLocalizations.of(context)!.openStatus ? Colors.green : Colors.red,
+                color:
+                    section.status == AppLocalizations.of(context)!.openStatus
+                        ? Colors.green
+                        : Colors.red,
               ),
               child: Text(
                 section.number,
                 textAlign: TextAlign.center,
-                style:
-                    Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge!
+                    .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
               )),
           navigationWidget
         ],
@@ -299,21 +331,22 @@ class SubscribeItem extends Item {
   SubscribeItem(this.statusProvider, this.callback) : super("");
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition, [Animation<double>? animation]) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double>? animation]) {
     Widget subscribeSwitch;
 
     if (Platform.isIOS) {
       subscribeSwitch = Padding(
+        padding: const EdgeInsets.only(),
         child: CupertinoSwitch(
             value: statusProvider.trackedStatus(),
             onChanged: (value) {
               callback(statusProvider.trackedStatus());
             }),
-        padding: EdgeInsets.only(),
       );
     } else {
       subscribeSwitch = Padding(
-        padding: EdgeInsets.only(),
+        padding: const EdgeInsets.only(),
         child: Switch(
           value: statusProvider.trackedStatus(),
           onChanged: (value) {
@@ -332,7 +365,8 @@ class SubscribeItem extends Item {
           },
           child: Container(
             height: 56.0,
-            margin: EdgeInsets.only(left: Dimens.spacingStandard, right: Dimens.spacingStandard),
+            margin: const EdgeInsets.only(
+                left: Dimens.spacingStandard, right: Dimens.spacingStandard),
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
@@ -344,7 +378,10 @@ class SubscribeItem extends Item {
                 Text(
                   AppLocalizations.of(context)!.subscribeReason,
                   textAlign: TextAlign.start,
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge!
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
                 subscribeSwitch
               ],
@@ -366,7 +403,8 @@ class SpaceItem extends Item {
         super("");
 
   @override
-  Widget create(BuildContext context, int position, int adapterPosition, [Animation<double>? animation]) {
+  Widget create(BuildContext context, int position, int adapterPosition,
+      [Animation<double>? animation]) {
     return SizedBox(height: height, width: width);
   }
 }

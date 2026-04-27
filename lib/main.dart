@@ -3,7 +3,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'core/lib.dart';
 import 'firebase_options.dart';
@@ -33,9 +32,9 @@ void main() async {
     title: 'Course Tracker',
     debugShowCheckedModeBanner: false,
     navigatorObservers: [
-      new FirebaseAnalyticsObserver(analytics: analytics),
+      FirebaseAnalyticsObserver(analytics: analytics),
     ],
-    localizationsDelegates: [
+    localizationsDelegates: const [
       AppLocalizations.delegate,
       GlobalMaterialLocalizations.delegate,
       GlobalWidgetsLocalizations.delegate,
@@ -44,26 +43,25 @@ void main() async {
     theme: _buildLightTheme(),
     darkTheme: _buildDarkTheme(),
     routes: <String, WidgetBuilder>{
-      UCTRoutes.home: (BuildContext context) => HomePage(),
-      UCTRoutes.subjects: (BuildContext context) => SubjectPage(),
-      UCTRoutes.options: (BuildContext context) => OptionPage(),
-      UCTRoutes.courses: (BuildContext context) => CoursesPage(),
+      UCTRoutes.home: (BuildContext context) => const HomePage(),
+      UCTRoutes.subjects: (BuildContext context) => const SubjectPage(),
+      UCTRoutes.options: (BuildContext context) => const OptionPage(),
+      UCTRoutes.courses: (BuildContext context) => const CoursesPage(),
       UCTRoutes.course: (BuildContext context) => CoursePage(),
-      UCTRoutes.section: (BuildContext context) => SectionDetailsPage(),
+      UCTRoutes.section: (BuildContext context) => const SectionDetailsPage(),
     },
-    home: RootPage(),
+    home: const RootPage(),
   );
 
-  var error = new Logger('error');
+  var error = Logger('error');
 
   runZonedGuarded(() {
     runApp(app);
-  },
-      (e, s) => {
-            error.info(e.toString()),
-            error.info(s.toString()),
-            FirebaseCrashlytics.instance.recordError(e, s, fatal: true)
-          });
+  }, (e, s) {
+    error.info(e.toString());
+    error.info(s.toString());
+    FirebaseCrashlytics.instance.recordError(e, s, fatal: true);
+  });
 }
 
 TextTheme _buildTextTheme(TextTheme base) {
@@ -71,7 +69,7 @@ TextTheme _buildTextTheme(TextTheme base) {
 }
 
 ThemeData _buildDarkTheme() {
-  final ThemeData base = new ThemeData.dark();
+  final ThemeData base = ThemeData.dark();
   return ThemeData(
     fontFamily: 'ProductSans',
     useMaterial3: true,
@@ -85,7 +83,7 @@ ThemeData _buildDarkTheme() {
 }
 
 ThemeData _buildSeedTheme() {
-  final ThemeData base = new ThemeData.light();
+  final ThemeData base = ThemeData.light();
   return ThemeData(
     fontFamily: 'ProductSans',
     useMaterial3: true,
@@ -99,7 +97,7 @@ ThemeData _buildSeedTheme() {
 }
 
 ThemeData _buildLightTheme() {
-  final ThemeData base = new ThemeData.light();
+  final ThemeData base = ThemeData.light();
   return ThemeData(
     fontFamily: 'ProductSans',
     useMaterial3: true,

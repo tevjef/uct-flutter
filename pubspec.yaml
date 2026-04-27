@@ -35,13 +35,15 @@ dependencies:
   fixnum: ^1.1.0
   protobuf: ^3.1.0
   logging: ^1.2.0
-  scoped_model: ^2.0.0
+  flutter_bloc: ^9.0.0
+  equatable: ^2.0.7
+  get_it: ^8.0.3
   sqflite: ^2.3.0
-  path_provider: ^2.1.1
+  path_provider: ^2.1.0
   collection: ^1.14.11
   flutter_slidable: ^3.0.0
   tuple: ^2.0.2
-  flutter_local_notifications: ^16.3.2
+  flutter_local_notifications: ^17.0.0
   draggable_scrollbar: ^0.1.0
   firebase_analytics: ^10.8.5
   firebase_messaging: ^14.7.15
@@ -49,17 +51,19 @@ dependencies:
   firebase_crashlytics: ^3.4.14
   google_mobile_ads: ^4.0.0
   http: ^1.1.0
-  flutter_simple_dependency_injection: any
-  package_info: ^2.0.2
-  purchases_flutter: ^6.21.0
+  purchases_flutter: ^8.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
 
+  firebase_core: any
+  path: any
+  package_info_plus: ^8.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

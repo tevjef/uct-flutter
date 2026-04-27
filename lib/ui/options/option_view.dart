@@ -1,40 +1,96 @@
 import '../../core/lib.dart';
 import '../../data/lib.dart';
 import '../widgets/lib.dart';
-import 'option_presenter.dart';
+import 'bloc/options_bloc.dart';
 
 class OptionPage extends StatefulWidget {
-  OptionPage({Key? key}) : super(key: key);
+  const OptionPage({super.key});
 
   @override
   OptionListState createState() => OptionListState();
 }
 
-class OptionListState extends State<OptionPage> with LDEViewMixin implements OptionView {
-  late OptionPresenter presenter;
-
-  List<University> universities = [];
-  List<Semester> semesters = [];
-
-  University? selectedUniversity;
-  Semester? selectedSemester;
-
-  OptionListState() {
-    presenter = OptionPresenter(this);
-  }
+class OptionListState extends State<OptionPage>
+    with LDEViewMixin
+    implements BaseView, ListOps {
+  @override
+  BasePresenter get presenter => throw UnimplementedError('Using BLoC instead');
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => OptionsBloc(
+        apiClient: getIt<UCTApiClient>(),
+        preferenceDao: getIt<PreferenceDao>(),
+        analyticsLogger: getIt<AnalyticsLogger>(),
+        adInitializer: getIt<AdInitializer>(),
+      )..add(const OptionsLoadUniversities()),
+      child: BlocBuilder<OptionsBloc, OptionsState>(
+        builder: (context, state) {
+          return Scaffold(
+            key: scaffoldKey,
+            appBar: AppBar(
+              leading: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              title: Text(AppLocalizations.of(context)!.options,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface)),
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(
+                      Icons.check,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    }),
+              ],
+            ),
+            body: _buildBody(context, state),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, OptionsState state) {
+    if (state is OptionsLoading || state is OptionsInitial) {
+      return Widgets.makeLoading(context);
+    }
+
+    if (state is OptionsError) {
+      return Center(child: Text(state.message));
+    }
+
+    if (state is OptionsLoaded) {
+      return _buildOptionsContent(context, state);
+    }
+
+    return Container();
+  }
+
+  Widget _buildOptionsContent(BuildContext context, OptionsLoaded state) {
     Widget universityButton = DropdownButton<University>(
-      value: selectedUniversity,
+      value: state.universities.contains(state.selectedUniversity)
+          ? state.selectedUniversity
+          : null,
       onChanged: (University? newValue) {
-        presenter.updateDefaultUniversity(newValue!);
+        context
+            .read<OptionsBloc>()
+            .add(OptionsUniversityChanged(university: newValue!));
       },
       isDense: true,
-      items: universities.map((University value) {
+      items: state.universities.map((University value) {
         return DropdownMenuItem<University>(
             value: value,
-            child: Container(
+            child: SizedBox(
                 width: MediaQuery.of(context).size.width * .80,
                 child: Text(
                   value.name,
@@ -43,20 +99,24 @@ class OptionListState extends State<OptionPage> with LDEViewMixin implements Opt
       }).toList(),
     );
 
-    Widget? semesterButton = null;
-    if (selectedSemester != null && semesters.contains(selectedSemester)) {
+    Widget? semesterButton;
+    if (state.selectedSemester != null &&
+        state.semesters.contains(state.selectedSemester)) {
       semesterButton = DropdownButton<Semester>(
-        value: selectedSemester,
+        value: state.selectedSemester,
         onChanged: (Semester? newValue) {
-          presenter.updateDefaultSemester(newValue!);
+          context
+              .read<OptionsBloc>()
+              .add(OptionsSemesterChanged(semester: newValue!));
         },
         isDense: true,
-        items: semesters.map((Semester value) {
+        items: state.semesters.map((Semester value) {
           return DropdownMenuItem<Semester>(
             value: value,
             child: Text(
-              AppLocalizations.of(context)!
-                  .semesterFull(TextUtils.upperCaseFirstLetter(value.season), value.year.toString()),
+              AppLocalizations.of(context)!.semesterFull(
+                  TextUtils.upperCaseFirstLetter(value.season),
+                  value.year.toString()),
               softWrap: true,
             ),
           );
@@ -64,7 +124,7 @@ class OptionListState extends State<OptionPage> with LDEViewMixin implements Opt
       );
     }
 
-    Widget widget = ListView(
+    return ListView(
       padding: const EdgeInsets.symmetric(horizontal: Dimens.spacingStandard),
       children: <Widget>[
         DropdownButtonHideUnderline(
@@ -74,7 +134,8 @@ class OptionListState extends State<OptionPage> with LDEViewMixin implements Opt
                 hintText: AppLocalizations.of(context)!.selectUniversity,
                 helperText: AppLocalizations.of(context)!.selectUniversity,
               ),
-              isEmpty: selectedUniversity == null || !universities.contains(selectedUniversity),
+              isEmpty: state.selectedUniversity == null ||
+                  !state.universities.contains(state.selectedUniversity),
               child: universityButton),
         ),
         DropdownButtonHideUnderline(
@@ -83,78 +144,16 @@ class OptionListState extends State<OptionPage> with LDEViewMixin implements Opt
                   labelText: AppLocalizations.of(context)!.semester,
                   hintText: AppLocalizations.of(context)!.selectSemester,
                   helperText: AppLocalizations.of(context)!.selectSemester),
-              isEmpty: selectedSemester == null || !semesters.contains(selectedSemester),
+              isEmpty: state.selectedSemester == null ||
+                  !state.semesters.contains(state.selectedSemester),
               child: semesterButton),
         )
       ],
     );
-
-    Widget ldeWidget = makeRefreshingWidget(context, widget);
-
-    return WillPopScope(
-      onWillPop: () {
-        showMessage(AppLocalizations.of(context)!.please_select_a_university);
-        return Future<bool>.value(selectedUniversity != null && selectedSemester != null);
-      },
-      child: Scaffold(
-        key: scaffoldKey,
-        appBar: AppBar(
-          leading: new IconButton(
-              icon: new Icon(
-                Icons.arrow_back,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
-          title: Text(AppLocalizations.of(context)!.options,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onBackground)),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(
-                  Icons.check,
-                  color: Theme.of(context).colorScheme.onBackground,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                }),
-          ],
-        ),
-        body: ldeWidget,
-      ),
-    );
-  }
-
-  @override
-  void onOptionSuccess(List<University> universities) {
-    setState(() {
-      this.universities = universities;
-    });
-  }
-
-  @override
-  void setSelectedSemester(Semester semester) {
-    if (semesters.contains(semester)) {
-      setState(() {
-        this.selectedSemester = semester;
-      });
-    }
-  }
-
-  @override
-  void setSelectedUniversity(University university, Semester? semester) {
-    setState(() {
-      this.selectedUniversity = university;
-      this.semesters = university.availableSemesters;
-      this.selectedSemester = semester;
-    });
   }
 
   @override
   void onRefreshData() {
-    presenter.loadUniversities();
+    context.read<OptionsBloc>().add(const OptionsLoadUniversities());
   }
 }

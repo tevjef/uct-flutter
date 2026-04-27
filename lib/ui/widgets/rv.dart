@@ -6,7 +6,7 @@ import 'package:tuple/tuple.dart';
 class GroupItem extends Item with ListMixin<Item> {
   late Item header;
 
-  List<Item> _items = [];
+  final List<Item> _items = [];
 
   late GlobalKey<AnimatedListState> _listKey;
 
@@ -14,7 +14,7 @@ class GroupItem extends Item with ListMixin<Item> {
 
   set listKey(GlobalKey<AnimatedListState> listKey) => _listKey = listKey;
 
-  GroupItem(String id) : super(id);
+  GroupItem(super.id);
 
   int getItemCount() => _items.length + getHeaderCount();
 
@@ -29,10 +29,11 @@ class GroupItem extends Item with ListMixin<Item> {
 
   void addItem(Item item) => _items.add(item);
 
+  @override
   Widget create(BuildContext context, int position, int adapterPosition,
       [Animation<double>? animation]) {
-        return Text("");
-      }
+    return const Text("");
+  }
 
   Item getItem(int index) => index == 0 ? header : _items[index - 1];
 
@@ -51,11 +52,11 @@ class GroupItem extends Item with ListMixin<Item> {
   }
 
   void addHeader(Item item) {
-    this.header = item;
+    header = item;
   }
 
   void updateHeader(Item item) {
-    this.header = item;
+    header = item;
   }
 
   int getHeaderCount() {
@@ -110,7 +111,7 @@ class GroupItem extends Item with ListMixin<Item> {
 }
 
 abstract class Item {
-  late String _id;
+  late final String _id;
 
   Item(this._id);
 
@@ -121,15 +122,18 @@ abstract class Item {
 
   @override
   bool operator ==(other) =>
-      this.runtimeType == other.runtimeType && (other as Item)._id == _id;
+      runtimeType == other.runtimeType && (other as Item)._id == _id;
 
+  @override
   int get hashCode => _id.hashCode;
 
   bool shouldAnimateRemove() => false;
 
   bool shouldAnimateAddition() => false;
 
-  String getFastScrollLabel() { return ""; }
+  String getFastScrollLabel() {
+    return "";
+  }
 }
 
 class Adapter {
@@ -140,9 +144,11 @@ class Adapter {
   AnimatedListState? get _animatedList => listKey.currentState;
 
   Widget? onCreateWidget(BuildContext context, int adapterPosition) {
-    return onCreateWidgetWithAnimation(context, adapterPosition, Animation<double>.fromValueListenable(
-        AlwaysStoppedAnimation<double>(1.0))
-    );
+    return onCreateWidgetWithAnimation(
+        context,
+        adapterPosition,
+        Animation<double>.fromValueListenable(
+            const AlwaysStoppedAnimation<double>(1.0)));
   }
 
   Tuple2<Item, int>? getItemAtPosition(int adapterPosition) {
@@ -158,7 +164,7 @@ class Adapter {
         if (adapterPosition < count + groupCount) {
           var groupItem = item.getItem(adapterPosition - count);
           var idx = item.getItemPositionInGroup(groupItem);
-          return Tuple2(groupItem, idx!);
+          return Tuple2(groupItem, idx);
         } else {
           count += groupCount;
         }
@@ -183,11 +189,7 @@ class Adapter {
         var groupCount = item.getItemCount();
         var indexInGroup = item.getItemPositionInAdapter(itemToFind);
 
-        if (indexInGroup != null) {
-          return count + indexInGroup;
-        } else {
-          count += groupCount;
-        }
+        return count + indexInGroup;
       } else {
         if (itemToFind == item) {
           return count;
@@ -208,9 +210,9 @@ class Adapter {
       var item = itemIndexTuple.item1;
       var index = itemIndexTuple.item2;
       return item.create(context, index, adapterPosition, animation);
-        }
+    }
 
-    return Text("Error");
+    return const Text("Error");
   }
 
   int getItemCount() => countItems(_items);
@@ -289,7 +291,7 @@ class Adapter {
         });
       }
       return removed;
-        }
+    }
 
     return removed;
   }
@@ -300,7 +302,7 @@ class Adapter {
     if (itemIndexTuple != null) {
       var item = itemIndexTuple.item1;
       return item.getFastScrollLabel();
-        }
+    }
 
     return null;
   }
@@ -321,9 +323,7 @@ class Adapter {
         }
       }
 
-      if (label == null) {
-        label = "NONE";
-      }
+      label ??= "NONE";
     }
 
     return label;
@@ -332,8 +332,8 @@ class Adapter {
   Item getItemAt(int position) => _items[position];
 
   void swapData(List<Item> items) {
-    this._items = items.toList();
-    }
+    _items = items.toList();
+  }
 
   void setListKey(GlobalKey<AnimatedListState> listKey) {
     this.listKey = listKey;
